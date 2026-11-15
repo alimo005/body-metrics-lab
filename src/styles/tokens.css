@@ -1,0 +1,78 @@
+:root {
+  color-scheme: light;
+  --ink: #193b3c;
+  --accent: #217569;
+  --muted: #566a69;
+  --line: #dce5e1;
+  --mint: #edf5ef;
+  --canvas: #fafbf7;
+  --surface: #fff;
+  --surface-soft: #f5f7f3;
+  --primary: #217569;
+  --primary-hover: #195c53;
+  --focus: #34768a;
+  --logo-green: #217569;
+  --shadow-card: 0 16px 50px #2142360c;
+  --control-border: #718881;
+  --white: #fff;
+  --font-body: 'DM Sans Variable', Arial, sans-serif;
+  --font-heading: 'Manrope Variable', Arial, sans-serif;
+  --text-body: 0.9375rem;
+  --text-small: 0.8125rem;
+  --text-brand: 1.375rem;
+  --text-heading: clamp(2rem, 5vw, 3.5625rem);
+  --touch: 44px;
+  --container: 1180px;
+  --dropdown-width: 245px;
+  --header-mobile: 72px;
+  --header-desktop: 88px;
+  --radius-button: 7px;
+  --radius-card: 11px;
+  --radius-menu: 14px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 40px;
+  --space-7: 64px;
+}
+
+/* CSS fallback also works with JavaScript disabled. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --ink: #e0eee9;
+    --accent: #88c8b7;
+    --muted: #afc1ba;
+    --line: #344c45;
+    --mint: #213b32;
+    --canvas: #111e19;
+    --surface: #1a2b24;
+    --surface-soft: #16251e;
+    --primary: #2b705e;
+    --primary-hover: #2b6957;
+    --focus: #94cfe0;
+    --logo-green: #217569;
+    --shadow-card: 0 16px 50px #0002;
+    --control-border: #829b90;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #e0eee9;
+  --accent: #88c8b7;
+  --muted: #afc1ba;
+  --line: #344c45;
+  --mint: #213b32;
+  --canvas: #111e19;
+  --surface: #1a2b24;
+  --surface-soft: #16251e;
+  --primary: #2b705e;
+  --primary-hover: #2b6957;
+  --focus: #94cfe0;
+  --logo-green: #217569;
+  --shadow-card: 0 16px 50px #0002;
+  --control-border: #829b90;
+}

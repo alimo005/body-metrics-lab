@@ -1,0 +1,148 @@
+---
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const calculators = [
+  ['BMI Calculator', '/calculators/bmi/'],
+  ['BMR & TDEE Calculator', '/calculators/bmr-tdee/'],
+  ['Body Fat Calculator', '/calculators/body-fat/'],
+  ['Ideal Weight Calculator', '/calculators/ideal-weight/'],
+  ['Macro Calculator', '/calculators/macros/'],
+  ['Water Intake Calculator', '/calculators/water-intake/'],
+  ['View all calculators', '/calculators/'],
+];
+const links = [['Journal', '/journal/'], ['About', '/about/'], ['Contact', '/contact/']];
+const current = (href: string) => Astro.url.pathname === href ? 'page' : undefined;
+---
+<header class="header">
+  <div class="container header-layout">
+    <Logo />
+    <div class="controls">
+      <ThemeToggle />
+      <button class="button secondary menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav" hidden>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20">
+          <path d="M3 5h14M3 10h14M3 15h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <nav id="primary-nav" aria-label="Main navigation">
+      <details class="calculator-menu">
+        <summary aria-controls="calculator-links">Calculators <span aria-hidden="true">⌄</span></summary>
+        <ul id="calculator-links">
+          {calculators.map(([label, href]) => (
+            <li><a href={href} aria-current={current(href)}>{label}</a></li>
+          ))}
+        </ul>
+      </details>
+      {links.map(([label, href]) => <a href={href} aria-current={current(href)}>{label}</a>)}
+      <a href="/calculators/" class="button primary" aria-current={current('/calculators/')}>All calculators</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.header');
+  const toggle = header?.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = header?.querySelector<HTMLElement>('#primary-nav');
+  const dropdown = header?.querySelector<HTMLDetailsElement>('.calculator-menu');
+  const summary = dropdown?.querySelector('summary');
+  const desktop = matchMedia('(min-width: 58rem)');
+
+  if (header && toggle && nav && dropdown && summary) {
+    const closeDropdown = () => { dropdown.open = false; };
+    const setMenu = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.toggleAttribute('data-open', open);
+      if (!open) closeDropdown();
+    };
+
+    header.dataset.enhanced = '';
+    toggle.hidden = false;
+    summary.setAttribute('aria-expanded', String(dropdown.open));
+    dropdown.addEventListener('toggle', () => {
+      summary.setAttribute('aria-expanded', String(dropdown.open));
+    });
+    toggle.addEventListener('click', () => setMenu(!nav.hasAttribute('data-open')));
+    header.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      if (dropdown.open) {
+        event.preventDefault();
+        closeDropdown();
+        summary.focus();
+      } else if (nav.hasAttribute('data-open') && !desktop.matches) {
+        event.preventDefault();
+        setMenu(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener('click', event => {
+      if (!(event.target instanceof Node)) return;
+      if (!dropdown.contains(event.target)) closeDropdown();
+      if (!header.contains(event.target) && !desktop.matches) {
+        if (nav.contains(document.activeElement)) toggle.focus();
+        setMenu(false);
+      }
+    });
+    desktop.addEventListener('change', () => {
+      if (!desktop.matches && nav.contains(document.activeElement)) toggle.focus();
+      setMenu(false);
+    });
+  }
+</script>
+
+<style>
+  .header { background: var(--surface); border-bottom: 1px solid var(--line); }
+  .header-layout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    min-height: var(--header-mobile);
+    padding-block: var(--space-2);
+    gap: var(--space-2);
+  }
+  .controls { display: flex; gap: var(--space-1); }
+  .menu-toggle { padding-inline: 0; width: var(--touch); }
+  nav { flex-basis: 100%; display: grid; gap: var(--space-1); }
+  .header[data-enhanced] nav:not([data-open]) { display: none; }
+  nav a:not(.button), summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch);
+    padding-inline: var(--space-3);
+    color: var(--ink);
+    font-size: var(--text-small);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-button);
+  }
+  nav a:hover:not(.button), summary:hover, nav a[aria-current='page']:not(.button) { background: var(--mint); }
+  summary { cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  ul { list-style: none; margin: 0; padding: var(--space-2); }
+  @media (min-width: 58rem) {
+    .header { position: sticky; top: 0; z-index: 2; }
+    .header-layout { min-height: var(--header-desktop); flex-wrap: nowrap; }
+    .controls { order: 1; }
+    .menu-toggle { display: none; }
+    .header[data-enhanced] nav, .header[data-enhanced] nav:not([data-open]), nav {
+      display: flex;
+      flex-basis: auto;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    details { position: relative; }
+    ul {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: var(--dropdown-width);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-menu);
+      box-shadow: var(--shadow-card);
+    }
+    nav > a, summary { white-space: nowrap; }
+  }
+</style>
