@@ -1,7 +1,53 @@
 ---
+// Privacy Policy: DRAFT for the owner's review (DESIGN-SPEC.md 11, D-LEGAL). It describes only what the site actually does today.
+// No company, jurisdiction, analytics or advertising practice is invented; the open points are listed in the delivery report.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LegalPage from '../components/LegalPage.astro';
+import { CONTACT_EMAIL } from '../config/site';
+
+const toc = [
+  { id: 'summary', label: 'The short version' },
+  { id: 'calculators', label: 'Your calculator inputs' },
+  { id: 'browser-storage', label: 'What is stored in your browser' },
+  { id: 'hosting', label: 'Hosting and technical data' },
+  { id: 'email', label: 'If you email us' },
+  { id: 'third-parties', label: 'Links to other websites' },
+  { id: 'advertising', label: 'Advertising and analytics' },
+  { id: 'children', label: 'Children' },
+  { id: 'changes', label: 'Changes to this policy' },
+  { id: 'contact', label: 'Contact' },
+];
 ---
-<BaseLayout title="Privacy Policy" description="The upcoming privacy policy for BodyMetrics Lab." noindex>
-  <h1>Privacy Policy</h1>
-  <p>Coming soon.</p>
+<BaseLayout title="Privacy Policy" description="How BodyMetrics Lab handles your information: calculator inputs stay in your browser, and the site stores only your theme choice.">
+  <LegalPage title="Privacy Policy" kicker="Legal" intro="What BodyMetrics Lab does and does not do with information, in plain language." toc={toc} updated="25 November 2026">
+    <h2 id="summary">The short version</h2>
+    <p>The numbers you enter into our calculators are processed in your browser. They are not stored, logged, sent to us or sent to anyone else. The website has no accounts, no forms that send information to us, no comments, no analytics and no advertising. When you choose the light or dark theme, the website remembers that choice, and only on your own device.</p>
+
+    <h2 id="calculators">Your calculator inputs</h2>
+    <p>The BMI, BMR &amp; TDEE and Body Fat calculators run entirely in your browser using code that is delivered with the page. Your age, sex, height, weight, measurements, activity category and results are not transmitted to BodyMetrics Lab or to any other service, are not placed in the page address, and disappear when you close or reload the page.</p>
+
+    <h2 id="browser-storage">What is stored in your browser</h2>
+    <p>The first time you visit, the website follows your device's light or dark setting and stores nothing. When you choose a theme with the theme button, the website saves that choice (the word "light" or "dark") in your browser's local storage under the name "theme", so the page can open in the same theme next time. It is not shared with us and contains no personal information. You can remove it at any time by clearing your browser's site data. The website does not set cookies of its own.</p>
+
+    <h2 id="hosting">Hosting and technical data</h2>
+    <p>The website is delivered through Cloudflare. The pages, styles, scripts, fonts and images all come from the same website; your browser does not load them from any other company. As with any website, the hosting service that delivers the pages receives the technical information your browser sends with every request, such as your IP address, the page requested and your browser type, and may keep standard server logs, under its own privacy practices. BodyMetrics Lab does not add its own tracking to the pages.</p>
+
+    <h2 id="email">If you email us</h2>
+    <p>If you write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>, we receive your email address and the content of your message so that we can read it and reply. Please do not include personal health information in your email. We do not sell or share your message.</p>
+
+    <h2 id="third-parties">Links to other websites</h2>
+    <p>Our calculators and articles link to sources such as CDC, WHO, the National Academies, PubMed and the US Navy. Those websites have their own privacy practices, which we do not control.</p>
+
+    <h2 id="advertising">Advertising and analytics</h2>
+    <p>At the time of writing, BodyMetrics Lab does not show advertising, does not use analytics tools and does not set cookies. If that changes, for example if advertising is added in the future, this policy will be updated before the change takes effect to describe what is collected and how to manage your choices.</p>
+
+    <h2 id="children">Children</h2>
+    <p>The website is intended for adults and does not knowingly collect information from children. The calculators do not collect information from anyone.</p>
+
+    <h2 id="changes">Changes to this policy</h2>
+    <p>We may update this policy as the website changes. The date at the top of the page shows when it was last updated.</p>
+
+    <h2 id="contact">Contact</h2>
+    <p>Questions about this policy can be sent to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+  </LegalPage>
 </BaseLayout>

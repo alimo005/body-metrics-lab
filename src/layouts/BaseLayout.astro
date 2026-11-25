@@ -21,18 +21,24 @@ const seo = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Runs before first paint: marks the page as script-capable (so the mobile drawer is closed from the
+         first paint, with no flash) and applies the saved or system theme (so there is no wrong-theme flash). -->
     <script is:inline>
+      document.documentElement.classList.add('js');
       try {
-        const theme = localStorage.getItem('theme');
-        if (theme === 'dark' || theme === 'light') document.documentElement.dataset.theme = theme;
-        else document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const stored = localStorage.getItem('theme');
+        const theme = stored === 'dark' || stored === 'light'
+          ? stored
+          : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = theme;
       } catch {
-        // Without storage, the CSS follows the system preference.
+        // Without storage the CSS follows the system preference.
       }
     </script>
     <Seo {...seo} />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <Header />
     <main id="main-content" class="container page-content" tabindex="-1">
       <slot />

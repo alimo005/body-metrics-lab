@@ -1,7 +1,28 @@
 ---
+// Calculators index (DESIGN-SPEC.md 10.8): the three Version 1 calculators, then one short note on how they work.
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CalculatorCard from '../../components/CalculatorCard.astro';
+import Notice from '../../components/Notice.astro';
+import { calculators } from '../../config/site';
+import '../../styles/pages.css';
 ---
-<BaseLayout title="All calculators" description="Browse the BodyMetrics Lab calculator collection when it opens." noindex>
-  <h1>All calculators</h1>
-  <p>Coming soon.</p>
+<BaseLayout title="Health Calculators" description="BMI, BMR and TDEE, and body fat calculators with the formulas and sources shown. Free, private and run in your browser.">
+  <PageHero
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Calculators' }]}
+    kicker="Health calculators"
+    title="Health Calculators"
+    intro="Three free calculators with their formulas and sources shown, so you can see how every number is worked out."
+  />
+  <div class="card-grid">
+    {calculators.map((calculator) => <CalculatorCard calculator={calculator} level={2} />)}
+  </div>
+  <div class="note">
+    <Notice icon="info">
+      <p>The calculators run in your browser, so the numbers you enter are not stored or sent anywhere. They give educational estimates and are not a substitute for professional medical advice. BodyMetrics Lab is an educational resource and is not affiliated with or endorsed by CDC, WHO, NIH, the National Academies, the US Navy or any other organisation.</p>
+    </Notice>
+  </div>
 </BaseLayout>
+<style>
+  .note { max-width: 46rem; margin-block-start: var(--space-lg); }
+</style>

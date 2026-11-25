@@ -1,0 +1,26 @@
+---
+// Decorative circular gauge (DESIGN-SPEC.md 10.4, owner decision D3): fills from 0 to 100 percent of the circle in one
+// colour. No bands and no health meaning. The text equivalent is the aria-label of the wrapper (set by script on the
+// Body Fat page, or passed as `label` for a static example). The ring length uses pathLength="100", so a
+// stroke-dashoffset of (100 - percent) fills it.
+interface Props {
+  id?: string;
+  /** Static fill (0 to 100); the Body Fat page leaves it at 0 and sets the offset by script. */
+  fill?: number;
+  label?: string;
+  size?: number;
+}
+const { id, fill = 0, label = 'Estimated body fat', size = 104 } = Astro.props;
+const offset = 100 - Math.max(0, Math.min(100, fill));
+---
+<span class="ring" id={id} role="img" aria-label={label}>
+  <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" focusable="false">
+    <circle class="ring-track" cx="50" cy="50" r="40" fill="none" stroke-width="9" />
+    <circle class="ring-fill" cx="50" cy="50" r="40" fill="none" stroke-width="9" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset={offset} transform="rotate(-90 50 50)" />
+  </svg>
+</span>
+<style>
+  .ring { display: inline-flex; flex: none; }
+  .ring-track { stroke: var(--color-surface-highest); }
+  .ring-fill { stroke: var(--color-secondary); transition: stroke-dashoffset 600ms ease; }
+</style>

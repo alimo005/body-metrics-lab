@@ -1,0 +1,47 @@
+---
+// Official source links (DESIGN-SPEC.md 7). External links open in the same tab; rel set for safety.
+import Icon from './Icon.astro';
+
+interface Source {
+  name: string;
+  title: string;
+  href: string;
+}
+interface Props {
+  heading: string;
+  sources: Source[];
+}
+const { heading, sources } = Astro.props;
+---
+<div class="source-list">
+  <h3>{heading}</h3>
+  <ul>
+    {sources.map((s) => (
+      <li>
+        <a href={s.href} rel="noopener noreferrer">
+          <span><strong>{s.name}:</strong> {s.title}</span>
+          <Icon name="external-link" size={18} />
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+<style>
+  .source-list h3 {
+    margin: 0 0 var(--space-xs);
+    font-family: var(--font-body);
+    font-size: var(--fs-label-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
+  }
+  .source-list ul { margin: 0; padding: 0; list-style: none; }
+  .source-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    min-height: var(--touch);
+    font-size: var(--fs-small);
+  }
+</style>

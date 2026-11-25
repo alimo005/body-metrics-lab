@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-tertiary-fixed":"#151d1c","surface-container-low":"#dff9f0","inverse-on-surface":"#dcf7ed","on-primary":"#ffffff","on-primary-fixed":"#002019","secondary-fixed-dim":"#7cd7bf","error":"#ba1a1a","on-error-container":"#93000a","on-error":"#ffffff","inverse-primary":"#85d6bf","surface-variant":"#cee8df","error-container":"#ffdad6","tertiary-container":"#535c5a","surface-container-lowest":"#ffffff","surface-tint":"#0c6b59","primary-fixed":"#a1f2db","on-secondary-fixed-variant":"#005143","background":"#e6fff5","secondary":"#006b59","outline":"#6f7975","primary-fixed-dim":"#85d6bf","tertiary-fixed":"#dbe4e2","secondary-container":"#98f4db","primary-container":"#006654","on-tertiary-container":"#cbd4d1","on-surface":"#081f1a","surface":"#e6fff5","on-tertiary-fixed-variant":"#404947","surface-dim":"#c6e0d6","on-primary-fixed-variant":"#005142","on-primary-container":"#90e1ca","secondary-fixed":"#98f4db","on-background":"#081f1a","tertiary-fixed-dim":"#bfc8c6","surface-container-high":"#d4eee4","on-secondary-fixed":"#002019","surface-container":"#d9f4ea","tertiary":"#3c4543","inverse-surface":"#1e352e","on-surface-variant":"#3f4945","outline-variant":"#bec9c4","on-tertiary":"#ffffff","on-secondary":"#ffffff","surface-bright":"#e6fff5","on-secondary-container":"#00725f","primary":"#004c3e","surface-container-highest":"#cee8df"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-md":"1.25rem","gutter-mobile":"1rem","space-xl":"3.5rem","space-lg":"2rem","margin":"3rem","margin-mobile":"1.25rem","space-xs":"0.375rem","space-sm":"0.75rem","gutter":"1.5rem"},"fontFamily":{"headline-lg":["Manrope"],"headline-xl-mobile":["Manrope"],"label-md":["DM Sans"],"display-lg":["Manrope"],"body-sm":["DM Sans"],"metric-display":["Manrope"],"headline-xl":["Manrope"],"body-xl":["DM Sans"],"display-lg-mobile":["Manrope"],"body-md":["DM Sans"],"body-lg":["DM Sans"],"label-sm":["DM Sans"],"headline-sm":["Manrope"]},"fontSize":{"headline-lg":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.015em","fontWeight":"600"}],"headline-xl-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.015em","fontWeight":"600"}],"label-md":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.02em","fontWeight":"500"}],"display-lg":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.03em","fontWeight":"700"}],"body-sm":["0.875rem",{"lineHeight":"1.375rem","letterSpacing":"0.01em","fontWeight":"400"}],"metric-display":["3rem",{"lineHeight":"3.25rem","letterSpacing":"-0.03em","fontWeight":"800"}],"headline-xl":["2.5rem",{"lineHeight":"3rem","letterSpacing":"-0.025em","fontWeight":"700"}],"body-xl":["1.25rem",{"lineHeight":"1.875rem","letterSpacing":"0em","fontWeight":"400"}],"display-lg-mobile":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["1rem",{"lineHeight":"1.6rem","letterSpacing":"0.01em","fontWeight":"400"}],"body-lg":["1.125rem",{"lineHeight":"1.75rem","letterSpacing":"0em","fontWeight":"400"}],"label-sm":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.04em","fontWeight":"600"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","letterSpacing":"-0.01em","fontWeight":"600"}]}}}};</script></head><body class="bg-surface font-body-md text-body-md text-on-surface min-h-screen flex flex-col antialiased selection:bg-secondary-container selection:text-on-secondary-container"><header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-6xl mx-auto px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="BodyMetricsLab Health Tech Logo.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCdV9A23qB7vu1bYXvZeBJlHB-NJdql2pbCqQGASLgq-Z5gT5h1E11xMFffk9RLRS0CsbstRYZ_zg_H92MeW1u9XhLmNwh0wqwO0GMAmwwtqpgMUXBJCn2s4cQUHvVzWmybs8ZxCd_Wuc9IhCAIv2tcC9zu8Arp2JagJlbBtmzPa7fJFIwWjYhh4R6Dd0yuG2STH33cp6Kb4zHVaEhrX58stR0rKPGacHZAWPjUAzNHyypL3Qvn5EXdSXg"/><span class="font-headline-sm text-headline-sm text-primary tracking-tight">BodyMetrics Lab</span></div><nav class="hidden md:flex items-center gap-space-lg" data-active-classes="text-primary font-bold"><div class="relative group flex items-center gap-1"><a aria-current="page" class="transition-colors flex items-center gap-1 text-primary font-bold" data-path="calculators" href="#">Calculators<span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span></a><div class="absolute top-full left-0 mt-2 w-56 p-space-xs bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(19,42,36,0.08)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="bmi-calculator" href="#">Body Mass Index (BMI)</a><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="bmr-calculator" href="#">Basal Metabolic Rate (BMR)</a><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="body-fat-calculator" href="#">Body Fat Composition</a><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="tdee-calculator" href="#">Total Daily Expenditure</a></div></div><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="journal" href="#">Journal</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="about-us" href="#">About Us</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="contact" href="#">Contact</a></nav><div class="flex items-center gap-space-sm"><button aria-label="Toggle clinical color mode" class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_2px_rgba(19,42,36,0.04)]" type="button"><span class="material-symbols-outlined text-[20px]">light_mode</span></button></div></div></header><main class="w-full flex-1 pt-16 bg-surface"><div class="max-w-6xl mx-auto px-gutter py-space-lg"><div class="flex flex-col w-full">
+<!-- Breadcrumb & Header Section -->
+<div class="mb-space-lg">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 mb-space-sm text-on-surface-variant font-label-md text-label-md">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-outline text-xs">/</span>
+<a class="hover:text-primary transition-colors" href="#">Calculators</a>
+<span class="text-outline text-xs">/</span>
+<span class="text-primary font-semibold">Macro Calculator</span>
+</nav>
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">
+        Nutritional Bioenergetics • AMDR Reference Guidelines
+      </span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-primary tracking-tight mb-2">
+      Macro Calculator
+    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl">
+      Convert your daily caloric energy target and macronutrient distribution ratios into daily grams of protein, carbohydrates, and fats. Runs 100% locally in your browser.
+    </p>
+</div>
+<!-- Calculator Workspace (Two-Column Asymmetry, max-w-5xl) -->
+<div class="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start mb-space-xl">
+<!-- LEFT CARD: Input Workspace (5 Columns on Desktop) -->
+<section aria-labelledby="inputs-heading" class="lg:col-span-5 bg-surface-container-lowest rounded-xl p-space-md md:p-space-lg shadow-[0_4px_20px_-2px_rgba(19,42,36,0.04)] flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<h2 class="font-headline-sm text-headline-sm text-primary flex items-center gap-2" id="inputs-heading">
+<span class="material-symbols-outlined text-secondary text-[22px]">tune</span>
+          Energy &amp; Ratio Inputs
+        </h2>
+<span class="bg-surface-container-low text-secondary font-label-sm text-label-sm px-2.5 py-1 rounded-full font-medium">Local Computation</span>
+</div>
+<!-- Daily Caloric Intake -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-baseline">
+<label class="font-label-md text-label-md font-semibold text-on-surface" for="calories-input">Daily Caloric Target</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Recommended: 1,500 – 4,000</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-4 rounded-xl bg-surface-container-low text-on-surface font-headline-sm text-headline-sm focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_3px_rgba(0,102,84,0.14)] transition-all font-mono" id="calories-input" max="8000" min="800" step="50" type="number" value="2200"/>
+<span class="absolute right-4 font-label-md text-label-md text-on-surface-variant font-medium pointer-events-none">kcal / day</span>
+</div>
+</div>
+<!-- Distribution Presets -->
+<div class="space-y-2">
+<label class="font-label-md text-label-md font-semibold text-on-surface block">Distribution Presets (AMDR aligned)</label>
+<div aria-label="Macro Presets" class="grid grid-cols-2 gap-2" id="preset-group" role="radiogroup">
+<button aria-checked="true" class="preset-btn px-3 py-2.5 rounded-xl text-left bg-primary-container text-on-primary shadow-sm transition-all flex flex-col gap-0.5" data-c="45" data-f="25" data-p="30" data-preset="balanced" type="button">
+<span class="font-label-md text-label-md font-semibold">Balanced</span>
+<span class="font-label-sm text-label-sm opacity-90">30P / 45C / 25F</span>
+</button>
+<button aria-checked="false" class="preset-btn px-3 py-2.5 rounded-xl text-left bg-surface-container hover:bg-surface-container-high text-on-surface transition-all flex flex-col gap-0.5" data-c="40" data-f="25" data-p="35" data-preset="active" type="button">
+<span class="font-label-md text-label-md font-semibold">High Protein</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">35P / 40C / 25F</span>
+</button>
+<button aria-checked="false" class="preset-btn px-3 py-2.5 rounded-xl text-left bg-surface-container hover:bg-surface-container-high text-on-surface transition-all flex flex-col gap-0.5" data-c="40" data-f="35" data-p="25" data-preset="moderate" type="button">
+<span class="font-label-md text-label-md font-semibold">Moderate Carb</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">25P / 40C / 35F</span>
+</button>
+<button aria-checked="false" class="preset-btn px-3 py-2.5 rounded-xl text-left bg-surface-container hover:bg-surface-container-high text-on-surface transition-all flex flex-col gap-0.5" data-preset="custom" type="button">
+<span class="font-label-md text-label-md font-semibold">Custom</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Flexible Split</span>
+</button>
+</div>
+</div>
+<!-- Macro Sliders Array -->
+<div class="space-y-4 pt-space-xs">
+<!-- Protein Row -->
+<div class="space-y-1.5 p-3 rounded-xl bg-surface-container-lowest">
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-2 font-label-md text-label-md font-semibold text-on-surface">
+<span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
+              Protein Ratio
+            </span>
+<div class="flex items-center gap-1 font-mono">
+<input class="w-14 text-right bg-surface-container-low px-2 py-0.5 rounded-lg text-primary font-bold font-label-md text-label-md focus:outline-none" id="protein-num" max="70" min="5" type="number" value="30"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">%</span>
+</div>
+</div>
+<input class="w-full accent-primary h-2 bg-surface-container rounded-full appearance-none cursor-pointer" id="protein-range" max="70" min="5" type="range" value="30"/>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>AMDR: 10–35%</span>
+<span class="font-medium text-primary" id="protein-cal-preview">660 kcal</span>
+</div>
+</div>
+<!-- Carbohydrates Row -->
+<div class="space-y-1.5 p-3 rounded-xl bg-surface-container-lowest">
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-2 font-label-md text-label-md font-semibold text-on-surface">
+<span class="w-3 h-3 rounded-full bg-secondary-fixed-dim inline-block"></span>
+              Carbohydrate Ratio
+            </span>
+<div class="flex items-center gap-1 font-mono">
+<input class="w-14 text-right bg-surface-container-low px-2 py-0.5 rounded-lg text-secondary font-bold font-label-md text-label-md focus:outline-none" id="carbs-num" max="85" min="5" type="number" value="45"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">%</span>
+</div>
+</div>
+<input class="w-full accent-secondary h-2 bg-surface-container rounded-full appearance-none cursor-pointer" id="carbs-range" max="85" min="5" type="range" value="45"/>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>AMDR: 45–65%</span>
+<span class="font-medium text-secondary" id="carbs-cal-preview">990 kcal</span>
+</div>
+</div>
+<!-- Dietary Fat Row -->
+<div class="space-y-1.5 p-3 rounded-xl bg-surface-container-lowest">
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-2 font-label-md text-label-md font-semibold text-on-surface">
+<span class="w-3 h-3 rounded-full bg-tertiary-container inline-block"></span>
+              Dietary Fat Ratio
+            </span>
+<div class="flex items-center gap-1 font-mono">
+<input class="w-14 text-right bg-surface-container-low px-2 py-0.5 rounded-lg text-tertiary font-bold font-label-md text-label-md focus:outline-none" id="fat-num" max="70" min="5" type="number" value="25"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">%</span>
+</div>
+</div>
+<input class="w-full accent-tertiary-container h-2 bg-surface-container rounded-full appearance-none cursor-pointer" id="fat-range" max="70" min="5" type="range" value="25"/>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>AMDR: 20–35%</span>
+<span class="font-medium text-tertiary" id="fat-cal-preview">550 kcal</span>
+</div>
+</div>
+</div>
+<!-- Real-Time Sum Indicator -->
+<div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface-container-low text-primary transition-colors" id="validation-pill">
+<div class="flex items-center gap-2 font-label-md text-label-md font-medium">
+<span class="material-symbols-outlined text-[18px] text-secondary" id="validation-icon">check_circle</span>
+<span id="validation-text">Total Ratio: <strong class="font-bold">100%</strong> (Calibrated)</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-semibold" id="validation-delta">Exact</span>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3 pt-space-xs">
+<button class="flex-1 bg-primary text-on-primary py-3 px-5 rounded-xl font-label-md text-label-md font-semibold shadow-sm hover:bg-primary-container transition-all flex items-center justify-center gap-2" id="btn-calculate" type="button">
+<span class="material-symbols-outlined text-[18px]">calculate</span>
+          Calculate Macronutrients
+        </button>
+<button class="px-4 py-3 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md font-medium" id="btn-reset" type="button">
+          Reset
+        </button>
+</div>
+<!-- Privacy Notice -->
+<div class="flex items-center gap-2 pt-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">lock</span>
+<span>100% Client-side: Your dietary data never leaves your device</span>
+</div>
+</section>
+<!-- RIGHT CARD: Calculated Output & Proportional Visualization (7 Columns on Desktop) -->
+<section aria-labelledby="results-heading" class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-space-md md:p-space-lg shadow-[0_4px_20px_-2px_rgba(19,42,36,0.04)] flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-space-xs">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary" id="results-heading">Daily Macronutrient Targets</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Calibrated for <span class="font-semibold text-primary" id="display-cal-badge">2,200 kcal</span> daily metabolic demand</p>
+</div>
+<span class="self-start sm:self-auto bg-surface-container-low text-secondary font-label-sm text-label-sm px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          Atwater 4-4-9 Matrix
+        </span>
+</div>
+<!-- Proportional Macro Distribution Bar -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-sm text-label-sm font-semibold text-on-surface">
+<span>Proportional Caloric Allotment</span>
+<span class="text-on-surface-variant font-normal" id="bar-summary-text">30% P • 45% C • 25% F</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full overflow-hidden flex shadow-inner" id="progress-bar-container">
+<div class="bg-primary h-full transition-all duration-300" id="bar-protein" style="width: 30%;" title="Protein 30%"></div>
+<div class="bg-secondary-fixed-dim h-full transition-all duration-300" id="bar-carbs" style="width: 45%;" title="Carbohydrates 45%"></div>
+<div class="bg-tertiary-container h-full transition-all duration-300" id="bar-fat" style="width: 25%;" title="Dietary Fat 25%"></div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-0.5">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<span>Protein</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed-dim"></span>
+<span>Carbohydrates</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+<span>Dietary Fat</span>
+</div>
+</div>
+</div>
+<!-- Prominent 3-Card Macronutrient Metric Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<!-- Protein Metric Card -->
+<div class="bg-surface-container-low rounded-xl p-space-sm flex flex-col justify-between relative overflow-hidden">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-semibold text-primary">Protein</span>
+<span class="material-symbols-outlined text-primary text-[20px]">fitness_center</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-metric-display text-metric-display text-primary font-bold" id="res-protein-grams">165</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface-variant">g / day</span>
+</div>
+</div>
+<div class="pt-3 mt-2 space-y-0.5 font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex justify-between">
+<span>Energy:</span>
+<span class="font-semibold text-primary" id="res-protein-kcal">660 kcal</span>
+</div>
+<div class="flex justify-between">
+<span>Ratio:</span>
+<span class="font-medium" id="res-protein-pct">30% (4 kcal/g)</span>
+</div>
+</div>
+</div>
+<!-- Carbohydrate Metric Card -->
+<div class="bg-surface-container rounded-xl p-space-sm flex flex-col justify-between relative overflow-hidden">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-semibold text-secondary">Carbohydrates</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">bolt</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-metric-display text-metric-display text-secondary font-bold" id="res-carbs-grams">248</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface-variant">g / day</span>
+</div>
+</div>
+<div class="pt-3 mt-2 space-y-0.5 font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex justify-between">
+<span>Energy:</span>
+<span class="font-semibold text-secondary" id="res-carbs-kcal">990 kcal</span>
+</div>
+<div class="flex justify-between">
+<span>Ratio:</span>
+<span class="font-medium" id="res-carbs-pct">45% (4 kcal/g)</span>
+</div>
+</div>
+</div>
+<!-- Dietary Fat Metric Card -->
+<div class="bg-surface-variant rounded-xl p-space-sm flex flex-col justify-between relative overflow-hidden">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-semibold text-tertiary">Dietary Fat</span>
+<span class="material-symbols-outlined text-tertiary text-[20px]">opacity</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-metric-display text-metric-display text-on-surface font-bold" id="res-fat-grams">61</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface-variant">g / day</span>
+</div>
+</div>
+<div class="pt-3 mt-2 space-y-0.5 font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex justify-between">
+<span>Energy:</span>
+<span class="font-semibold text-on-surface" id="res-fat-kcal">550 kcal</span>
+</div>
+<div class="flex justify-between">
+<span>Ratio:</span>
+<span class="font-medium" id="res-fat-pct">25% (9 kcal/g)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sample Preview Disclaimer Label -->
+<div class="px-3.5 py-2.5 rounded-xl bg-surface-container flex items-center gap-2.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-secondary">info</span>
+<p class="font-body-sm text-body-sm leading-snug">
+<strong>Sample Demonstration Preview:</strong> Illustrative macronutrient allocation based on standard energetic density, not individualized clinical nutrition therapy.
+        </p>
+</div>
+<!-- Clinical & Physiological Context Card -->
+<div class="p-space-sm rounded-xl bg-surface-container-low space-y-2">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[20px]">clinical_notes</span>
+<span class="font-label-md text-label-md font-semibold">Clinical &amp; Physiological Context</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          Energy conversion utilizes standard <strong>Atwater general factors</strong> (4 kcal/g for protein and carbohydrate, 9 kcal/g for lipid structures). The <strong>Acceptable Macronutrient Distribution Ranges (AMDR)</strong> established by the Institute of Medicine advise 10–35% protein, 45–65% carbohydrate, and 20–35% dietary fat for adults to mitigate chronic disease vulnerability while maintaining metabolic homeostasis.
+        </p>
+</div>
+</section>
+</div>
+<!-- Calculation Formula Section (Clean 2-card layout) -->
+<section aria-labelledby="methodology-heading" class="max-w-5xl w-full mb-space-xl space-y-space-md">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-secondary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+        Biostatistical Rigor
+      </div>
+<h2 class="font-headline-lg text-headline-lg text-primary" id="methodology-heading">
+        Mathematical Formulation &amp; Scientific Reference
+      </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Card 1: Standard General Energy Conversion Equations -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_4px_20px_-2px_rgba(19,42,36,0.04)] flex flex-col justify-between">
+<div class="space-y-space-sm">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-lg bg-surface-container-low text-primary flex items-center justify-center font-bold text-sm">
+              f(x)
+            </span>
+<h3 class="font-headline-sm text-headline-sm text-primary">
+              General Energy Conversion Equations
+            </h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Macronutrient mass calculations employ the classic Atwater system, accounting for heat of combustion adjusted for human gastrointestinal bioavailability:
+          </p>
+<div class="space-y-2 pt-1 font-mono text-xs">
+<div class="p-2.5 rounded-lg bg-surface-container font-medium text-on-surface">
+<span class="text-primary font-bold">Protein (g)</span> = (Daily kcal × % Protein ÷ 100) ÷ 4 kcal/g
+            </div>
+<div class="p-2.5 rounded-lg bg-surface-container font-medium text-on-surface">
+<span class="text-secondary font-bold">Carbohydrate (g)</span> = (Daily kcal × % Carb ÷ 100) ÷ 4 kcal/g
+            </div>
+<div class="p-2.5 rounded-lg bg-surface-container font-medium text-on-surface">
+<span class="text-tertiary font-bold">Fat (g)</span> = (Daily kcal × % Fat ÷ 100) ÷ 9 kcal/g
+            </div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+          Assumes complete digestion • Pure lipid substrate calculated at 9.0 kcal/g
+        </div>
+</div>
+<!-- Card 2: AMDR Evidence Framework -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_4px_20px_-2px_rgba(19,42,36,0.04)] flex flex-col justify-between">
+<div class="space-y-space-sm">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-lg bg-surface-container-low text-secondary flex items-center justify-center font-bold text-sm">
+<span class="material-symbols-outlined text-[18px]">science</span>
+</span>
+<h3 class="font-headline-sm text-headline-sm text-primary">
+              AMDR Evidence Framework
+            </h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Co-established by the National Academy of Medicine and USDA, Acceptable Macronutrient Distribution Ranges ensure adequate consumption of essential micronutrient carriers:
+          </p>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant list-disc pl-5">
+<li><strong>Protein:</strong> Supplies essential amino acids for lean skeletal synthesis, hormone synthesis, and structural repair.</li>
+<li><strong>Carbohydrate:</strong> Sustains central nervous system glucose obligates and replenishes intrahepatic and muscular glycogen reserves.</li>
+<li><strong>Lipids:</strong> Facilitates lipophilic micronutrient transport (Vitamins A, D, E, K) and endocrine steroidogenesis.</li>
+</ul>
+</div>
+<div class="pt-space-sm mt-space-xs flex flex-wrap gap-x-4 gap-y-2 font-label-sm text-label-sm text-secondary font-semibold">
+<a class="hover:underline flex items-center gap-1" href="https://nap.nationalacademies.org" rel="noopener noreferrer" target="_blank">
+            Dietary Reference Intakes (DRIs), NAM
+            <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+<a class="hover:underline flex items-center gap-1" href="https://dietaryguidelines.gov" rel="noopener noreferrer" target="_blank">
+            USDA Dietary Guidelines
+            <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Related Educational Article Card -->
+<aside aria-label="Educational Feature" class="max-w-5xl w-full mb-space-lg bg-surface-container rounded-xl p-space-md md:p-space-lg shadow-[0_4px_20px_-2px_rgba(19,42,36,0.04)] flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary text-on-primary flex-shrink-0 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[26px]">import_contacts</span>
+</div>
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Scientific Monograph</span>
+<h3 class="font-headline-sm text-headline-sm text-primary">
+          Understanding Macronutrient Ratios &amp; Bioenergetics
+        </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-2xl">
+          Learn how protein synthesis, glycogen replenishment, and lipid metabolism relate to dietary percentages, training volume, and metabolic health.
+        </p>
+</div>
+</div>
+<a class="flex-shrink-0 bg-primary-container text-on-primary px-5 py-3 rounded-xl font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-2 shadow-sm" data-path="journal/understanding-macronutrients" href="#">
+      Read Complete Guide
+      <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</aside>
+<!-- Medical & Educational Use Disclaimer -->
+<div class="max-w-5xl w-full p-space-md rounded-xl bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm flex items-start gap-3 mb-space-md">
+<span class="material-symbols-outlined text-[20px] text-primary flex-shrink-0 mt-0.5">policy</span>
+<p>
+<strong>Educational Notice:</strong> Macronutrient allocations calculated on this interface are computational estimations grounded in broad biostatistical guidelines and general energetic constants. They do not constitute personalized medical nutrition therapy (MNT), renal nutrition planning, or bespoke clinical dietary prescriptions. For managing metabolic dysfunction, renal variance, or clinical weight disorders, consult an accredited sports dietitian or medical specialist.
+    </p>
+</div>
+<!-- Interactive Local Logic -->
+<script>
+    (function initMacroCalculator() {
+      const calInput = document.getElementById('calories-input');
+      const protNum = document.getElementById('protein-num');
+      const protRange = document.getElementById('protein-range');
+      const carbsNum = document.getElementById('carbs-num');
+      const carbsRange = document.getElementById('carbs-range');
+      const fatNum = document.getElementById('fat-num');
+      const fatRange = document.getElementById('fat-range');
+
+      const protCalPrev = document.getElementById('protein-cal-preview');
+      const carbsCalPrev = document.getElementById('carbs-cal-preview');
+      const fatCalPrev = document.getElementById('fat-cal-preview');
+
+      const resProtGrams = document.getElementById('res-protein-grams');
+      const resCarbsGrams = document.getElementById('res-carbs-grams');
+      const resFatGrams = document.getElementById('res-fat-grams');
+
+      const resProtKcal = document.getElementById('res-protein-kcal');
+      const resCarbsKcal = document.getElementById('res-carbs-kcal');
+      const resFatKcal = document.getElementById('res-fat-kcal');
+
+      const resProtPct = document.getElementById('res-protein-pct');
+      const resCarbsPct = document.getElementById('res-carbs-pct');
+      const resFatPct = document.getElementById('res-fat-pct');
+
+      const displayCalBadge = document.getElementById('display-cal-badge');
+      const barProtein = document.getElementById('bar-protein');
+      const barCarbs = document.getElementById('bar-carbs');
+      const barFat = document.getElementById('bar-fat');
+      const barSummary = document.getElementById('bar-summary-text');
+
+      const valPill = document.getElementById('validation-pill');
+      const valIcon = document.getElementById('validation-icon');
+      const valText = document.getElementById('validation-text');
+      const valDelta = document.getElementById('validation-delta');
+
+      const presetButtons = document.querySelectorAll('.preset-btn');
+      const btnReset = document.getElementById('btn-reset');
+      const btnCalculate = document.getElementById('btn-calculate');
+
+      function syncPair(source, target) {
+        target.value = source.value;
+      }
+
+      function updateCalculations() {
+        const calories = Math.max(100, parseFloat(calInput.value) || 2200);
+        const pPct = parseFloat(protNum.value) || 0;
+        const cPct = parseFloat(carbsNum.value) || 0;
+        const fPct = parseFloat(fatNum.value) || 0;
+        const totalPct = Math.round((pPct + cPct + fPct) * 10) / 10;
+
+        // Energy Preview
+        const pKcal = Math.round(calories * (pPct / 100));
+        const cKcal = Math.round(calories * (cPct / 100));
+        const fKcal = Math.round(calories * (fPct / 100));
+
+        protCalPrev.textContent = pKcal + ' kcal';
+        carbsCalPrev.textContent = cKcal + ' kcal';
+        fatCalPrev.textContent = fKcal + ' kcal';
+
+        // Grams based on 4-4-9 Atwater
+        const pGrams = Math.round(pKcal / 4);
+        const cGrams = Math.round(cKcal / 4);
+        const fGrams = Math.round(fKcal / 9);
+
+        // Update Results Display
+        displayCalBadge.textContent = Number(calories).toLocaleString() + ' kcal';
+        resProtGrams.textContent = pGrams;
+        resCarbsGrams.textContent = cGrams;
+        resFatGrams.textContent = fGrams;
+
+        resProtKcal.textContent = pKcal + ' kcal';
+        resCarbsKcal.textContent = cKcal + ' kcal';
+        resFatKcal.textContent = fKcal + ' kcal';
+
+        resProtPct.textContent = pPct + '% (4 kcal/g)';
+        resCarbsPct.textContent = cPct + '% (4 kcal/g)';
+        resFatPct.textContent = fPct + '% (9 kcal/g)';
+
+        // Proportional Bar
+        const barTotal = totalPct > 0 ? totalPct : 100;
+        const barPWidth = ((pPct / barTotal) * 100).toFixed(1);
+        const barCWidth = ((cPct / barTotal) * 100).toFixed(1);
+        const barFWidth = ((fPct / barTotal) * 100).toFixed(1);
+
+        barProtein.style.width = barPWidth + '%';
+        barCarbs.style.width = barCWidth + '%';
+        barFat.style.width = barFWidth + '%';
+        barSummary.textContent = pPct + '% P \u2022 ' + cPct + '% C \u2022 ' + fPct + '% F';
+
+        // Validation State
+        if (Math.abs(totalPct - 100) < 0.1) {
+          valPill.className = 'flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface-container-low text-primary transition-colors';
+          valIcon.textContent = 'check_circle';
+          valIcon.className = 'material-symbols-outlined text-[18px] text-secondary';
+          valText.innerHTML = 'Total Ratio: <strong class="font-bold">100%</strong> (Calibrated)';
+          valDelta.textContent = 'Exact';
+          valDelta.className = 'font-label-sm text-label-sm text-secondary font-semibold';
+        } else {
+          const diff = Math.round((100 - totalPct) * 10) / 10;
+          valPill.className = 'flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-error-container text-on-error-container transition-colors';
+          valIcon.textContent = 'error';
+          valIcon.className = 'material-symbols-outlined text-[18px] text-error';
+          valText.innerHTML = 'Total: <strong class="font-bold">' + totalPct + '%</strong> (Must equal 100%)';
+          valDelta.textContent = (diff > 0 ? '+' : '') + diff + '%';
+          valDelta.className = 'font-label-sm text-label-sm text-error font-semibold';
+        }
+      }
+
+      function setPreset(p, c, f, activeBtn) {
+        protNum.value = p;
+        protRange.value = p;
+        carbsNum.value = c;
+        carbsRange.value = c;
+        fatNum.value = f;
+        fatRange.value = f;
+
+        presetButtons.forEach(btn => {
+          btn.className = 'preset-btn px-3 py-2.5 rounded-xl text-left bg-surface-container hover:bg-surface-container-high text-on-surface transition-all flex flex-col gap-0.5';
+          btn.setAttribute('aria-checked', 'false');
+          const sub = btn.querySelector('.font-label-sm');
+          if (sub) sub.className = 'font-label-sm text-label-sm text-on-surface-variant';
+        });
+
+        if (activeBtn) {
+          activeBtn.className = 'preset-btn px-3 py-2.5 rounded-xl text-left bg-primary-container text-on-primary shadow-sm transition-all flex flex-col gap-0.5';
+          activeBtn.setAttribute('aria-checked', 'true');
+          const sub = activeBtn.querySelector('.font-label-sm');
+          if (sub) sub.className = 'font-label-sm text-label-sm opacity-90';
+        }
+
+        updateCalculations();
+      }
+
+      // Bind Preset Clicks
+      presetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.getAttribute('data-preset');
+          if (type === 'custom') {
+            presetButtons.forEach(b => {
+              b.className = 'preset-btn px-3 py-2.5 rounded-xl text-left bg-surface-container hover:bg-surface-container-high text-on-surface transition-all flex flex-col gap-0.5';
+              b.setAttribute('aria-checked', 'false');
+              const sub = b.querySelector('.font-label-sm');
+              if (sub) sub.className = 'font-label-sm text-label-sm text-on-surface-variant';
+            });
+            btn.className = 'preset-btn px-3 py-2.5 rounded-xl text-left bg-primary-container text-on-primary shadow-sm transition-all flex flex-col gap-0.5';
+            btn.setAttribute('aria-checked', 'true');
+            const sub = btn.querySelector('.font-label-sm');
+            if (sub) sub.className = 'font-label-sm text-label-sm opacity-90';
+          } else {
+            const p = parseFloat(btn.getAttribute('data-p'));
+            const c = parseFloat(btn.getAttribute('data-c'));
+            const f = parseFloat(btn.getAttribute('data-f'));
+            setPreset(p, c, f, btn);
+          }
+        });
+      });
+
+      // Slider and Input Sync
+      [
+        [protRange, protNum],
+        [carbsRange, carbsNum],
+        [fatRange, fatNum]
+      ].forEach(([slider, num]) => {
+        slider.addEventListener('input', () => {
+          syncPair(slider, num);
+          markCustomPreset();
+          updateCalculations();
+        });
+        num.addEventListener('input', () => {
+          syncPair(num, slider);
+          markCustomPreset();
+          updateCalculations();
+        });
+      });
+
+      calInput.addEventListener('input', updateCalculations);
+
+      function markCustomPreset() {
+        const customBtn = document.querySelector('[data-preset="custom"]');
+        presetButtons.forEach(b => {
+          b.className = 'preset-btn px-3 py-2.5 rounded-xl text-left bg-surface-container hover:bg-surface-container-high text-on-surface transition-all flex flex-col gap-0.5';
+          b.setAttribute('aria-checked', 'false');
+          const sub = b.querySelector('.font-label-sm');
+          if (sub) sub.className = 'font-label-sm text-label-sm text-on-surface-variant';
+        });
+        if (customBtn) {
+          customBtn.className = 'preset-btn px-3 py-2.5 rounded-xl text-left bg-primary-container text-on-primary shadow-sm transition-all flex flex-col gap-0.5';
+          customBtn.setAttribute('aria-checked', 'true');
+          const sub = customBtn.querySelector('.font-label-sm');
+          if (sub) sub.className = 'font-label-sm text-label-sm opacity-90';
+        }
+      }
+
+      // Reset
+      btnReset.addEventListener('click', () => {
+        calInput.value = 2200;
+        const balancedBtn = document.querySelector('[data-preset="balanced"]');
+        setPreset(30, 45, 25, balancedBtn);
+      });
+
+      // Calculate Trigger
+      btnCalculate.addEventListener('click', () => {
+        updateCalculations();
+        btnCalculate.classList.add('scale-95');
+        setTimeout(() => btnCalculate.classList.remove('scale-95'), 120);
+      });
+
+      // Initial Call
+      updateCalculations();
+    })();
+  </script>
+</div></div></main><footer class="w-full bg-surface-container-low mt-auto"><div class="max-w-6xl mx-auto px-gutter py-space-xl"><div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-space-lg"><div class="md:col-span-5 space-y-space-sm"><div class="flex items-center gap-space-sm"><img alt="BodyMetricsLab Health Tech Logo.png" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCdV9A23qB7vu1bYXvZeBJlHB-NJdql2pbCqQGASLgq-Z5gT5h1E11xMFffk9RLRS0CsbstRYZ_zg_H92MeW1u9XhLmNwh0wqwO0GMAmwwtqpgMUXBJCn2s4cQUHvVzWmybs8ZxCd_Wuc9IhCAIv2tcC9zu8Arp2JagJlbBtmzPa7fJFIwWjYhh4R6Dd0yuG2STH33cp6Kb4zHVaEhrX58stR0rKPGacHZAWPjUAzNHyypL3Qvn5EXdSXg"/><span class="font-headline-sm text-headline-sm text-primary tracking-tight">BodyMetrics Lab</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm">Evidence-based physiological assessment tools and metabolic science research. Engineered for clinical accuracy, cognitive calm, and biometric precision.</p></div><div class="md:col-span-3 space-y-space-xs"><span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider block mb-2">Calculators</span><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="bmi-calculator" href="#">Body Mass Index (BMI)</a></li><li><a class="hover:text-primary transition-colors" data-path="bmr-calculator" href="#">Basal Metabolic Rate (BMR)</a></li><li><a class="hover:text-primary transition-colors" data-path="body-fat-calculator" href="#">Body Fat Composition</a></li><li><a class="hover:text-primary transition-colors" data-path="tdee-calculator" href="#">Total Daily Energy (TDEE)</a></li></ul></div><div class="md:col-span-2 space-y-space-xs"><span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider block mb-2">Platform</span><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="journal" href="#">Journal</a></li><li><a class="hover:text-primary transition-colors" data-path="about-us" href="#">About Us</a></li><li><a class="hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></li><li><a class="hover:text-primary transition-colors" data-path="methodology" href="#">Methodology</a></li></ul></div><div class="md:col-span-2 space-y-space-xs"><span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider block mb-2">Legal &amp; Trust</span><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a></li><li><a class="hover:text-primary transition-colors" data-path="terms-of-service" href="#">Terms of Service</a></li><li><a class="hover:text-primary transition-colors" data-path="editorial-standards" href="#">Editorial Standards</a></li><li><a class="hover:text-primary transition-colors" data-path="medical-disclaimer" href="#">Medical Disclaimer</a></li></ul></div></div><div class="pt-space-md bg-surface-container rounded-xl p-space-md space-y-2 mb-space-lg"><div class="flex items-center gap-2 text-primary"><span class="material-symbols-outlined text-[20px]">verified_user</span><span class="font-label-md text-label-md font-semibold">Clinical &amp; Medical Disclaimer</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">The formulas, assessments, and computational models provided across BodyMetrics Lab are formulated exclusively for educational, peer-reference, and personal informational purposes. They do not constitute formal medical diagnosis, clinical prognosis, or bespoke healthcare advice. Always consult a qualified medical professional or certified endocrinologist before enacting substantial shifts in nutrition or physical exertion.</p></div><div class="flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-label-sm text-label-sm"><span>© 2025 BodyMetrics Lab Inc. All scientific rights reserved.</span><div class="flex items-center gap-space-md"><a class="hover:text-on-surface transition-colors" data-path="privacy-policy" href="#">Privacy</a><a class="hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">Terms</a><a class="hover:text-on-surface transition-colors" data-path="medical-disclaimer" href="#">Medical Advisory</a></div></div></div></footer></body></html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-tertiary-fixed":"#151d1c","surface-container-low":"#dff9f0","inverse-on-surface":"#dcf7ed","on-primary":"#ffffff","on-primary-fixed":"#002019","secondary-fixed-dim":"#7cd7bf","error":"#ba1a1a","on-error-container":"#93000a","on-error":"#ffffff","inverse-primary":"#85d6bf","surface-variant":"#cee8df","error-container":"#ffdad6","tertiary-container":"#535c5a","surface-container-lowest":"#ffffff","surface-tint":"#0c6b59","primary-fixed":"#a1f2db","on-secondary-fixed-variant":"#005143","background":"#e6fff5","secondary":"#006b59","outline":"#6f7975","primary-fixed-dim":"#85d6bf","tertiary-fixed":"#dbe4e2","secondary-container":"#98f4db","primary-container":"#006654","on-tertiary-container":"#cbd4d1","on-surface":"#081f1a","surface":"#e6fff5","on-tertiary-fixed-variant":"#404947","surface-dim":"#c6e0d6","on-primary-fixed-variant":"#005142","on-primary-container":"#90e1ca","secondary-fixed":"#98f4db","on-background":"#081f1a","tertiary-fixed-dim":"#bfc8c6","surface-container-high":"#d4eee4","on-secondary-fixed":"#002019","surface-container":"#d9f4ea","tertiary":"#3c4543","inverse-surface":"#1e352e","on-surface-variant":"#3f4945","outline-variant":"#bec9c4","on-tertiary":"#ffffff","on-secondary":"#ffffff","surface-bright":"#e6fff5","on-secondary-container":"#00725f","primary":"#004c3e","surface-container-highest":"#cee8df"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-md":"1.25rem","gutter-mobile":"1rem","space-xl":"3.5rem","space-lg":"2rem","margin":"3rem","margin-mobile":"1.25rem","space-xs":"0.375rem","space-sm":"0.75rem","gutter":"1.5rem"},"fontFamily":{"headline-lg":["Manrope"],"headline-xl-mobile":["Manrope"],"label-md":["DM Sans"],"display-lg":["Manrope"],"body-sm":["DM Sans"],"metric-display":["Manrope"],"headline-xl":["Manrope"],"body-xl":["DM Sans"],"display-lg-mobile":["Manrope"],"body-md":["DM Sans"],"body-lg":["DM Sans"],"label-sm":["DM Sans"],"headline-sm":["Manrope"]},"fontSize":{"headline-lg":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.015em","fontWeight":"600"}],"headline-xl-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.015em","fontWeight":"600"}],"label-md":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.02em","fontWeight":"500"}],"display-lg":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.03em","fontWeight":"700"}],"body-sm":["0.875rem",{"lineHeight":"1.375rem","letterSpacing":"0.01em","fontWeight":"400"}],"metric-display":["3rem",{"lineHeight":"3.25rem","letterSpacing":"-0.03em","fontWeight":"800"}],"headline-xl":["2.5rem",{"lineHeight":"3rem","letterSpacing":"-0.025em","fontWeight":"700"}],"body-xl":["1.25rem",{"lineHeight":"1.875rem","letterSpacing":"0em","fontWeight":"400"}],"display-lg-mobile":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["1rem",{"lineHeight":"1.6rem","letterSpacing":"0.01em","fontWeight":"400"}],"body-lg":["1.125rem",{"lineHeight":"1.75rem","letterSpacing":"0em","fontWeight":"400"}],"label-sm":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.04em","fontWeight":"600"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","letterSpacing":"-0.01em","fontWeight":"600"}]}}}};</script></head><body class="bg-surface font-body-md text-body-md text-on-surface min-h-screen flex flex-col antialiased selection:bg-secondary-container selection:text-on-secondary-container"><header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-6xl mx-auto px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="BodyMetricsLab Health Tech Logo.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCdV9A23qB7vu1bYXvZeBJlHB-NJdql2pbCqQGASLgq-Z5gT5h1E11xMFffk9RLRS0CsbstRYZ_zg_H92MeW1u9XhLmNwh0wqwO0GMAmwwtqpgMUXBJCn2s4cQUHvVzWmybs8ZxCd_Wuc9IhCAIv2tcC9zu8Arp2JagJlbBtmzPa7fJFIwWjYhh4R6Dd0yuG2STH33cp6Kb4zHVaEhrX58stR0rKPGacHZAWPjUAzNHyypL3Qvn5EXdSXg"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">BodyMetrics Lab</span></div><nav class="hidden md:flex items-center gap-space-lg" data-active-classes="text-primary font-bold"><div class="relative group flex items-center gap-1"><a aria-current="page" class="transition-colors flex items-center gap-1 text-primary font-bold" data-path="calculators" href="#">Calculators<span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span></a><div class="absolute top-full left-0 mt-2 w-56 p-space-xs bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(19,42,36,0.08)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="bmi-calculator" href="#">Body Mass Index (BMI)</a><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="bmr-calculator" href="#">Basal Metabolic Rate (BMR)</a><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="body-fat-calculator" href="#">Body Fat Composition</a><a class="block px-space-sm py-2 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="tdee-calculator" href="#">Total Daily Expenditure</a></div></div><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="journal" href="#">Journal</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="about-us" href="#">About Us</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="contact" href="#">Contact</a></nav><div class="flex items-center gap-space-sm"><button aria-label="Toggle clinical color mode" class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_2px_rgba(19,42,36,0.04)]" type="button" fdprocessedid="fsmxhe"><span class="material-symbols-outlined text-[20px]">light_mode</span></button></div></div></header><main class="w-full flex-1 pt-16 bg-surface"><div class="max-w-6xl mx-auto px-gutter py-space-lg"><div class="flex flex-col w-full">
+<!-- Breadcrumbs & Header Section -->
+<section class="max-w-5xl mx-auto w-full mb-space-lg">
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 mb-space-sm font-label-md text-label-md text-on-surface-variant">
+<a class="hover:text-primary transition-colors flex items-center gap-1" data-path="/" href="#">
+<span class="material-symbols-outlined text-[18px]">home</span>
+<span>Home</span>
+</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<a class="hover:text-primary transition-colors" data-path="calculators" href="#">Calculators</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<span class="text-primary font-semibold">Ideal Weight Calculator</span>
+</nav>
+<!-- Eyebrow Badge -->
+<div class="inline-flex items-center gap-2 px-space-sm py-1 rounded-full bg-surface-container-low text-primary mb-3">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">Anthropometric Reference Standards • Validated Clinical Formulas</span>
+</div>
+<!-- Main Title -->
+<h1 class="font-headline-xl text-headline-xl font-extrabold text-primary tracking-tight leading-tight mb-2">Ideal Weight Calculator</h1>
+<!-- Subtitle -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">Explore formula-based reference weight ranges for adults using documented clinical equations. These numbers serve as general statistical reference baselines, not individualized medical targets. Runs 100% locally in your browser.</p>
+</section>
+<!-- Dual Column Calculator Workspace -->
+<section class="max-w-5xl mx-auto w-full mb-space-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Inputs Form Card -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_-2px_rgba(19,42,36,0.06)] p-space-lg flex flex-col gap-space-md">
+<!-- Unit Segmented Control -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Measurement System</label>
+<div class="flex p-1 bg-surface-container rounded-lg" id="unit-switcher">
+<button class="flex-1 py-2 text-center rounded-md font-label-md text-label-md font-semibold bg-surface-container-lowest text-primary shadow-sm transition-all duration-150" id="btn-metric" type="button" fdprocessedid="oa3tup">
+              Metric (cm, kg)
+            </button>
+<button class="flex-1 py-2 text-center rounded-md font-label-md text-label-md font-medium text-on-surface-variant hover:text-primary transition-all duration-150" id="btn-imperial" type="button" fdprocessedid="kbg9qf">
+              Imperial (ft/in, lbs)
+            </button>
+</div>
+</div>
+<!-- Sex Selector -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md font-semibold text-on-surface">Sex</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">(Used by reference equations)</span>
+</div>
+<div class="grid grid-cols-2 gap-2" id="sex-selector">
+<button class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-semibold bg-secondary-container text-on-secondary-container transition-all" id="btn-male" type="button" fdprocessedid="xvwuh">
+<span class="material-symbols-outlined text-[18px]">male</span>
+<span>Male</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-medium bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all" id="btn-female" type="button" fdprocessedid="4doepor">
+<span class="material-symbols-outlined text-[18px]">female</span>
+<span>Female</span>
+</button>
+</div>
+</div>
+<!-- Height Input Field -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md font-semibold text-on-surface" for="height-metric">Stature / Height</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="height-unit-label">Centimeters</span>
+</div>
+<!-- Metric Height Container -->
+<div class="relative flex items-center" id="metric-height-container">
+<input class="w-full h-12 px-4 rounded-lg bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-[inset_0_1px_2px_rgba(19,42,36,0.08)] bg-surface-container-low/40" id="height-metric" max="230" min="153" step="0.5" type="number" value="178" fdprocessedid="lxq49n">
+<span class="absolute right-4 font-label-md text-label-md text-on-surface-variant font-medium pointer-events-none">cm</span>
+</div>
+<!-- Imperial Height Container (Hidden by default) -->
+<div class="hidden grid-cols-2 gap-2" id="imperial-height-container">
+<div class="relative flex items-center">
+<input class="w-full h-12 px-4 rounded-lg bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-[inset_0_1px_2px_rgba(19,42,36,0.08)] bg-surface-container-low/40" id="height-feet" max="7" min="5" type="number" value="5">
+<span class="absolute right-3 font-label-md text-label-md text-on-surface-variant font-medium pointer-events-none">ft</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-4 rounded-lg bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-[inset_0_1px_2px_rgba(19,42,36,0.08)] bg-surface-container-low/40" id="height-inches" max="11" min="0" type="number" value="10">
+<span class="absolute right-3 font-label-md text-label-md text-on-surface-variant font-medium pointer-events-none">in</span>
+</div>
+</div>
+<!-- Applicability Note -->
+<div class="flex items-start gap-1.5 mt-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary mt-0.5 shrink-0">info</span>
+<p class="font-body-sm text-body-sm leading-tight text-on-surface-variant">
+              Formulas apply to adult stature ≥ 152 cm (5 ft 0 in).
+            </p>
+</div>
+</div>
+<!-- Age Input Field (Informational) -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md font-semibold text-on-surface" for="age-input">Age (Informational)</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Years</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-4 rounded-lg bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-[inset_0_1px_2px_rgba(19,42,36,0.08)] bg-surface-container-low/40" id="age-input" max="110" min="18" type="number" value="30" fdprocessedid="xzzzwr">
+<span class="absolute right-4 font-label-md text-label-md text-on-surface-variant font-medium pointer-events-none">yrs</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">Note: Standard IBW equations are stature-anchored and independent of age.</span>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-2 pt-2">
+<button class="w-full h-12 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-2 hover:bg-primary-container shadow-[0_4px_14px_rgba(0,102,84,0.2)] transition-all active:scale-[0.99]" id="btn-calculate" type="button" fdprocessedid="zy3gai">
+<span class="material-symbols-outlined text-[20px]">calculate</span>
+<span>Calculate Reference Weights</span>
+</button>
+<button class="w-full h-10 rounded-xl bg-surface-container-low text-primary font-label-md text-label-md font-medium flex items-center justify-center gap-1.5 hover:bg-surface-container transition-all" id="btn-reset" type="button" fdprocessedid="9675za">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span>Reset Defaults</span>
+</button>
+</div>
+<!-- Privacy Shield Indicator -->
+<div class="flex items-center justify-center gap-1.5 pt-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+<span>100% Client-side: Your data never leaves your device</span>
+</div>
+</div>
+<!-- Right Column: Results & Clinical Comparative Matrix -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Primary Result Showcase Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_-2px_rgba(19,42,36,0.06)] p-space-lg flex flex-col gap-space-md relative overflow-hidden">
+<!-- Soft Atmospheric Gradient Accent -->
+<div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+<!-- Top Status Bar -->
+<div class="flex items-center justify-between z-10">
+<span class="px-2.5 py-1 rounded-md bg-surface-container text-primary font-label-sm text-label-sm font-semibold tracking-wide">
+              Clinical Standard Reference
+            </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              Live Model Compute
+            </span>
+</div>
+<!-- Prominent Primary Metric Section -->
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 z-10">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider block mb-1">
+                Devine Formula Reference (IBW)
+              </span>
+<div class="flex items-baseline gap-3"><span class="font-metric-display text-metric-display text-primary tracking-tight font-extrabold leading-none" id="devine-metric-val">71.4</span><span class="font-headline-lg text-headline-lg text-secondary font-bold leading-none" id="devine-unit-val">kg</span><span class="font-headline-sm text-headline-sm text-on-surface-variant ml-2 font-medium" id="devine-secondary-val">(157.4 lbs)</span></div>
+</div>
+<div class="text-left sm:text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Pharmacologic Standard</span>
+<span class="font-label-md text-label-md font-semibold text-primary">Gentamicin &amp; Clearance Base</span>
+</div>
+</div>
+<!-- Sample Demonstrative Alert Tag -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center gap-2 z-10">
+<span class="material-symbols-outlined text-[18px] text-secondary">insights</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">
+              Demonstration Preview: statistical reference values, not personal health targets.
+            </span>
+</div>
+<!-- Formula Matrix Comparative Grid -->
+<div class="flex flex-col gap-2 z-10">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider font-semibold">
+              Comparative Multi-Formula Matrix
+            </span>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<!-- Devine 1974 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-primary">Devine (1974)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Clinical medication dosing</span>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm font-bold text-primary" id="val-devine-cell">73.2 kg</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block" id="val-devine-cell-imp">161.3 lbs</span>
+</div>
+</div>
+<!-- Robinson 1983 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Robinson (1983)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Empirical regression fit</span>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface" id="val-robinson-cell">71.1 kg</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block" id="val-robinson-cell-imp">156.9 lbs</span>
+</div>
+</div>
+<!-- Miller 1983 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Miller (1983)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Modified slope index</span>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface" id="val-miller-cell">70.4 kg</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block" id="val-miller-cell-imp">155.2 lbs</span>
+</div>
+</div>
+<!-- Hamwi 1964 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Hamwi (1964)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Diabetic dietetics baseline</span>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface" id="val-hamwi-cell">75.2 kg</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block" id="val-hamwi-cell-imp">165.8 lbs</span>
+</div>
+</div>
+</div>
+<!-- WHO Normal BMI Range Row -->
+<div class="p-space-sm rounded-lg bg-secondary-container/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary">health_and_safety</span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-primary">WHO Healthy BMI Weight Span (18.5 – 24.9)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Population epidemiological reference interval</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm font-bold text-primary" id="val-who-bmi-range">58.6 – 78.9 kg</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block" id="val-who-bmi-range-imp">129.2 – 173.9 lbs</span>
+</div>
+</div>
+</div>
+<!-- Formula Dispersion Graphic Inline Bar -->
+<div class="p-space-sm rounded-lg bg-surface-container flex flex-col gap-2 mt-1">
+<div class="flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm">
+<span class="font-semibold text-on-surface">Formula Dispersion Range:</span>
+<span class="text-primary font-medium" id="dispersion-summary">70.4 kg – 75.2 kg</span>
+</div>
+<!-- Range Bar -->
+<div class="relative w-full h-3 bg-surface-container-high rounded-full overflow-hidden">
+<div class="absolute left-[15%] right-[20%] h-full bg-secondary rounded-full opacity-80"></div>
+<div class="absolute left-[45%] top-0 bottom-0 w-1 bg-primary rounded-full"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-label-sm text-label-sm opacity-75">
+<span>Lower bound (Miller)</span>
+<span>Devine Benchmark</span>
+<span>Upper bound (Hamwi)</span>
+</div>
+</div>
+</div>
+<!-- Clinical & Physiological Context Card -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[20px]">biotech</span>
+<span>Clinical &amp; Physiological Context</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Formula-based "ideal weight" equations were originally engineered for standardizing physiological drug clearance in clinical pharmacology, not aesthetic or athletic body targets. A person's healthy weight depends on skeletal frame size, lean muscle mass distribution, hydration, and metabolic health rather than a singular formula number.
+          </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Calculation Formula Deep Dive Section -->
+<section class="max-w-5xl mx-auto w-full mb-space-xl">
+<div class="flex items-center gap-2 mb-space-md">
+<span class="material-symbols-outlined text-[22px] text-primary">functions</span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">
+        Mathematical Formulations &amp; Methodological Boundaries
+      </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Card 1: Documented Reference Equations -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-[0_4px_24px_-2px_rgba(19,42,36,0.04)] flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Documented Reference Equations</h3>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container text-secondary font-medium">Height ≥ 60 in</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Formulas calibrate baseline lean clearance weight by adding an empirical multiplier for each inch above 5 feet (152.4 cm).
+        </p>
+<!-- Devine 1974 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<span class="font-label-md text-label-md font-bold text-primary">Devine Formula (1974) — Clinical Gold Standard</span>
+<div class="font-body-sm text-body-sm text-on-surface space-y-1 font-mono text-xs">
+<div><strong class="font-sans font-semibold text-secondary">Men:</strong> IBW (kg) = 50.0 + 2.3 × (height in inches - 60)</div>
+<div><strong class="font-sans font-semibold text-secondary">Women:</strong> IBW (kg) = 45.5 + 2.3 × (height in inches - 60)</div>
+</div>
+</div>
+<!-- Robinson 1983 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<span class="font-label-md text-label-md font-bold text-primary">Robinson Formula (1983)</span>
+<div class="font-body-sm text-body-sm text-on-surface space-y-1 font-mono text-xs">
+<div><strong class="font-sans font-semibold text-secondary">Men:</strong> 52.0 + 1.9 × (inches - 60)</div>
+<div><strong class="font-sans font-semibold text-secondary">Women:</strong> 49.0 + 1.7 × (inches - 60)</div>
+</div>
+</div>
+<!-- Hamwi & Miller Summary -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1">
+<span class="font-label-md text-label-md font-bold text-on-surface">Hamwi &amp; Miller Baselines</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Hamwi incorporates 48.0 kg (women) / 48.0 kg + 2.7 kg per extra inch (men), while Miller applies 56.2 kg base (men) and 53.1 kg base (women) with smaller fractional height increments.
+          </p>
+</div>
+</div>
+<!-- Card 2: Clinical Assumptions & Scientific Citations -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-[0_4px_24px_-2px_rgba(19,42,36,0.04)] flex flex-col justify-between gap-space-sm">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Clinical Assumptions &amp; Validity Boundaries</h3>
+<span class="material-symbols-outlined text-secondary">science</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container text-on-surface-variant font-body-sm text-body-sm space-y-2">
+<div class="flex items-center gap-1.5 text-primary font-semibold font-label-md">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Height Invariance Constraint</span>
+</div>
+<p>
+              Applicable strictly to adults with height ≥ 60 inches (152.4 cm). When calculated for statures below this threshold, historical equations yield mathematically erratic or negative increments because no negative slope was empirically validated.
+            </p>
+</div>
+<div class="space-y-2">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider font-semibold block">
+              Peer-Reviewed Scientific Foundations
+            </span>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+<li>
+<a class="hover:text-primary transition-colors flex items-center justify-between p-2 rounded-lg bg-surface-container-low" href="https://pubmed.ncbi.nlm.nih.gov/" rel="noopener noreferrer" target="_blank">
+<span>Devine BJ. Gentamicin therapy. Drug Intell Clin Pharm 1974.</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">north_east</span>
+</a>
+</li>
+<li>
+<a class="hover:text-primary transition-colors flex items-center justify-between p-2 rounded-lg bg-surface-container-low" href="https://pubmed.ncbi.nlm.nih.gov/" rel="noopener noreferrer" target="_blank">
+<span>Pai MP, Paloucek FP. The origin of the "ideal" body weight equations. Ann Pharmacother 2000.</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">north_east</span>
+</a>
+</li>
+<li>
+<a class="hover:text-primary transition-colors flex items-center justify-between p-2 rounded-lg bg-surface-container-low" href="https://pubmed.ncbi.nlm.nih.gov/" rel="noopener noreferrer" target="_blank">
+<span>Robinson JD et al. Determination of ideal body weight for drug dosage. Am J Hosp Pharm 1983.</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">north_east</span>
+</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="pt-2 flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[18px] text-secondary">rule</span>
+<span>Indexed to WHO International Anthro Standards</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Related Educational Article Card -->
+<section class="max-w-5xl mx-auto w-full mb-space-lg">
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col md:flex-row items-center justify-between gap-space-md shadow-[0_2px_12px_rgba(19,42,36,0.04)]">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-on-primary shrink-0">
+<span class="material-symbols-outlined text-[26px]">menu_book</span>
+</div>
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold text-secondary">Metabolic &amp; Anthropometric Research</span>
+<h3 class="font-headline-sm text-headline-sm text-primary font-bold">
+            The Science Behind "Ideal Body Weight" Formulas
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">
+            Discover why clinical equations like Devine and Robinson were invented for pharmacology, and how modern medicine assesses healthy weight.
+          </p>
+</div>
+</div>
+<a class="shrink-0 px-space-md py-3 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-container transition-all flex items-center gap-2 shadow-sm" data-path="journal/ideal-weight-formulas" href="#">
+<span>Read the Complete Ideal Weight Guide</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</section>
+<!-- Medical & Educational Use Disclaimer -->
+<section class="max-w-5xl mx-auto w-full mb-space-lg">
+<div class="p-space-md rounded-xl bg-surface-container flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-[22px] text-secondary shrink-0 mt-0.5">policy</span>
+<div class="space-y-1">
+<span class="font-label-md text-label-md font-semibold text-primary block">Clinical Advisory &amp; Educational Notice</span>
+<p class="font-body-sm text-body-sm leading-relaxed">
+          Educational Notice: Reference weight calculations are historical statistical models. They do not constitute clinical weight prescriptions or health diagnoses. Consult a certified physician before adopting weight management regimens.
+        </p>
+</div>
+</div>
+</section>
+<!-- Client-side Interactive Engine -->
+<script>
+    (function () {
+      let isMetric = true;
+      let currentSex = 'male'; // 'male' or 'female'
+
+      const btnMetric = document.getElementById('btn-metric');
+      const btnImperial = document.getElementById('btn-imperial');
+      const metricHeightContainer = document.getElementById('metric-height-container');
+      const imperialHeightContainer = document.getElementById('imperial-height-container');
+      const heightUnitLabel = document.getElementById('height-unit-label');
+
+      const btnMale = document.getElementById('btn-male');
+      const btnFemale = document.getElementById('btn-female');
+
+      const heightMetricInput = document.getElementById('height-metric');
+      const heightFeetInput = document.getElementById('height-feet');
+      const heightInchesInput = document.getElementById('height-inches');
+
+      const btnCalculate = document.getElementById('btn-calculate');
+      const btnReset = document.getElementById('btn-reset');
+
+      // Metric & Matrix targets
+      const devineMetricVal = document.getElementById('devine-metric-val');
+      const devineUnitVal = document.getElementById('devine-unit-val');
+      const devineSecondaryVal = document.getElementById('devine-secondary-val');
+
+      const valDevineCell = document.getElementById('val-devine-cell');
+      const valDevineCellImp = document.getElementById('val-devine-cell-imp');
+      const valRobinsonCell = document.getElementById('val-robinson-cell');
+      const valRobinsonCellImp = document.getElementById('val-robinson-cell-imp');
+      const valMillerCell = document.getElementById('val-miller-cell');
+      const valMillerCellImp = document.getElementById('val-miller-cell-imp');
+      const valHamwiCell = document.getElementById('val-hamwi-cell');
+      const valHamwiCellImp = document.getElementById('val-hamwi-cell-imp');
+      const valWhoBmiRange = document.getElementById('val-who-bmi-range');
+      const valWhoBmiRangeImp = document.getElementById('val-who-bmi-range-imp');
+      const dispersionSummary = document.getElementById('dispersion-summary');
+
+      // Unit switch handlers
+      btnMetric.addEventListener('click', () => {
+        if (!isMetric) {
+          isMetric = true;
+          btnMetric.className = "flex-1 py-2 text-center rounded-md font-label-md text-label-md font-semibold bg-surface-container-lowest text-primary shadow-sm transition-all duration-150";
+          btnImperial.className = "flex-1 py-2 text-center rounded-md font-label-md text-label-md font-medium text-on-surface-variant hover:text-primary transition-all duration-150";
+          metricHeightContainer.classList.remove('hidden');
+          imperialHeightContainer.classList.add('hidden');
+          heightUnitLabel.textContent = "Centimeters";
+
+          // Sync imperial back to cm
+          const ft = parseFloat(heightFeetInput.value) || 5;
+          const inc = parseFloat(heightInchesInput.value) || 0;
+          const totalInches = (ft * 12) + inc;
+          heightMetricInput.value = (totalInches * 2.54).toFixed(1);
+
+          devineUnitVal.textContent = "kg";
+          calculateWeights();
+        }
+      });
+
+      btnImperial.addEventListener('click', () => {
+        if (isMetric) {
+          isMetric = false;
+          btnImperial.className = "flex-1 py-2 text-center rounded-md font-label-md text-label-md font-semibold bg-surface-container-lowest text-primary shadow-sm transition-all duration-150";
+          btnMetric.className = "flex-1 py-2 text-center rounded-md font-label-md text-label-md font-medium text-on-surface-variant hover:text-primary transition-all duration-150";
+          metricHeightContainer.classList.add('hidden');
+          imperialHeightContainer.classList.remove('hidden');
+          imperialHeightContainer.classList.add('grid');
+          heightUnitLabel.textContent = "Feet & Inches";
+
+          // Sync cm to imperial
+          const cm = parseFloat(heightMetricInput.value) || 178;
+          const totalIn = cm / 2.54;
+          const feet = Math.floor(totalIn / 12);
+          const inches = Math.round(totalIn % 12);
+          heightFeetInput.value = feet;
+          heightInchesInput.value = inches;
+
+          devineUnitVal.textContent = "lbs";
+          calculateWeights();
+        }
+      });
+
+      // Sex toggle handlers
+      btnMale.addEventListener('click', () => {
+        currentSex = 'male';
+        btnMale.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-semibold bg-secondary-container text-on-secondary-container transition-all";
+        btnFemale.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-medium bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all";
+        calculateWeights();
+      });
+
+      btnFemale.addEventListener('click', () => {
+        currentSex = 'female';
+        btnFemale.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-semibold bg-secondary-container text-on-secondary-container transition-all";
+        btnMale.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-medium bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all";
+        calculateWeights();
+      });
+
+      function getHeightInInches() {
+        if (isMetric) {
+          const cm = parseFloat(heightMetricInput.value) || 178;
+          return cm / 2.54;
+        } else {
+          const ft = parseFloat(heightFeetInput.value) || 5;
+          const inc = parseFloat(heightInchesInput.value) || 0;
+          return (ft * 12) + inc;
+        }
+      }
+
+      function calculateWeights() {
+        const heightInches = getHeightInInches();
+        const heightMeters = (heightInches * 2.54) / 100;
+        const over60 = Math.max(0, heightInches - 60);
+
+        let devineKg, robinsonKg, millerKg, hamwiKg;
+
+        if (currentSex === 'male') {
+          devineKg = 50.0 + (2.3 * over60);
+          robinsonKg = 52.0 + (1.9 * over60);
+          millerKg = 56.2 + (1.41 * over60);
+          hamwiKg = 48.0 + (2.7 * over60);
+        } else {
+          devineKg = 45.5 + (2.3 * over60);
+          robinsonKg = 49.0 + (1.7 * over60);
+          millerKg = 53.1 + (1.36 * over60);
+          hamwiKg = 45.5 + (2.2 * over60);
+        }
+
+        // WHO Healthy BMI Range: 18.5 - 24.9
+        const whoMinKg = 18.5 * (heightMeters * heightMeters);
+        const whoMaxKg = 24.9 * (heightMeters * heightMeters);
+
+        const kgToLb = (kg) => kg * 2.20462;
+
+        if (isMetric) {
+          devineMetricVal.textContent = devineKg.toFixed(1);
+          devineUnitVal.textContent = 'kg';
+          devineSecondaryVal.textContent = `(${kgToLb(devineKg).toFixed(1)} lbs)`;
+
+          valDevineCell.textContent = `${devineKg.toFixed(1)} kg`;
+          valDevineCellImp.textContent = `${kgToLb(devineKg).toFixed(1)} lbs`;
+
+          valRobinsonCell.textContent = `${robinsonKg.toFixed(1)} kg`;
+          valRobinsonCellImp.textContent = `${kgToLb(robinsonKg).toFixed(1)} lbs`;
+
+          valMillerCell.textContent = `${millerKg.toFixed(1)} kg`;
+          valMillerCellImp.textContent = `${kgToLb(millerKg).toFixed(1)} lbs`;
+
+          valHamwiCell.textContent = `${hamwiKg.toFixed(1)} kg`;
+          valHamwiCellImp.textContent = `${kgToLb(hamwiKg).toFixed(1)} lbs`;
+
+          valWhoBmiRange.textContent = `${whoMinKg.toFixed(1)} – ${whoMaxKg.toFixed(1)} kg`;
+          valWhoBmiRangeImp.textContent = `${kgToLb(whoMinKg).toFixed(1)} – ${kgToLb(whoMaxKg).toFixed(1)} lbs`;
+
+          const minForm = Math.min(devineKg, robinsonKg, millerKg, hamwiKg).toFixed(1);
+          const maxForm = Math.max(devineKg, robinsonKg, millerKg, hamwiKg).toFixed(1);
+          dispersionSummary.textContent = `${minForm} kg – ${maxForm} kg`;
+        } else {
+          const devLb = kgToLb(devineKg);
+          devineMetricVal.textContent = devLb.toFixed(1);
+          devineUnitVal.textContent = 'lbs';
+          devineSecondaryVal.textContent = `(${devineKg.toFixed(1)} kg)`;
+
+          valDevineCell.textContent = `${devLb.toFixed(1)} lbs`;
+          valDevineCellImp.textContent = `${devineKg.toFixed(1)} kg`;
+
+          valRobinsonCell.textContent = `${kgToLb(robinsonKg).toFixed(1)} lbs`;
+          valRobinsonCellImp.textContent = `${robinsonKg.toFixed(1)} kg`;
+
+          valMillerCell.textContent = `${kgToLb(millerKg).toFixed(1)} lbs`;
+          valMillerCellImp.textContent = `${millerKg.toFixed(1)} kg`;
+
+          valHamwiCell.textContent = `${kgToLb(hamwiKg).toFixed(1)} lbs`;
+          valHamwiCellImp.textContent = `${hamwiKg.toFixed(1)} kg`;
+
+          valWhoBmiRange.textContent = `${kgToLb(whoMinKg).toFixed(1)} – ${kgToLb(whoMaxKg).toFixed(1)} lbs`;
+          valWhoBmiRangeImp.textContent = `${whoMinKg.toFixed(1)} – ${whoMaxKg.toFixed(1)} kg`;
+
+          const minForm = kgToLb(Math.min(devineKg, robinsonKg, millerKg, hamwiKg)).toFixed(1);
+          const maxForm = kgToLb(Math.max(devineKg, robinsonKg, millerKg, hamwiKg)).toFixed(1);
+          dispersionSummary.textContent = `${minForm} lbs – ${maxForm} lbs`;
+        }
+      }
+
+      btnCalculate.addEventListener('click', calculateWeights);
+
+      btnReset.addEventListener('click', () => {
+        heightMetricInput.value = "178";
+        heightFeetInput.value = "5";
+        heightInchesInput.value = "10";
+        document.getElementById('age-input').value = "30";
+        currentSex = 'male';
+        btnMale.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-semibold bg-secondary-container text-on-secondary-container transition-all";
+        btnFemale.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-label-md text-label-md font-medium bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all";
+        if (!isMetric) {
+          btnMetric.click();
+        } else {
+          calculateWeights();
+        }
+      });
+
+      // Recalculate dynamically on input
+      heightMetricInput.addEventListener('input', calculateWeights);
+      heightFeetInput.addEventListener('input', calculateWeights);
+      heightInchesInput.addEventListener('input', calculateWeights);
+
+      // Initial compute
+      calculateWeights();
+    })();
+  </script>
+</div></div></main><footer class="w-full bg-surface-container-low mt-auto"><div class="max-w-6xl mx-auto px-gutter py-space-xl"><div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-space-lg"><div class="md:col-span-5 space-y-space-sm"><div class="flex items-center gap-space-sm"><img alt="BodyMetricsLab Health Tech Logo.png" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCdV9A23qB7vu1bYXvZeBJlHB-NJdql2pbCqQGASLgq-Z5gT5h1E11xMFffk9RLRS0CsbstRYZ_zg_H92MeW1u9XhLmNwh0wqwO0GMAmwwtqpgMUXBJCn2s4cQUHvVzWmybs8ZxCd_Wuc9IhCAIv2tcC9zu8Arp2JagJlbBtmzPa7fJFIwWjYhh4R6Dd0yuG2STH33cp6Kb4zHVaEhrX58stR0rKPGacHZAWPjUAzNHyypL3Qvn5EXdSXg"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">BodyMetrics Lab</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm">Evidence-based physiological assessment tools and metabolic science research. Engineered for clinical accuracy, cognitive calm, and biometric precision.</p></div><div class="md:col-span-3 space-y-space-xs"><span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider block mb-2">Calculators</span><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="bmi-calculator" href="#">Body Mass Index (BMI)</a></li><li><a class="hover:text-primary transition-colors" data-path="bmr-calculator" href="#">Basal Metabolic Rate (BMR)</a></li><li><a class="hover:text-primary transition-colors" data-path="body-fat-calculator" href="#">Body Fat Composition</a></li><li><a class="hover:text-primary transition-colors" data-path="tdee-calculator" href="#">Total Daily Energy (TDEE)</a></li></ul></div><div class="md:col-span-2 space-y-space-xs"><span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider block mb-2">Platform</span><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="journal" href="#">Journal</a></li><li><a class="hover:text-primary transition-colors" data-path="about-us" href="#">About Us</a></li><li><a class="hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></li><li><a class="hover:text-primary transition-colors" data-path="methodology" href="#">Methodology</a></li></ul></div><div class="md:col-span-2 space-y-space-xs"><span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider block mb-2">Legal &amp; Trust</span><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a></li><li><a class="hover:text-primary transition-colors" data-path="terms-of-service" href="#">Terms of Service</a></li><li><a class="hover:text-primary transition-colors" data-path="editorial-standards" href="#">Editorial Standards</a></li><li><a class="hover:text-primary transition-colors" data-path="medical-disclaimer" href="#">Medical Disclaimer</a></li></ul></div></div><div class="pt-space-md bg-surface-container rounded-xl p-space-md space-y-2 mb-space-lg"><div class="flex items-center gap-2 text-primary"><span class="material-symbols-outlined text-[20px]">verified_user</span><span class="font-label-md text-label-md font-semibold">Clinical &amp; Medical Disclaimer</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">The formulas, assessments, and computational models provided across BodyMetrics Lab are formulated exclusively for educational, peer-reference, and personal informational purposes. They do not constitute formal medical diagnosis, clinical prognosis, or bespoke healthcare advice. Always consult a qualified medical professional or certified endocrinologist before enacting substantial shifts in nutrition or physical exertion.</p></div><div class="flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-label-sm text-label-sm"><span>© 2025 BodyMetrics Lab Inc. All scientific rights reserved.</span><div class="flex items-center gap-space-md"><a class="hover:text-on-surface transition-colors" data-path="privacy-policy" href="#">Privacy</a><a class="hover:text-on-surface transition-colors" data-path="terms-of-service" href="#">Terms</a><a class="hover:text-on-surface transition-colors" data-path="medical-disclaimer" href="#">Medical Advisory</a></div></div></div></footer>
+
+<span id="PING_CONTENT_PUSH_NOTIFICATION" style="display: none;"></span><span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span></body></html>

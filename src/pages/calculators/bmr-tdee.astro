@@ -1,7 +1,241 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import Notice from '../../components/Notice.astro';
+import SegmentedToggle from '../../components/SegmentedToggle.astro';
+import NumberField from '../../components/NumberField.astro';
+import SelectField from '../../components/SelectField.astro';
+import FormulaBox from '../../components/FormulaBox.astro';
+import SourceList from '../../components/SourceList.astro';
+import { ACTIVITY_CATEGORIES, ACTIVITY_PLACEHOLDER, ELIGIBILITY_NOTICE, TEE_COEFFICIENTS } from '../../calculators/bmr-tdee.ts';
+import type { TeeCoefficients } from '../../calculators/bmr-tdee.ts';
+import RelatedArticle from '../../components/RelatedArticle.astro';
+import '../../styles/calculator.css';
+
+// Page text is generated from the same constants the calculator uses, so the equations shown can never differ from the code.
+const num = (value: number) => value.toFixed(2);
+function equation(c: TeeCoefficients): string {
+  const intercept = `${c.intercept < 0 ? '−' : ''}${num(Math.abs(c.intercept))}`;
+  return `${intercept} − ${num(c.age)} × age + ${num(c.height)} × height + ${num(c.weight)} × weight`;
+}
+
+// Sources S6, S7 (and S21, S22 for the unit, labelled secondary) of CALCULATION-SPEC.md section 0.4.
+const sources = [
+  {
+    name: 'Mifflin et al. (1990)',
+    title: 'A new predictive equation for resting energy expenditure in healthy individuals, Am J Clin Nutr 51(2):241–247',
+    href: 'https://pubmed.ncbi.nlm.nih.gov/2305711/',
+  },
+  {
+    name: 'National Academies (2023)',
+    title: 'Dietary Reference Intakes for Energy, Chapter 5 (activity categories and TEE equations)',
+    href: 'https://www.nationalacademies.org/read/26818/chapter/7',
+  },
+  {
+    name: 'National Academies (2023)',
+    title: 'Dietary Reference Intakes for Energy, Summary (Table S-1)',
+    href: 'https://www.nationalacademies.org/read/26818/chapter/2',
+  },
+  {
+    name: 'Secondary source',
+    title: 'Predicting equations and resting energy expenditure changes in overweight adults, Slovenian Journal of Public Health 2020 (unit kcal/day)',
+    href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7478086/',
+  },
+  {
+    name: 'Secondary source',
+    title: 'Predicting resting energy expenditure in young adults, Obesity Research & Clinical Practice 2016 (unit kcal/day)',
+    href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5867535/',
+  },
+];
 ---
-<BaseLayout title="BMR &amp; TDEE Calculator" description="The upcoming calculator for basal metabolism and total daily energy expenditure." noindex>
-  <h1>BMR &amp; TDEE Calculator</h1>
-  <p>Coming soon.</p>
+<BaseLayout
+  title="BMR & TDEE Calculator"
+  description="Estimate daily energy expenditure (TEE) and resting energy expenditure (REE) with National Academies 2023 and Mifflin–St Jeor equations. For adults aged 19–78."
+>
+  <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Calculators', href: '/calculators/' }, { label: 'BMR & TDEE Calculator' }]} />
+
+  <header class="calc-hero">
+    <span class="kicker">Energy expenditure estimates</span>
+    <h1>BMR &amp; TDEE Calculator</h1>
+    <p>Estimate your daily energy needs using your age, height, weight and activity category. For adults aged 19–78, this calculator estimates total energy expenditure (TEE) using the National Academies 2023 equations and resting energy expenditure (REE) using the Mifflin–St Jeor equations.</p>
+  </header>
+
+  <div class="calc-grid">
+    <section class="card calc-panel" aria-labelledby="inputs-heading">
+      <h2 id="inputs-heading">Your Details</h2>
+      <noscript><p>This calculator needs JavaScript to run in your browser.</p></noscript>
+      <form id="energy-form" class="calc-form" novalidate>
+        <SegmentedToggle
+          name="system"
+          legend="Measurement system"
+          options={[
+            { value: 'metric', label: 'Metric (cm, kg)', checked: true },
+            { value: 'imperial', label: 'Imperial (ft/in, lb)' },
+          ]}
+        />
+        <SegmentedToggle
+          name="sex"
+          legend="Biological sex"
+          note="Used as the equations' sex term"
+          noteId="sex-note"
+          options={[
+            { value: 'male', label: 'Male', checked: true },
+            { value: 'female', label: 'Female' },
+          ]}
+        />
+        <NumberField id="age" label="Age (years)" unit="years" inputmode="numeric" placeholder="e.g. 30" hint="Whole years. Results are shown for ages 19 to 78." />
+        <div class="hw-grid">
+          <div id="height-metric">
+            <NumberField id="height-cm" label="Height" unit="cm" placeholder="e.g. 175" />
+          </div>
+          <fieldset id="height-imperial" class="span-all" hidden>
+            <legend class="field-label">Height</legend>
+            <div class="field-pair">
+              <NumberField id="height-ft" label="Feet" unit="ft" inputmode="numeric" placeholder="e.g. 5" />
+              <NumberField id="height-in" label="Inches" unit="in" placeholder="e.g. 9" />
+            </div>
+          </fieldset>
+          <NumberField id="weight" label="Weight" unit="kg" unitId="weight-unit" placeholder="e.g. 70" />
+        </div>
+        <SelectField
+          id="activity"
+          label="Physical activity category"
+          placeholder={ACTIVITY_PLACEHOLDER}
+          options={ACTIVITY_CATEGORIES.map((a) => ({ value: a.id, label: a.label }))}
+          descriptionId="activity-description activity-note"
+        >
+          <p id="activity-description" class="activity-desc" aria-live="polite">Choose a category to see what it means and its physical activity level (PAL) range.</p>
+          <p id="activity-note" class="pal-note">These categories are general guidance, not a precise measurement of your own activity. The National Academies report that no valid, reliable tool currently exists to classify an individual's physical activity level (PAL) accurately. They are not the same as weekly physical activity guidelines.</p>
+        </SelectField>
+        <div class="form-actions">
+          <button type="submit" class="button primary"><Icon name="calculator" size={20} /> Calculate</button>
+          <button type="reset" class="button secondary"><Icon name="rotate-ccw" size={20} /> Reset</button>
+        </div>
+        <Notice icon="lock"><p>100% client-side: your data never leaves your device.</p></Notice>
+      </form>
+    </section>
+
+    <section class="card calc-panel" aria-labelledby="result-heading">
+      <h2 id="result-heading">Your Estimated Results</h2>
+      <p id="energy-announce" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+      <div>
+        <p id="result-empty" class="result-empty">Enter your details and press Calculate.</p>
+
+        <div id="result-ok" class="result-stack" hidden>
+          <div class="energy-card primary">
+            <div class="energy-card-head">
+              <span class="metric-label">Estimated total energy expenditure (TEE)</span>
+              <span class="estimate-tag">Estimate</span>
+            </div>
+            <p class="metric"><span id="tee-value"></span> <small>kcal/day</small></p>
+            <p class="card-note">National Academies 2023 equation for the activity category <strong id="tee-category"></strong>.</p>
+          </div>
+          <div class="energy-card secondary">
+            <div class="energy-card-head">
+              <span class="metric-label">Estimated resting energy expenditure (REE), Mifflin–St Jeor</span>
+              <span class="estimate-tag">Estimate</span>
+            </div>
+            <p class="metric"><span id="ree-value"></span> <small>kcal/day</small></p>
+            <p class="card-note">It does not depend on the activity category.</p>
+          </div>
+          <p class="terminology">Mifflin–St Jeor estimates resting energy expenditure (REE); it is not a measured basal metabolic rate (BMR).</p>
+        </div>
+
+        <div id="result-ineligible" hidden>
+          <Notice><p>{ELIGIBILITY_NOTICE}</p></Notice>
+        </div>
+      </div>
+
+      <details class="limits">
+        <summary>Estimation limits</summary>
+        <ul class="limit-list">
+          <li>These are estimates for groups of people; the National Academies report states that an individual's estimate has a large confidence interval. For the TEE equations the report gives a root mean squared error (RMSE), equivalent to the standard error of the estimate (SEE), of 339 kcal/day for men and 246 kcal/day for women. These are statistics of the model across the people studied, not a guaranteed margin of error for your own result.</li>
+          <li>TEE equals an energy requirement estimate only for weight-stable adults. Neither value is a calorie target or advice on how much to eat.</li>
+          <li>The TEE equations come from doubly labelled water studies, and race and ethnicity were not factors in the model. The activity category is self-selected and affects the result strongly.</li>
+          <li>REE and TEE come from different equations and datasets and should not be divided or multiplied to derive each other.</li>
+        </ul>
+      </details>
+    </section>
+  </div>
+
+  <section class="card calc-panel calc-section" aria-labelledby="method-heading">
+    <h2 id="method-heading"><Icon name="sigma" size={26} /> Formulas and method</h2>
+
+    <div class="method-group">
+      <h3>Resting energy expenditure (REE): Mifflin–St Jeor</h3>
+      <div class="formula-grid">
+        <FormulaBox title="Men" tag="REE, kcal/day" headingLevel={4}>
+          <Fragment slot="formula">REE = 10 × weight + 6.25 × height − 5 × age + 5</Fragment>
+          Weight in kilograms (kg), height in centimetres (cm), age in whole years.
+        </FormulaBox>
+        <FormulaBox title="Women" tag="REE, kcal/day" headingLevel={4}>
+          <Fragment slot="formula">REE = 10 × weight + 6.25 × height − 5 × age − 161</Fragment>
+          Same inputs; only the final constant differs.
+        </FormulaBox>
+      </div>
+      <p class="note-box">The Mifflin–St Jeor equations were derived from resting energy expenditure measured by indirect calorimetry in 498 healthy adults aged 19–78. They estimate REE; they are not a measured basal metabolic rate (BMR), and the National Academies recommend keeping the terms basal and resting metabolic rate distinct.</p>
+      <Notice icon="info">
+        <p><strong>How this was checked.</strong> The Mifflin–St Jeor equations were checked against the published abstract of the original 1990 paper. The original full text was not directly accessible during verification. The kcal/day unit is supported by later peer-reviewed publications (listed as secondary sources below).</p>
+      </Notice>
+    </div>
+
+    <div class="method-group">
+      <h3>Total energy expenditure (TEE): National Academies 2023 equations</h3>
+      <p>TEE is calculated directly from age, height, weight and the activity category with the equations below (age in years, height in cm, weight in kg, result in kcal/day). It is not calculated from REE, and no activity multipliers are used.</p>
+      <div class="table-scroll" role="region" aria-label="TEE equations by activity category and sex" tabindex="0">
+        <table class="data-table equations">
+          <caption>TEE equations (kcal/day)</caption>
+          <thead>
+            <tr><th scope="col">Activity category</th><th scope="col">Men</th><th scope="col">Women</th></tr>
+          </thead>
+          <tbody>
+            {ACTIVITY_CATEGORIES.map((a) => (
+              <tr>
+                <th scope="row">{a.label}</th>
+                <td>{equation(TEE_COEFFICIENTS.male[a.id])}</td>
+                <td>{equation(TEE_COEFFICIENTS.female[a.id])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>This calculator shows TEE and REE only for ages 19 to 78 inclusive; the Mifflin–St Jeor study population was 19–78.</p>
+    </div>
+
+    <div class="method-group">
+      <h3>Activity categories</h3>
+      <p>Physical activity level (PAL) is the ratio of total energy expenditure to basal metabolism. The report gives no questionnaire or scoring method for assigning a person to a category, so the choice is yours.</p>
+      <div class="table-scroll" role="region" aria-label="Activity categories and PAL ranges" tabindex="0">
+        <table class="data-table pal">
+          <caption>Adult activity categories (age 19 and over, men and women)</caption>
+          <thead>
+            <tr><th scope="col">Category</th><th scope="col">PAL range</th><th scope="col">Description</th></tr>
+          </thead>
+          <tbody>
+            {ACTIVITY_CATEGORIES.map((a) => (
+              <tr>
+                <th scope="row">{a.label}</th>
+                <td>{a.pal.replace('PAL ', '')}</td>
+                <td>{a.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="method-row">
+      <p>Both results are educational estimates. Neither is a diagnosis, a calorie target or a diet plan.</p>
+      <div class="source-box">
+        <SourceList heading="Sources" sources={sources} />
+      </div>
+    </div>
+  </section>
+
+  <RelatedArticle calculator="bmr-tdee" />
+
+  <script>
+    import '../../scripts/bmr-tdee-page.ts';
+  </script>
 </BaseLayout>

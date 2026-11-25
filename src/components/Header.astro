@@ -1,148 +1,383 @@
 ---
+// Global header (DESIGN-SPEC.md section 5): desktop navigation with a Calculators dropdown from 64rem,
+// the Stitch navigation drawer below that. Same on every page.
 import Logo from './Logo.astro';
+import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import { calculators, mainLinks, SITE_NAME } from '../config/site';
 
-const calculators = [
-  ['BMI Calculator', '/calculators/bmi/'],
-  ['BMR & TDEE Calculator', '/calculators/bmr-tdee/'],
-  ['Body Fat Calculator', '/calculators/body-fat/'],
-  ['Ideal Weight Calculator', '/calculators/ideal-weight/'],
-  ['Macro Calculator', '/calculators/macros/'],
-  ['Water Intake Calculator', '/calculators/water-intake/'],
-  ['View all calculators', '/calculators/'],
-];
-const links = [['Journal', '/journal/'], ['About', '/about/'], ['Contact', '/contact/']];
-const current = (href: string) => Astro.url.pathname === href ? 'page' : undefined;
+const path = Astro.url.pathname;
+const current = (href: string) => (path === href ? 'page' : undefined);
+const inCalculators = path.startsWith('/calculators/');
+const year = new Date().getFullYear();
+const iconFor: Record<string, 'book' | 'info' | 'mail'> = {
+  '/journal/': 'book',
+  '/about/': 'info',
+  '/contact/': 'mail',
+};
 ---
-<header class="header">
-  <div class="container header-layout">
-    <Logo />
-    <div class="controls">
-      <ThemeToggle />
-      <button class="button secondary menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav" hidden>
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20">
-          <path d="M3 5h14M3 10h14M3 15h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-        </svg>
-      </button>
-    </div>
-    <nav id="primary-nav" aria-label="Main navigation">
-      <details class="calculator-menu">
-        <summary aria-controls="calculator-links">Calculators <span aria-hidden="true">⌄</span></summary>
-        <ul id="calculator-links">
-          {calculators.map(([label, href]) => (
-            <li><a href={href} aria-current={current(href)}>{label}</a></li>
-          ))}
-        </ul>
-      </details>
-      {links.map(([label, href]) => <a href={href} aria-current={current(href)}>{label}</a>)}
-      <a href="/calculators/" class="button primary" aria-current={current('/calculators/')}>All calculators</a>
+<header class="site-header" data-site-header>
+  <div class="container header-bar">
+    <button
+      class="icon-button menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label="Open menu"
+      data-menu-toggle
+      hidden
+    >
+      <Icon name="menu" class="menu-icon-open" />
+      <Icon name="close" class="menu-icon-close" />
+    </button>
+
+    <Logo height={44} />
+
+    <nav id="site-nav" class="site-nav" aria-label="Main" data-site-nav>
+      <ul class="nav-list">
+        <li class="nav-home">
+          <a class="nav-link" href="/" aria-current={current('/')}>
+            <Icon name="home" class="nav-icon" />
+            <span>Home</span>
+          </a>
+        </li>
+        <li class="nav-calculators">
+          <details class="calc-menu" data-calc-menu data-current-section={inCalculators ? '' : undefined}>
+            <summary class="nav-link" aria-label="Calculators">
+              <Icon name="calculator" class="nav-icon" />
+              <span class="nav-label">Calculators</span>
+              <span class="nav-badge" aria-hidden="true">{calculators.length} Tools</span>
+              <Icon name="chevron-down" size={18} class="chevron" />
+            </summary>
+            <ul class="calc-list">
+              {calculators.map((item) => (
+                <li>
+                  <a class="calc-link" href={item.href} aria-current={current(item.href)}>
+                    <span>{item.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+        {mainLinks.map((item) => (
+          <li>
+            <a class="nav-link" href={item.href} aria-current={current(item.href)}>
+              <Icon name={iconFor[item.href] ?? 'info'} class="nav-icon" />
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="drawer-extra">
+        <p class="privacy-pill">
+          <Icon name="lock" size={18} />
+          <span>Calculations run in your browser</span>
+        </p>
+        <div class="theme-row">
+          <span id="drawer-theme-label">Theme</span>
+          <div class="theme-segment" role="group" aria-labelledby="drawer-theme-label">
+            <button type="button" data-set-theme="light" aria-pressed="true">
+              <Icon name="sun" size={18} />
+              <span>Light</span>
+            </button>
+            <button type="button" data-set-theme="dark" aria-pressed="false">
+              <Icon name="moon" size={18} />
+              <span>Dark</span>
+            </button>
+          </div>
+        </div>
+        <p class="drawer-copy">© {year} {SITE_NAME}</p>
+      </div>
     </nav>
+
+    <div class="header-actions">
+      <ThemeToggle />
+    </div>
   </div>
+  <div class="nav-backdrop" data-nav-backdrop hidden></div>
 </header>
 
 <script>
-  const header = document.querySelector<HTMLElement>('.header');
-  const toggle = header?.querySelector<HTMLButtonElement>('.menu-toggle');
-  const nav = header?.querySelector<HTMLElement>('#primary-nav');
-  const dropdown = header?.querySelector<HTMLDetailsElement>('.calculator-menu');
-  const summary = dropdown?.querySelector('summary');
-  const desktop = matchMedia('(min-width: 58rem)');
+  // Enhancement only: without JavaScript the navigation stays visible below the header.
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const toggle = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const nav = header?.querySelector<HTMLElement>('[data-site-nav]');
+  const backdrop = header?.querySelector<HTMLElement>('[data-nav-backdrop]');
+  const menu = header?.querySelector<HTMLDetailsElement>('[data-calc-menu]');
+  const desktop = matchMedia('(min-width: 64rem)');
+  const focusable =
+    'a[href], button:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
 
-  if (header && toggle && nav && dropdown && summary) {
-    const closeDropdown = () => { dropdown.open = false; };
-    const setMenu = (open: boolean) => {
-      toggle.setAttribute('aria-expanded', String(open));
+  if (header && toggle && nav && backdrop && menu) {
+    const summary = menu.querySelector<HTMLElement>('summary');
+    const root = document.documentElement;
+    const isOpen = () => nav.hasAttribute('data-open');
+
+    const visibleFocusables = (): HTMLElement[] =>
+      [toggle, ...nav.querySelectorAll<HTMLElement>(focusable)].filter(
+        (el) => !el.closest('[hidden]') && el.getClientRects().length > 0,
+      );
+
+    const setOpen = (open: boolean, returnFocus = false) => {
       nav.toggleAttribute('data-open', open);
-      if (!open) closeDropdown();
+      backdrop.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      root.classList.toggle('nav-open', open);
+      if (open) {
+        // In the drawer, show the calculators when the visitor is already inside that section.
+        if (menu.hasAttribute('data-current-section')) menu.open = true;
+        nav.querySelector<HTMLElement>('a[href]')?.focus();
+      } else if (returnFocus) {
+        toggle.focus();
+      }
     };
 
     header.dataset.enhanced = '';
     toggle.hidden = false;
-    summary.setAttribute('aria-expanded', String(dropdown.open));
-    dropdown.addEventListener('toggle', () => {
-      summary.setAttribute('aria-expanded', String(dropdown.open));
+    summary?.setAttribute('aria-expanded', String(menu.open));
+    menu.addEventListener('toggle', () => summary?.setAttribute('aria-expanded', String(menu.open)));
+
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    backdrop.addEventListener('click', () => setOpen(false, true));
+    nav.addEventListener('click', (event) => {
+      const link = (event.target as Element).closest('a[href]');
+      if (link && !desktop.matches) setOpen(false);
     });
-    toggle.addEventListener('click', () => setMenu(!nav.hasAttribute('data-open')));
-    header.addEventListener('keydown', event => {
-      if (event.key !== 'Escape') return;
-      if (dropdown.open) {
-        event.preventDefault();
-        closeDropdown();
-        summary.focus();
-      } else if (nav.hasAttribute('data-open') && !desktop.matches) {
-        event.preventDefault();
-        setMenu(false);
-        toggle.focus();
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        if (menu.open && desktop.matches) {
+          menu.open = false;
+          summary?.focus();
+          event.preventDefault();
+        } else if (isOpen() && !desktop.matches) {
+          setOpen(false, true);
+          event.preventDefault();
+        }
+        return;
+      }
+      // Keep keyboard focus inside the open drawer.
+      if (event.key === 'Tab' && isOpen() && !desktop.matches) {
+        const items = visibleFocusables();
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          last.focus();
+          event.preventDefault();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          first.focus();
+          event.preventDefault();
+        } else if (!nav.contains(document.activeElement) && document.activeElement !== toggle) {
+          first.focus();
+          event.preventDefault();
+        }
       }
     });
-    document.addEventListener('click', event => {
-      if (!(event.target instanceof Node)) return;
-      if (!dropdown.contains(event.target)) closeDropdown();
-      if (!header.contains(event.target) && !desktop.matches) {
-        if (nav.contains(document.activeElement)) toggle.focus();
-        setMenu(false);
-      }
+
+    // Desktop dropdown: close on outside click and when focus leaves it.
+    document.addEventListener('click', (event) => {
+      if (desktop.matches && menu.open && !menu.contains(event.target as Node)) menu.open = false;
     });
+    menu.addEventListener('focusout', (event) => {
+      if (desktop.matches && menu.open && !menu.contains((event as FocusEvent).relatedTarget as Node | null)) menu.open = false;
+    });
+
+    // Reset state when crossing the breakpoint.
     desktop.addEventListener('change', () => {
-      if (!desktop.matches && nav.contains(document.activeElement)) toggle.focus();
-      setMenu(false);
+      setOpen(false);
+      menu.open = false;
     });
   }
 </script>
 
-<style>
-  .header { background: var(--surface); border-bottom: 1px solid var(--line); }
-  .header-layout {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    min-height: var(--header-mobile);
-    padding-block: var(--space-2);
-    gap: var(--space-2);
+<style is:global>
+  .site-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 40;
+    background: var(--color-surface-low);
+    border-bottom: 1px solid var(--color-border);
   }
-  .controls { display: flex; gap: var(--space-1); }
-  .menu-toggle { padding-inline: 0; width: var(--touch); }
-  nav { flex-basis: 100%; display: grid; gap: var(--space-1); }
-  .header[data-enhanced] nav:not([data-open]) { display: none; }
-  nav a:not(.button), summary {
+
+  /* Mobile: menu button, centred logo, theme toggle. */
+  .header-bar {
+    display: grid;
+    grid-template-columns: var(--touch) minmax(0, 1fr) var(--touch);
+    align-items: center;
+    column-gap: var(--space-sm);
+    min-height: var(--header-h);
+  }
+  .menu-toggle { grid-column: 1; }
+  .header-bar > .brand { grid-column: 2; justify-self: center; }
+  .header-actions { grid-column: 3; justify-self: end; display: flex; align-items: center; }
+  .menu-toggle .menu-icon-close { display: none; }
+  .menu-toggle[aria-expanded='true'] .menu-icon-open { display: none; }
+  .menu-toggle[aria-expanded='true'] .menu-icon-close { display: block; }
+
+  /* Navigation list. */
+  .nav-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); }
+  .nav-link, .calc-link {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-sm);
     min-height: var(--touch);
-    padding-inline: var(--space-3);
-    color: var(--ink);
-    font-size: var(--text-small);
-    font-weight: 600;
+    padding: 0.5rem var(--space-sm);
+    border-radius: var(--radius-lg);
+    color: var(--color-on-surface);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    letter-spacing: 0.02em;
     text-decoration: none;
-    border-radius: var(--radius-button);
+    cursor: pointer;
+    transition: background-color var(--ease), color var(--ease);
   }
-  nav a:hover:not(.button), summary:hover, nav a[aria-current='page']:not(.button) { background: var(--mint); }
-  summary { cursor: pointer; }
-  summary::-webkit-details-marker { display: none; }
-  ul { list-style: none; margin: 0; padding: var(--space-2); }
-  @media (min-width: 58rem) {
-    .header { position: sticky; top: 0; z-index: 2; }
-    .header-layout { min-height: var(--header-desktop); flex-wrap: nowrap; }
-    .controls { order: 1; }
-    .menu-toggle { display: none; }
-    .header[data-enhanced] nav, .header[data-enhanced] nav:not([data-open]), nav {
+  .nav-link:hover, .calc-link:hover { background: var(--color-surface-mid); color: var(--color-on-surface); }
+  .nav-link[aria-current='page'], .calc-link[aria-current='page'] {
+    background: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+    font-weight: 600;
+  }
+  .nav-icon { color: var(--color-on-surface-variant); }
+  .nav-link[aria-current='page'] .nav-icon { color: inherit; }
+  .nav-badge {
+    margin-inline-start: auto;
+    padding: 0.125rem 0.625rem;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: var(--fs-label-sm);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .calc-menu > summary { list-style: none; }
+  .calc-menu > summary::-webkit-details-marker { display: none; }
+  .calc-menu .chevron { transition: transform var(--ease); }
+  .calc-menu[open] .chevron { transform: rotate(180deg); }
+
+  .calc-list { list-style: none; margin: var(--space-xs) 0 0 1.35rem; padding: 0 0 0 var(--space-sm); border-inline-start: 2px solid var(--color-outline-variant); display: grid; gap: 0.125rem; }
+  .calc-link { font-weight: 400; color: var(--color-on-surface-variant); }
+
+  .drawer-extra { display: none; }
+
+  /* Mobile drawer (only when scripts are available). */
+  @media (max-width: 63.99rem) {
+    .js .site-header .site-nav {
+      position: fixed;
+      inset-block: var(--header-h) 0;
+      inset-inline-start: 0;
+      z-index: 41;
+      width: var(--drawer-w);
       display: flex;
-      flex-basis: auto;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: var(--color-surface);
+      border-inline-end: 1px solid var(--color-border);
+      box-shadow: var(--shadow-overlay);
+      padding: var(--space-md) var(--space-sm) 0;
+      transform: translateX(-102%);
+      visibility: hidden;
+      transition: transform 220ms ease, visibility 0s linear 220ms;
+    }
+    .js .site-header .site-nav[data-open] {
+      transform: none;
+      visibility: visible;
+      transition: transform 220ms ease, visibility 0s;
+    }
+    .js .site-header .nav-backdrop {
+      position: fixed;
+      inset-block: var(--header-h) 0;
+      inset-inline: 0;
+      z-index: 40;
+      background: var(--scrim);
+    }
+    .site-nav .nav-list { gap: var(--space-xs); }
+    .site-nav .nav-link { font-size: 1rem; font-weight: 500; padding-block: 0.5rem; }
+    .site-nav .calc-link { padding-block: 0.4rem; }
+    .calc-menu[open] > summary { background: var(--color-surface-low); }
+    .drawer-extra {
+      display: grid;
+      gap: var(--space-sm);
+      margin-top: auto;
+      padding: var(--space-md) 0 var(--space-md);
+      border-top: 1px solid var(--color-border);
+    }
+    .privacy-pill {
+      display: flex;
       align-items: center;
-      gap: var(--space-2);
+      gap: var(--space-xs);
+      margin: 0;
+      padding: 0.625rem var(--space-sm);
+      border-radius: var(--radius-full);
+      background: var(--color-secondary-container);
+      color: var(--color-on-secondary-container);
+      font-size: var(--fs-small);
+      font-weight: 600;
     }
-    details { position: relative; }
-    ul {
+    .theme-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+    .theme-segment { display: inline-flex; padding: 0.25rem; gap: 0.25rem; border-radius: var(--radius-full); background: var(--color-surface-mid); border: 1px solid var(--color-border); }
+    .theme-segment button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      justify-content: center;
+      min-height: var(--touch);
+      min-width: var(--touch);
+      padding: 0 var(--space-sm);
+      border: 0;
+      border-radius: var(--radius-full);
+      background: transparent;
+      color: var(--color-on-surface-variant);
+      font-size: var(--fs-small);
+      font-weight: 500;
+    }
+    .theme-segment button[aria-pressed='true'] {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-chip);
+    }
+    .drawer-copy { margin: 0; text-align: center; font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+
+    /* Without scripts: the navigation stays open under the header. */
+    html:not(.js) .site-header .header-bar { grid-template-columns: 1fr var(--touch); grid-template-rows: auto auto; }
+    html:not(.js) .site-header .header-bar > .brand { grid-column: 1; justify-self: start; }
+    html:not(.js) .site-header .header-actions { grid-column: 2; }
+    html:not(.js) .site-header .site-nav { grid-column: 1 / -1; padding-bottom: var(--space-sm); }
+    html:not(.js) .site-header .nav-home { display: block; }
+    /* The Light/Dark control needs scripts, so it is hidden when they are unavailable. */
+    html:not(.js) .site-header .theme-row { display: none; }
+  }
+
+  /* Desktop header (64rem and wider). */
+  @media (min-width: 64rem) {
+    .header-bar { grid-template-columns: auto 1fr auto; column-gap: var(--space-lg); }
+    .menu-toggle, .nav-backdrop { display: none !important; }
+    .header-bar > .brand { grid-column: 1; justify-self: start; }
+    .site-nav { grid-column: 2; justify-self: center; }
+    .header-actions { grid-column: 3; }
+    .nav-list { display: flex; align-items: center; gap: var(--space-xs); }
+    .nav-home, .nav-icon, .nav-badge { display: none; }
+    .nav-link { padding-inline: var(--space-md); }
+    .nav-calculators { position: relative; }
+    .calc-menu .chevron { margin-inline-start: -0.125rem; }
+    .calc-list {
       position: absolute;
-      top: 100%;
-      left: 0;
-      width: var(--dropdown-width);
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-menu);
-      box-shadow: var(--shadow-card);
+      inset-block-start: calc(100% + 0.5rem);
+      inset-inline-start: 0;
+      z-index: 50;
+      width: 17rem;
+      margin: 0;
+      padding: var(--space-xs);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-overlay);
     }
-    nav > a, summary { white-space: nowrap; }
+    .calc-link { padding-inline: var(--space-sm); font-weight: 500; color: var(--color-on-surface); }
   }
 </style>

@@ -1,0 +1,44 @@
+---
+// Plain, readable text page for the legal pages (DESIGN-SPEC.md 11): hero, a table of contents, and a prose column.
+// Content is written only from what the site actually does (CALCULATION-SPEC.md 1.5, AGENTS.md rule 6) and is reviewed by the owner before release.
+import PageHero from './PageHero.astro';
+import '../styles/pages.css';
+
+interface Props {
+  title: string;
+  kicker: string;
+  intro: string;
+  /** Anchor ids and labels of the H2 sections, in order. */
+  toc: Array<{ id: string; label: string }>;
+  updated: string;
+}
+const { title, kicker, intro, toc, updated } = Astro.props;
+const path = Astro.url.pathname;
+const crumbs = [{ label: 'Home', href: '/' }, { label: title }];
+---
+<PageHero breadcrumb={crumbs} kicker={kicker} title={title} intro={intro} />
+<div class="legal">
+  <nav class="card toc" aria-label="On this page">
+    <h2>On this page</h2>
+    <ol>
+      {toc.map((item) => <li><a href={`#${item.id}`}>{item.label}</a></li>)}
+    </ol>
+  </nav>
+  <article class="card static-card prose" data-path={path}>
+    <p class="updated">Last updated: {updated}</p>
+    <slot />
+  </article>
+</div>
+<style>
+  .legal { display: grid; gap: var(--space-md); align-items: start; }
+  .toc { padding: var(--space-md); max-width: 46rem; }
+  .toc h2 { margin: 0 0 var(--space-xs); font-size: var(--fs-h3); }
+  .toc ol { display: grid; margin: 0; padding-inline-start: 1.25rem; font-size: var(--fs-small); }
+  .toc a { display: inline-flex; align-items: center; min-height: var(--touch); }
+  .updated { margin: 0 0 var(--space-md); font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+  .prose :global(h2) { scroll-margin-block-start: calc(var(--header-h) + var(--space-sm)); }
+  @media (min-width: 64rem) {
+    .legal { grid-template-columns: 16rem minmax(0, 46rem); }
+    .toc { position: sticky; inset-block-start: calc(var(--header-h) + var(--space-sm)); }
+  }
+</style>

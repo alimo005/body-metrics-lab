@@ -1,39 +1,25 @@
-<button type="button" class="button secondary theme-toggle" aria-label="Dark mode" aria-pressed="false" hidden>
-  <span aria-hidden="true" data-theme-icon>☾</span>
+---
+import Icon from './Icon.astro';
+---
+<!-- Hidden until the theme script runs, so the button never appears without working. -->
+<button type="button" class="icon-button theme-toggle" data-theme-toggle aria-label="Switch to dark mode" hidden>
+  <Icon name="moon" class="theme-icon theme-icon-moon" />
+  <Icon name="sun" class="theme-icon theme-icon-sun" />
 </button>
 
 <script>
-  const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
-  const icon = button?.querySelector('[data-theme-icon]');
-  const root = document.documentElement;
-  const system = matchMedia('(prefers-color-scheme: dark)');
-
-  function updateToggle() {
-    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : system.matches;
-    button?.setAttribute('aria-pressed', String(dark));
-    if (icon) icon.textContent = dark ? '☀' : '☾';
-  }
-
-  if (button) {
-    button.hidden = false;
-    updateToggle();
-    button.addEventListener('click', () => {
-      const next = button.getAttribute('aria-pressed') === 'true' ? 'light' : 'dark';
-      root.dataset.theme = next;
-      try { localStorage.setItem('theme', next); } catch { /* apply for this page */ }
-      updateToggle();
-    });
-    system.addEventListener('change', () => {
-      try {
-        const stored = localStorage.getItem('theme');
-        if (stored === 'dark' || stored === 'light') return;
-      } catch { /* follow system when the inline script could not set a theme */ }
-      if (root.dataset.theme) root.dataset.theme = system.matches ? 'dark' : 'light';
-      updateToggle();
-    });
-  }
+  import { initTheme } from '../scripts/theme';
+  initTheme();
 </script>
 
-<style>
-  .theme-toggle { padding-inline: 0; width: var(--touch); font-size: var(--text-brand); }
+<style is:global>
+  .theme-toggle { background: var(--color-surface-mid); }
+  .theme-toggle:hover { background: var(--color-surface-high); }
+  .theme-toggle .theme-icon-sun { display: none; }
+  :root[data-theme='dark'] .theme-toggle .theme-icon-moon { display: none; }
+  :root[data-theme='dark'] .theme-toggle .theme-icon-sun { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .theme-toggle .theme-icon-moon { display: none; }
+    :root:not([data-theme]) .theme-toggle .theme-icon-sun { display: block; }
+  }
 </style>

@@ -1,7 +1,199 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import Notice from '../../components/Notice.astro';
+import SegmentedToggle from '../../components/SegmentedToggle.astro';
+import NumberField from '../../components/NumberField.astro';
+import FormulaBox from '../../components/FormulaBox.astro';
+import SourceList from '../../components/SourceList.astro';
+import ResultRing from '../../components/ResultRing.astro';
+import RelatedArticle from '../../components/RelatedArticle.astro';
+import '../../styles/calculator.css';
+
+// Sources S8 and S9 of CALCULATION-SPEC.md section 0.4. The 1984 reports are cited but were not directly accessible.
+const sources = [
+  {
+    name: 'US Navy (2016)',
+    title: 'The Body Composition Assessment (BCA), Guide 4, JAN 2016',
+    href: 'https://dcp.psc.gov/ccmis/pdf_docs/Body%20Composition%20Assessment%20(BCA)%202016.pdf',
+  },
+  {
+    name: 'Hodgdon and Beckett (1984)',
+    title: 'Naval Health Research Center report 84-11, men (cited, not directly accessible during verification)',
+    href: 'https://apps.dtic.mil/sti/pdfs/ADA143890.pdf',
+  },
+  {
+    name: 'Hodgdon and Beckett (1984)',
+    title: 'Naval Health Research Center report 84-29, women (cited, not directly accessible during verification)',
+    href: 'https://apps.dtic.mil/sti/pdfs/ADA146456.pdf',
+  },
+];
 ---
-<BaseLayout title="Body Fat Calculator" description="The upcoming tool for estimating body fat percentage." noindex>
-  <h1>Body Fat Calculator</h1>
-  <p>Coming soon.</p>
+<BaseLayout
+  title="Body Fat Calculator"
+  description="Estimate body fat percentage from height, neck, waist and hip measurements (Hodgdon and Beckett 1984 circumference method). For adults aged 18 and older."
+>
+  <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Calculators', href: '/calculators/' }, { label: 'Body Fat Calculator' }]} />
+
+  <header class="calc-hero">
+    <span class="kicker">Circumference-based estimate</span>
+    <h1>Body Fat Calculator</h1>
+    <p>Estimate your body fat percentage from your height and your neck, waist and, for women, hip measurements. This calculator uses the Hodgdon and Beckett (1984) circumference method, developed for the US Navy.</p>
+  </header>
+
+  <div class="calc-grid">
+    <section class="card calc-panel" aria-labelledby="inputs-heading">
+      <h2 id="inputs-heading">Your Measurements</h2>
+      <noscript><p>This calculator needs JavaScript to run in your browser.</p></noscript>
+      <form id="bodyfat-form" class="calc-form" novalidate>
+        <SegmentedToggle
+          name="system"
+          legend="Measurement system"
+          options={[
+            { value: 'metric', label: 'Metric (cm, kg)', checked: true },
+            { value: 'imperial', label: 'Imperial (ft/in, lb)' },
+          ]}
+        />
+        <SegmentedToggle
+          name="sex"
+          legend="Biological sex"
+          note="Used by the equations"
+          noteId="sex-note"
+          options={[
+            { value: 'male', label: 'Male', checked: true },
+            { value: 'female', label: 'Female' },
+          ]}
+        />
+        <div class="hw-grid">
+          <div id="height-metric">
+            <NumberField id="height-cm" label="Height" unit="cm" placeholder="e.g. 178" hint="Standing, without shoes." />
+          </div>
+          <fieldset id="height-imperial" class="span-all" hidden>
+            <legend class="field-label">Height</legend>
+            <div class="field-pair">
+              <NumberField id="height-ft" label="Feet" unit="ft" inputmode="numeric" placeholder="e.g. 5" />
+              <NumberField id="height-in" label="Inches" unit="in" placeholder="e.g. 10" />
+            </div>
+            <p class="eligibility">Standing, without shoes.</p>
+          </fieldset>
+          <NumberField id="weight" label="Weight (optional)" unit="kg" unitId="weight-unit" placeholder="e.g. 76" hint="Only used to estimate fat mass and lean mass." />
+        </div>
+        <div class="field-pair">
+          <NumberField id="neck" label="Neck" unit="cm" unitId="neck-unit" placeholder="e.g. 38" hint="Just below the larynx (Adam's apple), on bare skin." />
+          <NumberField id="waist" label="Waist (abdomen at the navel)" unit="cm" unitId="waist-unit" placeholder="e.g. 84" hint="Across the navel, arms down at your sides, at the end of a normal relaxed breath out." />
+        </div>
+        <div id="hip-field" hidden>
+          <NumberField id="hip" label="Hip" unit="cm" unitId="hip-unit" placeholder="e.g. 98" hint="Around the fullest part of the buttocks as seen from the side, over thin fitted clothing." />
+        </div>
+        <p id="bf-group-error" class="group-error" role="alert" hidden></p>
+        <div class="form-actions">
+          <button type="submit" class="button primary"><Icon name="calculator" size={20} /> Calculate body fat</button>
+          <button type="reset" class="button secondary icon-only" aria-label="Reset"><Icon name="rotate-ccw" size={20} /></button>
+        </div>
+        <p class="eligibility">For adults aged 18 and older. This is a website eligibility policy, not a statement that the method is validated for every adult.</p>
+        <Notice icon="lock"><p>100% client-side: your data never leaves your device.</p></Notice>
+      </form>
+    </section>
+
+    <section class="card calc-panel" aria-labelledby="result-heading">
+      <h2 id="result-heading">Your Estimated Results</h2>
+      <p id="bf-announce" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+      <div>
+        <p id="result-empty" class="result-empty">Enter your measurements and press Calculate.</p>
+
+        <div id="result-ok" hidden>
+          <div class="bf-figure">
+            <ResultRing id="bf-ring" />
+            <div>
+              <p class="metric" aria-hidden="true"><span id="bf-value"></span> <small>%</small></p>
+              <p class="bf-label">Estimated body fat percentage <span class="estimate-tag">Estimate</span></p>
+              <p class="bf-sub">Hodgdon and Beckett (1984) circumference method.</p>
+            </div>
+          </div>
+          <div id="mass-tiles" class="mass-grid" hidden>
+            <div class="mass-tile">
+              <span class="metric-label">Estimated fat mass</span>
+              <p class="mass-value"><span id="fat-value"></span> <small id="fat-unit"></small></p>
+              <p class="card-note">Weight × body fat percentage</p>
+            </div>
+            <div class="mass-tile">
+              <span class="metric-label">Estimated lean mass (not fat)</span>
+              <p class="mass-value"><span id="lean-value"></span> <small id="lean-unit"></small></p>
+              <p class="card-note">All body mass that is not fat. This is not the same as muscle mass.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card calc-panel calc-section" aria-labelledby="method-heading">
+    <h2 id="method-heading"><Icon name="sigma" size={26} /> Formulas and method</h2>
+
+    <div class="method-group">
+      <h3>The equations</h3>
+      <p>The Hodgdon and Beckett (1984) circumference method, developed for the US Navy, estimates body fat from height and circumferences in inches. Centimetres are converted with inches = cm ÷ 2.54, and all logarithms are base 10.</p>
+      <div class="formula-grid stack">
+        <FormulaBox title="Men" tag="Percent body fat" headingLevel={4} wrap>
+          <Fragment slot="formula">%BF = 86.010 × log<sub>10</sub>(waist − neck) − 70.041 × log<sub>10</sub>(height) + 36.76</Fragment>
+          Waist is the abdomen measured at the navel. All lengths in inches.
+        </FormulaBox>
+        <FormulaBox title="Women" tag="Percent body fat" headingLevel={4} wrap>
+          <Fragment slot="formula">%BF = 163.205 × log<sub>10</sub>(waist + hip − neck) − 97.684 × log<sub>10</sub>(height) − 78.387</Fragment>
+          The hip is used only for women and is added to the waist before the neck is subtracted. All lengths in inches.
+        </FormulaBox>
+      </div>
+      <p class="note-box">Fat mass = weight × body fat percentage ÷ 100; lean mass = weight − fat mass (from the unrounded percentage). Lean mass is all mass that is not fat, not muscle alone. Weight is not used in the percentage.</p>
+    </div>
+
+    <div class="method-group">
+      <h3>How this was checked</h3>
+      <Notice icon="info">
+        <p>These equations (Hodgdon and Beckett, 1984) were checked by reproducing the lookup tables of the official US Navy Body Composition Assessment guide (2016 edition). The text of the original 1984 reports was not directly accessible. This is the classic 1984 circumference method; it is not the current official US Navy standard. The guide does not state how its tables were calculated.</p>
+      </Notice>
+      <p class="note-box">The Navy guide records measurements to the nearest half inch with set rounding directions and reads the result from a table. This calculator does not apply those rules; it uses your measurements as entered, so its result can differ from the Navy table procedure.</p>
+      <p>Citation: Hodgdon and Beckett, 1984, Naval Health Research Center reports 84-11 and 84-29.</p>
+    </div>
+
+    <div class="method-group">
+      <h3>Measuring</h3>
+      <p>Adapted from the US Navy Body Composition Assessment guide (2016 edition). These are not the military procedure.</p>
+      <ul class="measure-list">
+        <li><strong>Height:</strong> standing, without shoes.</li>
+        <li><strong>Neck:</strong> on bare skin, just below the larynx (Adam's apple), with the tape perpendicular to the long axis of the neck and not over the larynx. Look straight ahead with shoulders down and relaxed, keep the tape as close to horizontal as possible, and avoid involving the neck and shoulder (trapezius) muscles.</li>
+        <li><strong>Waist, men (abdomen):</strong> on bare skin, across the navel, with arms down at your sides, at the end of a normal relaxed breath out, without holding your breath.</li>
+        <li><strong>Natural waist, women:</strong> on bare skin, at the point of smallest abdominal circumference, usually about halfway between the navel and the lower end of the breastbone. If that point is hard to find, measure at several likely points and use the smallest. Keep the tape level (parallel to the floor), arms at your sides, at the end of a normal relaxed breath out.</li>
+        <li><strong>Hips, women:</strong> over thin fitted clothing only (no shaping garments), with the tape level and passing over the greatest protrusion of the buttocks as seen from the side, with enough tension to limit the effect of clothing.</li>
+      </ul>
+      <p>Measuring twice and using the average can help. This is a suggestion, not the Navy rule.</p>
+    </div>
+
+    <div class="method-row">
+      <p>Both measurements and results are educational estimates, and no category or health range is given.</p>
+      <div class="source-box">
+        <SourceList heading="Sources" sources={sources} />
+      </div>
+    </div>
+  </section>
+
+  <section class="card calc-panel calc-section" aria-labelledby="limits-heading">
+    <h2 id="limits-heading">Limitations</h2>
+    <ul class="limit-list">
+      <li>A circumference equation gives an estimate. Individual results vary, and it is not a body-composition scan.</li>
+      <li>The method was developed for military screening using measurements of Navy personnel.</li>
+      <li>Results depend on how carefully the measurements are taken.</li>
+    </ul>
+    <div class="note-box">
+      <Notice icon="info">
+        <p><strong>Educational estimate only.</strong> This calculator gives a mathematical estimate for general information. It is not a medical assessment, and it does not say whether a body-fat percentage is low, healthy or high.</p>
+      </Notice>
+    </div>
+  </section>
+
+  <RelatedArticle calculator="body-fat" />
+
+  <script>
+    import '../../scripts/body-fat-page.ts';
+  </script>
 </BaseLayout>

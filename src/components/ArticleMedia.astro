@@ -1,0 +1,42 @@
+---
+// Article image (16:9) or, when no licensed image has been approved yet, a neutral token-coloured illustration
+// (DESIGN-SPEC.md 12.2: "the article uses a neutral illustration or no image; the missing asset is documented").
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { calculators } from '../config/site';
+import type { Article } from '../lib/journal';
+
+interface Props {
+  article: Article;
+  /** Intended display width in CSS px, for the generated sizes. */
+  width?: number;
+  eager?: boolean;
+}
+const { article, width = 800, eager = false } = Astro.props;
+const { image, imageAlt, relatedCalculator } = article.data;
+const calculator = calculators.find((c) => c.slug === relatedCalculator);
+---
+<div class="media">
+  {image ? (
+    <Image src={image} alt={imageAlt ?? ''} width={width} height={Math.round((width * 9) / 16)} format="webp" loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : undefined} />
+  ) : (
+    <div class="illustration" aria-hidden="true">
+      <Icon name={calculator?.icon ?? 'scale'} size={56} />
+    </div>
+  )}
+</div>
+<style>
+  .media { aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-surface-low); }
+  .media :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .illustration {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 20% 25%, var(--color-primary-fixed) 0, transparent 55%),
+      radial-gradient(circle at 80% 80%, var(--color-secondary-container) 0, transparent 50%),
+      var(--color-surface-low);
+    color: var(--color-primary);
+  }
+</style>

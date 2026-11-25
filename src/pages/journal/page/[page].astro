@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import ArticleCard from '../../../components/ArticleCard.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { getPublishedArticles, pageItems, totalPages } from '../../../lib/journal';
+import '../../../styles/pages.css';
+
+// Listing pages 2, 3, ... (DESIGN-SPEC.md 9.1). They exist only when there are more than nine published articles:
+// the tenth published article automatically creates /journal/page/2/. There is no /journal/page/1/.
+export async function getStaticPaths() {
+  const articles = await getPublishedArticles();
+  const pages = totalPages(articles.length);
+  return Array.from({ length: Math.max(0, pages - 1) }, (_, i) => {
+    const page = i + 2;
+    return { params: { page: String(page) }, props: { page, pages, items: pageItems(articles, page) } };
+  });
+}
+
+const { page, pages, items } = Astro.props;
+---
+<BaseLayout title={`Health Journal – Page ${page}`} description={`Page ${page} of ${pages} of the BodyMetrics Lab Health Journal: evidence-informed articles with their sources listed at the end.`}>
+  <PageHero
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Health Journal', href: '/journal/' }, { label: `Page ${page}` }]}
+    kicker="Evidence-informed insights"
+    title="Health Journal"
+    intro={`Page ${page} of ${pages}.`}
+  />
+  <div class="card-grid">
+    {items.map((article) => <ArticleCard article={article} />)}
+  </div>
+  <Pagination current={page} total={pages} />
+</BaseLayout>

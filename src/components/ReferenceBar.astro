@@ -1,0 +1,83 @@
+---
+// BMI reference spectrum (DESIGN-SPEC.md 7, 10.2). Segments are labelled with text; the marker shows the value.
+// The marker position and the active segment are set by script (src/scripts/bmi-page.ts).
+import { CATEGORIES } from '../calculators/bmi.ts';
+
+const segments = [
+  { group: 'underweight', label: 'Underweight', range: CATEGORIES.underweight.range, width: 14 },
+  { group: 'healthy', label: 'Healthy Weight', range: CATEGORIES.healthy.range, width: 26 },
+  { group: 'overweight', label: 'Overweight', range: CATEGORIES.overweight.range, width: 20 },
+  { group: 'obesity', label: 'Obesity', range: '30.0 or greater', width: 40 },
+];
+---
+<div class="ref-bar">
+  <div class="ref-bar-track" aria-hidden="true">
+    {segments.map((s) => <span class="seg" data-group={s.group} style={`flex-basis:${s.width}%`}></span>)}
+    <span class="marker" id="bmi-marker" hidden><span id="bmi-marker-value"></span></span>
+  </div>
+  <ul class="ref-bar-legend">
+    {segments.map((s) => (
+      <li data-group={s.group}>
+        <span class="legend-name">{s.label}</span>
+        <span class="legend-range">{s.range}</span>
+      </li>
+    ))}
+  </ul>
+  <p class="ref-bar-classes">
+    Obesity classes: Class 1 {CATEGORIES.obesity1.range}; Class 2 {CATEGORIES.obesity2.range}; Class 3 {CATEGORIES.obesity3.range} kg/m².
+  </p>
+</div>
+<style>
+  .ref-bar-track {
+    position: relative;
+    display: flex;
+    gap: 3px;
+    height: 0.75rem;
+    margin-block: 2.25rem 0.75rem;
+  }
+  .seg { height: 100%; background: var(--color-surface-highest); border-radius: var(--radius-full); }
+  .seg.active { background: var(--color-secondary); }
+  .marker {
+    position: absolute;
+    inset-block-end: 100%;
+    inset-inline-start: calc(var(--pos, 50) * 1%);
+    transform: translateX(-50%);
+    margin-block-end: 0.35rem;
+  }
+  .marker > span {
+    display: block;
+    padding: 0.125rem 0.625rem;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: var(--fs-label-sm);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .marker::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    margin-inline: auto;
+    border-inline: 5px solid transparent;
+    border-block-start: 5px solid var(--color-primary);
+  }
+  .ref-bar-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ref-bar-legend li { display: flex; flex-direction: column; font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+  .legend-name { font-weight: 600; color: var(--color-on-surface); }
+  .ref-bar-legend li.active .legend-name { color: var(--color-primary); }
+  .ref-bar-legend li.active .legend-name::after { content: ' (your result)'; font-weight: 500; }
+  .legend-range { font-size: var(--fs-label-sm); }
+  .ref-bar-classes { margin: var(--space-sm) 0 0; font-size: var(--fs-label-sm); color: var(--color-on-surface-variant); }
+  @media (min-width: 40rem) {
+    .ref-bar-legend { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+</style>
