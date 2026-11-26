@@ -111,20 +111,21 @@ These are definitions, not measurements. **Checked against NIST (S23):** NIST Sp
 
 ### 1.3 Input validation (owner-approved technical boundaries) — POLICY
 
-**Order of operations (mandatory):** read the raw text → parse the number → **convert to the canonical metric unit** (cm, kg; feet and inches are combined into inches first: `inches = feet × 12 + inches`, then `cm = inches × 2.54`) → **validate** → calculate. Validation is always done on the converted canonical value, so imperial and metric input are accepted or rejected consistently. Limits shown in imperial are the converted values, rounded for display only.
+**METRIC-ONLY POLICY (owner decision 2026-11-26, Version 1).** All three calculators (BMI, BMR & TDEE, Body Fat) accept **metric units only**: height, neck, waist and hip in **cm**, weight in **kg**; energy results in **kcal/day**. There is **no** Metric/Imperial toggle, no feet, inches or pounds field, no imperial display option and no other unit selector. Numbers are typed with **English digits and a decimal point only** (for example `178`, `84.5`); unit text inside a number field (`84 cm`), feet-and-inches notation (`5'10`), Arabic-Indic digits and the Arabic decimal separator are **not** accepted and give a clear message. The existing tolerance for a single ASCII comma as the decimal separator (`84,5`) is kept unchanged, because it is approved behaviour and harmless; this is flagged to the owner as a decision point. The internal inch conversion that the Navy body-fat equations require (`inches = cm / 2.54`, 4.3) is **not** a user-facing unit and stays. Imperial reference cases elsewhere in this file (BMI B1, B8–B16, R4, R5; TDEE T7; body fat F8; ideal weight) are kept as **historical**, labelled "not implemented in Version 1"; they are not tests of any public interface.
 
-| Input | Technical limit (canonical) | Same limit in imperial (display only) |
-|---|---|---|
-| Height | 100–250 cm | 39.4–98.4 in |
-| Weight | 20–500 kg | 44.1–1,102.3 lb |
-| Age | whole number, 1–120 | same |
-| Neck, waist, hip | 10–250 cm | 3.9–98.4 in |
-| Energy (macros) | 500–10,000 kcal/day | same |
-| Macro percentages | 0–100% each, total exactly 100% | same |
+**Order of operations (mandatory):** read the raw text → parse the number (English digits and a decimal point) → **validate against the metric limits** (the typed value is already cm or kg) → calculate. (The earlier imperial conversion step was removed with the metric-only policy.)
 
-(The earlier draft gave "3 ft 3 in" and "44 lb" as the minimums. Those convert to 99.06 cm and 19.96 kg, which fall just below the metric minimums, so they are replaced by the converted values above.)
+| Input | Technical limit |
+|---|---|
+| Height | 100–250 cm |
+| Weight | 20–500 kg |
+| Age | whole number, 1–120 |
+| Neck, waist, hip | 10–250 cm |
+| Energy (macros, Version 2) | 500–10,000 kcal/day |
+| Macro percentages (Version 2) | 0–100% each, total exactly 100% |
 
-These are **technical validation boundaries** that catch typos and unit mix-ups. They are **not medical thresholds, safety limits, or recommended or healthy ranges** and must never be described as such. Numbers must be finite, positive and parsed from decimal text (a comma decimal separator is accepted). Empty, `NaN`, zero, negative and out-of-range values show an inline error next to the field and produce no result. Boundary values are inclusive (100 cm and 250 cm are valid; 99.99 and 250.01 are not).
+
+These are **technical validation boundaries** that catch typos and unit mix-ups. They are **not medical thresholds, safety limits, or recommended or healthy ranges** and must never be described as such. Numbers must be finite, positive and parsed from decimal text with English digits and a decimal point (an ASCII comma is also tolerated; see the metric-only policy above). Empty, `NaN`, zero, negative and out-of-range values show an inline error next to the field and produce no result. Boundary values are inclusive (100 cm and 250 cm are valid; 99.99 and 250.01 are not).
 
 **Calculator eligibility (POLICY, enforced after the limits above):**
 | Calculator | Eligibility rule |
@@ -151,7 +152,7 @@ No input or result is stored, logged, sent or placed in a URL. No analytics even
 2. **Boundary values** for every limit and threshold: exactly on, just below, just above.
 3. **Invalid inputs:** empty, text, `NaN`, negative, zero, out of range, inconsistent (for example waist smaller than neck).
 4. **Both sexes tested separately** wherever the method has sex-specific constants, and (BMI) a test proving that sex does not change the result.
-5. **Metric and imperial** input giving the same result within the stated tolerance.
+5. **Metric-only interface:** no imperial toggle, no feet, inches or pounds field in any public calculator (page-level test); decimal metric values work; non-metric or non-ASCII text is rejected with a clear message.
 6. **Rounding:** tests that prove display rounding does not change a classification (BMI boundary cases) and that half cases round up.
 7. A test that rereads the constants from this file's tables, or a comment in code referencing the section number, so a change in either is noticed.
 
@@ -168,16 +169,14 @@ Adult BMI for people aged **20 and older** (S1, S2). Result: BMI value, CDC cate
 ### 2.2 Inputs
 | Input | Unit | Notes |
 |---|---|---|
-| Measurement system | metric / imperial | |
 | Age | years | whole number; decides eligibility (2.4) |
 | Sex | male / female | **kept visible; has no effect on any BMI value, category, range or message** |
-| Height | cm, or ft + in | limits in 1.3 |
-| Weight | kg, or lb | limits in 1.3 |
+| Height | cm | limits in 1.3 |
+| Weight | kg | limits in 1.3 |
 
 ### 2.3 Formula — VERIFIED (S3, S1; WHO S5)
 - Metric: `BMI = weight (kg) / [height (m)]²` (S1, S5). S3 also gives `[weight (kg) / height (cm) / height (cm)] × 10,000`, which is the same value.
-- Imperial: `BMI = weight (lb) / [height (in)]² × 703` (S3).
-- Use the formula for the system the user selected; do not convert imperial input to metric first. (Validation still uses the converted value, 1.3.)
+- Imperial: `BMI = weight (lb) / [height (in)]² × 703` (S3) — **historical, not implemented** (Version 1 is metric-only, 1.3). The page shows only the metric formula.
 
 ### 2.4 Age — VERIFIED (S1, S2, S4) and POLICY
 - Age ≥ 20: adult categories apply ("BMI categories for adults 20 and older", S1; S1 states they apply regardless of age, sex or race).
@@ -214,7 +213,7 @@ WHO (S5) confirms only overweight ≥ 25 and obesity ≥ 30. WHO's full adult ta
 ### 2.8 Healthy-weight range for the entered height — derived (POLICY)
 The weights whose exact BMI is at least 18.5 and below 25 for the entered height. Compute with integer scaling (never floating-point `ceil` on raw products without an epsilon):
 - metric (h in metres, 0.1 kg resolution): `min = ceil(18.5 × h² × 10) / 10`; `max = ceil(25 × h² × 10) / 10 − 0.1` (the largest 0.1 kg value whose BMI is still below 25);
-- imperial (h in inches, whole pounds): `min = ceil(18.5 × h² / 703)`; `max = ceil(25 × h² / 703) − 1`.
+- imperial (h in inches, whole pounds): `min = ceil(18.5 × h² / 703)`; `max = ceil(25 × h² / 703) − 1` — **historical, not implemented** (metric-only).
 Shown as "about 58.7–79.2 kg for 178 cm". It restates the category boundaries; it is not a recommendation or a target. The rule for the note in 2.6 does not apply to this range.
 
 ### 2.9 Limitations to state on the page (S1–S3)
@@ -225,7 +224,7 @@ Shown as "about 58.7–79.2 kg for 178 cm". It restates the category boundaries;
 - **UNVERIFIED (not included):** statements about pregnancy or ethnicity-specific cut-offs. None of the CDC pages read mention them.
 
 ### 2.10 Reference test cases
-`r1()` = one-decimal round half up. Category is always from the **exact** value.
+`r1()` = one-decimal round half up. Category is always from the **exact** value. **Rows whose system is "imperial" are historical (CDC worked examples) and are not tested: Version 1 is metric-only (1.3).** The metric rows and the boundary logic are tested; the exact-threshold behaviour is additionally covered by metric boundary cases in `bmi.test.ts`.
 
 | # | System | Sex | Age | Height | Weight | Exact BMI | Display | Category | Note shown? |
 |---|---|---|---|---|---|---|---|---|---|
@@ -268,7 +267,6 @@ Neither value is a calorie target, a diet plan or advice to eat a given amount.
 ### 3.2 Inputs
 | Input | Unit | Notes |
 |---|---|---|
-| Measurement system | metric / imperial | conversions per 1.2, validation per 1.3 |
 | Sex | male / female | biological sex used as the equations' sex term |
 | Age | years | **whole number on the page** (valid 1–120; results only for **19–78**, see 3.3). The calculation functions may accept decimal ages only to reproduce the published examples TE2 and TE3 (3.9); the page's validator never passes a decimal age on (owner decision 2026-11-23). |
 | Height | cm | |
@@ -355,7 +353,7 @@ S7 gives 767 adults from the older IOM data in one table and 842 in the text; th
 | T4 | F | 25 | 160 cm | 55 kg | 1264 → **1,264** | 1968.90 → 1,969 | 2124.22 → 2,124 | 2260.10 → 2,260 | 2478.58 → 2,479 |
 | T5 | M | 19 | 178 cm | 74 kg | 1762.5 → **1,763** | 2747.70 → 2,748 | 2958.66 → 2,959 | 3136.95 → 3,137 | 3469.07 → 3,469 |
 | T6 | F | 78 | 160 cm | 55 kg | 999 → **999** | 1597.37 → 1,597 | 1752.69 → 1,753 | 1888.57 → 1,889 | 2107.05 → 2,107 |
-| T7 | imperial | | 70.0787 in | 163.14 lb | same as T1 within 0.5 kcal | | | | |
+| T7 | — | | — | — | **historical, not implemented** (imperial input removed, metric-only policy 1.3) | | | | |
 | T8 | any | 18 or 79 | | | no estimate (age rule) | | | | |
 | T9 | any | 19 and 78 | | | accepted (boundaries inclusive) | | | | |
 
@@ -406,11 +404,11 @@ Here "waist" is the abdomen at the navel for men and the natural waist for women
 | Input | Men | Women | Unit |
 |---|---|---|---|
 | Sex | ✓ | ✓ | |
-| Height | ✓ | ✓ | cm or ft + in |
-| Neck | ✓ | ✓ | cm or in |
-| Waist | abdomen, across the navel | natural waist | cm or in |
-| Hip | not shown, not used | **required** | cm or in |
-| Weight | optional (fat and lean mass only) | optional | kg or lb |
+| Height | ✓ | ✓ | cm |
+| Neck | ✓ | ✓ | cm |
+| Waist | abdomen, across the navel | natural waist | cm |
+| Hip | not shown, not used | **required** | cm |
+| Weight | optional (fat and lean mass only) | optional | kg |
 
 The hip field appears only when Female is selected and is required then. The calculator never computes from an incomplete set.
 
@@ -426,18 +424,20 @@ On-page measurement instructions (adapted from S8; do not claim they are the mil
 
 ### 4.5 Validation specific to this calculator
 **Order (owner decision 2026-11-24):** parse → convert to canonical cm/kg → validate each field's limits → logarithm-domain check → calculate → plausibility check. Field-level errors (empty, not a number, out of range, and for women a missing hip) are all shown first; the domain and plausibility checks run only when every required field is a valid number.
-- **Missing hip (female only):** "Enter your hip measurement." (on the hip field). For a male the hip is hidden, ignored and never validated (F7).
+- **Missing hip (female only):** "Enter your hip measurement in centimetres." (on the hip field; wording updated 2026-11-26 with the metric-only policy). For a male the hip is hidden, ignored and never validated (F7).
 - **Domain, men (`waist − neck ≤ 0`):** "The waist measurement must be larger than the neck measurement." No result.
 - **Domain, women (`waist + hip − neck ≤ 0`):** "The waist and hip measurements added together must be larger than the neck measurement." No result.
 - **Implausible result (percentage ≤ 0 or > 100):** "These measurements do not give a possible body-fat percentage (0% or below, or above 100%). Check each measurement and the selected units." No result (0 and 100 are mathematical bounds, not health claims).
 - **Association and announcement:** domain and plausibility errors are shown in one alert directly under the measurement group; the involved fields (neck and waist, plus hip for women, and height for the plausibility case) are marked `aria-invalid` and reference the alert through `aria-describedby`; focus moves to the first involved field; the polite status region announces "No result. Please correct the highlighted fields."
 - **Optional weight (owner decision D7):** empty → percentage without fat and lean mass; entered but invalid → error and no calculation.
 - No result may ever contain NaN or Infinity.
-- Limits in 1.3 apply (neck, waist and hip 10–250 cm, 3.9–98.4 in, on the converted value), and the website policy age ≥ 18 (the page states it; there is no age input and the calculation uses no age).
+- **Messages (owner decision 2026-11-26):** every field message states the expected input in plain words, for example "Enter your waist in centimetres, using digits and a decimal point only (for example 84.5). Do not add units." Range messages give the limits in cm.
+- **Live correction (owner decision 2026-11-26, from the diagnostic of the reviewer's report):** when a field is edited, that field's error message and invalid styling are cleared immediately; and any previously shown result is hidden as soon as any measurement, the sex or the weight changes, so an outdated result can never remain on screen. The group (domain or plausibility) alert is cleared when any field it refers to is edited. A result appears only after Calculate.
+- Limits in 1.3 apply (neck, waist and hip 10–250 cm), and the website policy age ≥ 18 (the page states it; there is no age input and the calculation uses no age).
 
 ### 4.6 Output
 - Body-fat percentage, one decimal (half up), computed from the continuous equation (never from a lookup table).
-- If weight is entered: fat mass = `weight × %BF / 100`; "lean mass (not fat)" = `weight − fat mass`, both from the **unrounded** percentage, shown with one decimal in kg (metric) or lb (imperial), each labelled as an estimate (owner decision D9). The second is labelled as everything that is not fat, not as muscle. Hidden if weight is empty. Fat and lean mass are rounded independently.
+- If weight is entered: fat mass = `weight × %BF / 100`; "lean mass (not fat)" = `weight − fat mass`, both from the **unrounded** percentage, shown with one decimal in kg, each labelled as an estimate (owner decision D9). The second is labelled as everything that is not fat, not as muscle. Hidden if weight is empty. Fat and lean mass are rounded independently.
 - The result ring fills from 0 to 100 percent in one colour; it carries no bands and no health meaning, and the figure has a text equivalent (owner decision D3).
 - **No category, band, colour range or "within healthy range" statement.** No health-status badge.
 - **No accuracy claim and no error percentage** anywhere (owner decision). The earlier draft's standard-error and bias figures are removed.
@@ -457,7 +457,7 @@ On-page measurement instructions (adapted from S8; do not claim they are the mil
 | F5 | M | 178 cm | 38 cm | 38 cm | — | — | 0 | — | error |
 | F6 | F | 165 cm | 32 cm | 72 cm | missing | — | — | — | error |
 | F7 | M with a hip value | | | | any | | | same as without the hip | hip ignored |
-| F8 | M/F | metric and imperial versions of F3, F4 | | | | | | equal within 0.01 | |
+| F8 | M/F | **historical, not implemented** (imperial input removed). The cm → inch conversion inside the equations is tested through F3 and F4 (and through the Navy-table reproduction), which are metric cases. | | | | | | | |
 
 **Table-reproduction test (required):** the implementation must reproduce all **1,996** numeric cells of the S8 tables (circumference value and height from the table headers; result rounded to a whole number) and be consistent with the **144** cells printed as limits, as an automated test against the independently extracted fixture `src/calculators/fixtures/navy-bca-2016-percent-body-fat.json` (provenance, extraction script and limitations in the README beside it). The fixture's counts are asserted so a truncated file fails. The expected values are the printed numbers, never values produced by the equations under test. The 8 spot checks in 4.3 are part of it.
 
@@ -471,9 +471,8 @@ Historical height-based estimates of "ideal body weight" (IBW). They were built 
 ### 5.2 Inputs
 | Input | Unit | Notes |
 |---|---|---|
-| Measurement system | metric / imperial | |
 | Sex | male / female | separate constants |
-| Height | cm, or ft + in | eligibility: at least 152.4 cm (60 in) |
+| Height | cm | eligibility: at least 152.4 cm (60 in) |
 
 No age field (no verified formula uses age).
 

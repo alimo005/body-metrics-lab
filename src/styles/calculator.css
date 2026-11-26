@@ -35,8 +35,6 @@
 }
 .field-note { font-size: var(--fs-label-sm); color: var(--color-on-surface-variant); }
 .calc-form { display: grid; gap: var(--space-md); }
-.calc-form fieldset.height-imperial { border: 0; margin: 0; padding: 0; min-width: 0; }
-.calc-form fieldset.height-imperial legend { padding: 0; }
 .field-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
 .form-actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
 .form-actions .button { flex: 1 1 9rem; }
@@ -171,6 +169,7 @@ details.limits .limit-list { padding: var(--space-md) var(--space-md) var(--spac
 .button.icon-only { flex: 0 0 var(--touch); width: var(--touch); padding: 0; }
 .eligibility { margin: 0; font-size: var(--fs-label-sm); color: var(--color-on-surface-variant); }
 .formula-grid.stack { grid-template-columns: minmax(0, 1fr); }
+.formula-grid > :only-child { grid-column: 1 / -1; }
 .measure-list { margin: 0 0 var(--space-sm); padding: 0; list-style: none; display: grid; gap: var(--space-sm); font-size: var(--fs-small); color: var(--color-on-surface-variant); }
 .measure-list strong { color: var(--color-on-surface); }
 .source-box .source-list a { align-items: flex-start; }

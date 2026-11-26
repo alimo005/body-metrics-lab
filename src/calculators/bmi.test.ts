@@ -1,4 +1,6 @@
 // Reference cases, boundary cases and invalid-input cases from CALCULATION-SPEC.md section 2.10 and 1.6.
+// Version 1 is metric-only (CALCULATION-SPEC.md 1.3): the imperial reference rows (B1, B8-B16, R4, R5) are historical and are not tested here;
+// the exact-threshold behaviour they illustrated is covered by the metric boundary and threshold-scan tests below.
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -9,23 +11,12 @@ import {
   healthyWeightRange,
   spectrumPosition,
 } from './bmi.ts';
-import type { BmiEvaluation, RawInput, Sex, System } from './bmi.ts';
+import type { BmiEvaluation, RawInput, Sex } from './bmi.ts';
 
 type Ok = Extract<BmiEvaluation, { status: 'ok' }>;
 
 function metric(age: number | string, heightCm: number | string, weightKg: number | string, sex: Sex = 'male'): RawInput {
-  return { system: 'metric', sex, age: String(age), heightMain: String(heightCm), heightInches: '', weight: String(weightKg) };
-}
-function imperial(age: number | string, heightIn: number, weightLb: number | string, sex: Sex = 'male'): RawInput {
-  const feet = Math.floor(heightIn / 12);
-  return {
-    system: 'imperial',
-    sex,
-    age: String(age),
-    heightMain: String(feet),
-    heightInches: String(Math.round((heightIn - feet * 12) * 1e6) / 1e6),
-    weight: String(weightLb),
-  };
+  return { sex, age: String(age), height: String(heightCm), weight: String(weightKg) };
 }
 function ok(result: BmiEvaluation): Ok {
   assert.equal(result.status, 'ok', JSON.stringify(result));
@@ -34,22 +25,12 @@ function ok(result: BmiEvaluation): Ok {
 
 describe('B-cases: BMI value, category and boundary note (CALCULATION-SPEC.md 2.10)', () => {
   const cases: Array<{ id: string; input: RawInput; exact: number; display: string; category: string; note: boolean }> = [
-    { id: 'B1 CDC worked example 200 lb, 68 in', input: imperial(40, 68, 200), exact: 30.4066, display: '30.4', category: 'Class 1 Obesity', note: false },
     { id: 'B2 male 178 cm 74 kg', input: metric(28, 178, 74, 'male'), exact: 23.3556, display: '23.4', category: 'Healthy Weight', note: false },
     { id: 'B3 female 178 cm 74 kg', input: metric(28, 178, 74, 'female'), exact: 23.3556, display: '23.4', category: 'Healthy Weight', note: false },
     { id: 'B4 50 kg', input: metric(30, 178, 50), exact: 15.7808, display: '15.8', category: 'Underweight', note: false },
     { id: 'B5 80 kg', input: metric(30, 178, 80), exact: 25.2493, display: '25.2', category: 'Overweight', note: false },
     { id: 'B6 95 kg (29.984 shows 30.0)', input: metric(30, 178, 95), exact: 29.9836, display: '30.0', category: 'Overweight', note: true },
     { id: 'B7 111 kg', input: metric(30, 178, 111), exact: 35.0335, display: '35.0', category: 'Class 2 Obesity', note: false },
-    { id: 'B8 150 lb at 65 in (24.959 shows 25.0)', input: imperial(35, 65, 150, 'female'), exact: 24.9586, display: '25.0', category: 'Healthy Weight', note: true },
-    { id: 'B9 160 lb at 70 in', input: imperial(35, 70, 160, 'female'), exact: 22.9551, display: '23.0', category: 'Healthy Weight', note: false },
-    { id: 'B10 124 lb at 69 in', input: imperial(30, 69, 124), exact: 18.3096, display: '18.3', category: 'Underweight', note: false },
-    { id: 'B11 125 lb at 69 in', input: imperial(30, 69, 125), exact: 18.4573, display: '18.5', category: 'Underweight', note: true },
-    { id: 'B12 168 lb at 69 in', input: imperial(30, 69, 168), exact: 24.8066, display: '24.8', category: 'Healthy Weight', note: false },
-    { id: 'B13 169 lb at 69 in', input: imperial(30, 69, 169), exact: 24.9542, display: '25.0', category: 'Healthy Weight', note: true },
-    { id: 'B14 203 lb at 69 in', input: imperial(30, 69, 203), exact: 29.9746, display: '30.0', category: 'Overweight', note: true },
-    { id: 'B15 237 lb at 69 in', input: imperial(30, 69, 237), exact: 34.995, display: '35.0', category: 'Class 1 Obesity', note: true },
-    { id: 'B16 271 lb at 69 in', input: imperial(30, 69, 271), exact: 40.0153, display: '40.0', category: 'Class 3 Obesity', note: false },
     { id: 'B18 age exactly 20 is adult', input: metric(20, 175, 70), exact: 22.8571, display: '22.9', category: 'Healthy Weight', note: false },
   ];
   for (const c of cases) {
@@ -62,9 +43,9 @@ describe('B-cases: BMI value, category and boundary note (CALCULATION-SPEC.md 2.
     });
   }
 
-  it('the boundary note names the exact value (B8 example from the owner)', () => {
-    const r = ok(evaluateBmi(imperial(35, 65, 150, 'female')));
-    assert.equal(r.boundaryNote, 'BMI is shown rounded to one decimal. Your category is determined from the exact, unrounded BMI (24.959).');
+  it('the boundary note names the exact value (B6: 95 kg at 178 cm)', () => {
+    const r = ok(evaluateBmi(metric(30, 178, 95)));
+    assert.equal(r.boundaryNote, 'BMI is shown rounded to one decimal. Your category is determined from the exact, unrounded BMI (29.984).');
   });
 });
 
@@ -95,9 +76,9 @@ describe('category is decided from the exact value, never the rounded one', () =
     assert.equal(categorize(80).id, 'obesity3');
   });
   it('a value that rounds up to a threshold stays in the lower category and gets the note', () => {
-    const r = ok(evaluateBmi(imperial(30, 69, 169)));
-    assert.equal(r.display, '25.0');
-    assert.equal(r.category.id, 'healthy');
+    const r = ok(evaluateBmi(metric(30, 178, 95)));
+    assert.equal(r.display, '30.0');
+    assert.equal(r.category.id, 'overweight');
     assert.ok(r.boundaryNote);
   });
 });
@@ -105,7 +86,6 @@ describe('category is decided from the exact value, never the rounded one', () =
 describe('threshold scan: classification follows the exact BMI, verified with integer arithmetic', () => {
   // BMI >= num/den, tested without floating point:
   //   metric (H whole cm, W in tenths of kg):  (W/10) x 10000 / H^2 >= num/den  <=>  W x 1000 x den >= num x H^2
-  //   imperial (in whole inches, lb whole):    lb x 703 / in^2 >= num/den       <=>  lb x 703 x den >= num x in^2
   const thresholds: Array<{ name: string; num: number; den: number }> = [
     { name: '18.5', num: 37, den: 2 },
     { name: '25', num: 25, den: 1 },
@@ -132,22 +112,6 @@ describe('threshold scan: classification follows the exact BMI, verified with in
     }
     assert.ok(checked > 3000);
   });
-  it('imperial: every pound in a window around each threshold, for heights 40 to 98 inches', () => {
-    let checked = 0;
-    for (let inches = 40; inches <= 98; inches += 1) {
-      for (const t of thresholds) {
-        const first = Math.ceil((t.num * inches * inches) / (703 * t.den));
-        for (let lb = first - 3; lb <= first + 3; lb += 1) {
-          if (lb < 45 || lb > 1100) continue;
-          const truth = expectedId((x) => lb * 703 * x.den >= x.num * inches * inches);
-          const r = ok(evaluateBmi(imperial(30, inches, lb)));
-          assert.equal(r.category.id, truth, `${inches} in, ${lb} lb, exact ${r.exact}`);
-          checked += 1;
-        }
-      }
-    }
-    assert.ok(checked > 1000);
-  });
   it('shows 18.5, 25 and 30 exactly at the threshold (metric 200 cm) and one step either side', () => {
     const cases: Array<[number, number, string, number, string]> = [
       // threshold weight, threshold BMI, label at threshold, step below weight is 0.1 kg
@@ -170,9 +134,6 @@ describe('threshold scan: classification follows the exact BMI, verified with in
     assert.equal(below.category.id, 'healthy');
     assert.ok(below.boundaryNote);
     assert.equal(ok(evaluateBmi(metric(30, 178, 79.3))).category.id, 'overweight');
-    // imperial 69 in: 203 lb is 29.975 (shows 30.0, Overweight); 204 lb is 30.1 (Class 1)
-    assert.equal(ok(evaluateBmi(imperial(30, 69, 203))).category.id, 'overweight');
-    assert.equal(ok(evaluateBmi(imperial(30, 69, 204))).category.id, 'obesity1');
   });
 });
 
@@ -184,9 +145,6 @@ describe('sex never changes the adult BMI result (B2 and B3)', () => {
       const b = ok(evaluateBmi(metric(age, h, w, 'female')));
       assert.deepEqual({ ...a }, { ...b });
     }
-    const i1 = ok(evaluateBmi(imperial(35, 66, 140, 'male')));
-    const i2 = ok(evaluateBmi(imperial(35, 66, 140, 'female')));
-    assert.deepEqual({ ...i1 }, { ...i2 });
   });
 });
 
@@ -230,19 +188,6 @@ describe('input validation on canonical units (CALCULATION-SPEC.md 1.3)', () => 
     assert.ok(errors(evaluateBmi(metric(30, 175, 19.99))).weight);
     assert.ok(errors(evaluateBmi(metric(30, 175, 500.01))).weight);
   });
-  it('validates imperial input after converting to canonical units', () => {
-    // 100 cm = 39.3701 in: 39.37 in is 99.9998 cm (below), 39.38 in is accepted.
-    assert.ok(errors(evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '3', heightInches: '3.37', weight: '110' })).height);
-    assert.equal(evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '3', heightInches: '3.38', weight: '110' }).status, 'ok');
-    // 250 cm = 98.4252 in.
-    assert.equal(evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '8', heightInches: '2.42', weight: '300' }).status, 'ok');
-    assert.ok(errors(evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '8', heightInches: '2.43', weight: '300' })).height);
-    // 20 kg = 44.0925 lb; 500 kg = 1102.3113 lb.
-    assert.ok(errors(evaluateBmi(imperial(30, 65, 44.09))).weight);
-    assert.equal(evaluateBmi(imperial(30, 65, 44.1)).status, 'ok');
-    assert.equal(evaluateBmi(imperial(30, 65, 1102.3)).status, 'ok');
-    assert.ok(errors(evaluateBmi(imperial(30, 65, 1102.32))).weight);
-  });
   it('rejects empty, text, negative, zero and NaN values with a message for each field', () => {
     const r = evaluateBmi(metric(30, '', ''));
     assert.deepEqual(Object.keys(errors(r)).sort(), ['height', 'weight']);
@@ -254,13 +199,23 @@ describe('input validation on canonical units (CALCULATION-SPEC.md 1.3)', () => 
   it('accepts a comma decimal separator', () => {
     assert.equal(ok(evaluateBmi(metric(30, '175,5', '70,5'))).display, ok(evaluateBmi(metric(30, '175.5', '70.5'))).display);
   });
-  it('requires feet in imperial mode but treats empty inches as zero', () => {
-    const noFeet = evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '', heightInches: '10', weight: '150' });
-    assert.ok(errors(noFeet).height);
-    const noInches = ok(evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '5', heightInches: '', weight: '150' }));
-    const zeroInches = ok(evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '5', heightInches: '0', weight: '150' }));
-    assert.equal(noInches.display, zeroInches.display);
-    assert.ok(errors(evaluateBmi({ system: 'imperial', sex: 'male', age: '30', heightMain: '5', heightInches: 'x', weight: '150' })).height);
+  it('rejects what a metric-only field cannot hold, with a message that says what to type', () => {
+    const bad = ['84 cm', '175cm', "5'10", '١٧٨', '175٫5', '1,7,5', '175..5', '--5'];
+    for (const value of bad) {
+      const h = errors(evaluateBmi(metric(30, value, 70))).height ?? '';
+      assert.match(h, /centimetres.*digits and a decimal point only.*Do not add units/, `height ${value}`);
+      const w = errors(evaluateBmi(metric(30, 175, value))).weight ?? '';
+      assert.match(w, /kilograms.*digits and a decimal point only.*Do not add units/, `weight ${value}`);
+    }
+  });
+  it('accepts decimal metric values', () => {
+    assert.equal(ok(evaluateBmi(metric(30, '175.5', '70.25'))).display, '22.8');
+    assert.equal(ok(evaluateBmi(metric(30, '178', '74.0'))).display, '23.4');
+  });
+  it('empty fields say what to enter and in which unit', () => {
+    const e = errors(evaluateBmi(metric(30, '', '')));
+    assert.equal(e.height, 'Enter your height in centimetres.');
+    assert.equal(e.weight, 'Enter your weight in kilograms.');
   });
   it('messages state technical limits only (no health wording)', () => {
     const r = errors(evaluateBmi(metric(30, 99, 19)));
@@ -270,57 +225,40 @@ describe('input validation on canonical units (CALCULATION-SPEC.md 1.3)', () => 
   });
 });
 
-describe('metric and imperial give the same result (T7-style equivalence)', () => {
-  it('178 cm / 74 kg equals 70.0787 in / 163.14 lb within rounding', () => {
-    const m = ok(evaluateBmi(metric(28, 178, 74)));
-    const i = ok(evaluateBmi(imperial(28, 70.0787, 163.14)));
-    assert.ok(Math.abs(m.exact - i.exact) < 0.01, `${m.exact} vs ${i.exact}`);
-    assert.equal(m.display, i.display);
-    assert.equal(m.category.id, i.category.id);
-  });
-  it('calculateBmi uses the formula of the selected system', () => {
-    assert.ok(Math.abs(calculateBmi('metric', 178, 74) - 23.3556) < 1e-4);
-    assert.ok(Math.abs(calculateBmi('imperial', 68, 200) - 30.4066) < 1e-4);
+describe('BMI value is a pure function of the metric inputs', () => {
+  it('calculateBmi(height cm, weight kg)', () => {
+    assert.ok(Math.abs(calculateBmi(178, 74) - 23.3556) < 1e-4);
+    assert.equal(calculateBmi(200, 74), 18.5);
   });
 });
 
 describe('healthy-weight range (R-cases, CALCULATION-SPEC.md 2.8 and 2.10)', () => {
-  const cases: Array<[string, System, number, number, number]> = [
-    ['R1 178 cm', 'metric', 178, 58.7, 79.2],
-    ['R2 165 cm', 'metric', 165, 50.4, 68.0],
-    ['R3 160 cm (exact multiple at the upper end)', 'metric', 160, 47.4, 63.9],
-    ['R4 69 in', 'imperial', 69, 126, 169],
-    ['R5 65 in', 'imperial', 65, 112, 150],
+  const cases: Array<[string, number, number, number]> = [
+    ['R1 178 cm', 178, 58.7, 79.2],
+    ['R2 165 cm', 165, 50.4, 68.0],
+    ['R3 160 cm (exact multiple at the upper end)', 160, 47.4, 63.9],
   ];
-  for (const [id, system, height, min, max] of cases) {
+  for (const [id, height, min, max] of cases) {
     it(id, () => {
-      const r = healthyWeightRange(system, height);
+      const r = healthyWeightRange(height);
       assert.equal(r.min, min);
       assert.equal(r.max, max);
+      assert.equal(r.unit, 'kg');
     });
   }
   it('every endpoint is inside the Healthy Weight category by exact BMI', () => {
     const cm = [100, 123.4, 150, 160, 165, 170.5, 178, 190, 200, 250];
     for (const h of cm) {
-      const r = healthyWeightRange('metric', h);
-      assert.ok(calculateBmi('metric', h, r.min) >= 18.5, `min ${h}`);
-      assert.ok(calculateBmi('metric', h, r.max) < 25, `max ${h}`);
+      const r = healthyWeightRange(h);
+      assert.ok(calculateBmi(h, r.min) >= 18.5, `min ${h}`);
+      assert.ok(calculateBmi(h, r.max) < 25, `max ${h}`);
       // one step beyond each end is outside
-      assert.ok(calculateBmi('metric', h, Math.round((r.min - 0.1) * 10) / 10) < 18.5, `below ${h}`);
-      assert.ok(calculateBmi('metric', h, Math.round((r.max + 0.1) * 10) / 10) >= 25, `above ${h}`);
-    }
-    const inches = [39.4, 55, 60, 65, 69, 70.08, 75, 98.4];
-    for (const h of inches) {
-      const r = healthyWeightRange('imperial', h);
-      assert.ok(calculateBmi('imperial', h, r.min) >= 18.5, `min ${h}`);
-      assert.ok(calculateBmi('imperial', h, r.max) < 25, `max ${h}`);
-      assert.ok(calculateBmi('imperial', h, r.min - 1) < 18.5, `below ${h}`);
-      assert.ok(calculateBmi('imperial', h, r.max + 1) >= 25, `above ${h}`);
+      assert.ok(calculateBmi(h, Math.round((r.min - 0.1) * 10) / 10) < 18.5, `below ${h}`);
+      assert.ok(calculateBmi(h, Math.round((r.max + 0.1) * 10) / 10) >= 25, `above ${h}`);
     }
   });
-  it('is shown as text in the unit of the system', () => {
+  it('is shown as text in kg', () => {
     assert.equal(ok(evaluateBmi(metric(30, 178, 74))).rangeText, '58.7 to 79.2 kg');
-    assert.equal(ok(evaluateBmi(imperial(30, 69, 150))).rangeText, '126 to 169 lb');
   });
 });
 

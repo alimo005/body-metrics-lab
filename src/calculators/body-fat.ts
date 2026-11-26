@@ -9,8 +9,7 @@
 // Pure functions only: no DOM, no storage, no network.
 
 import { parseCircumferenceCm, parseHeightCm, parseOptionalWeightKg } from './inputs.ts';
-import type { MeasurementSystem } from './inputs.ts';
-import { cmToInches, formatFixed, kgToLb } from './units.ts';
+import { cmToInches, formatFixed } from './units.ts';
 
 export type Sex = 'male' | 'female';
 
@@ -53,23 +52,20 @@ export type BodyFatFieldName = 'height' | 'neck' | 'waist' | 'hip' | 'weight';
 export type BodyFatFieldErrors = Partial<Record<BodyFatFieldName, string>>;
 
 export interface BodyFatInput {
-  system: MeasurementSystem;
   sex: Sex;
-  /** Height in cm (metric) or feet (imperial). */
-  heightMain: string;
-  /** Inches (imperial only; empty means 0). */
-  heightInches: string;
-  /** Neck, waist and hip in cm (metric) or inches (imperial). The hip is ignored for men. */
+  /** Height in cm (metric-only, CALCULATION-SPEC.md 1.3). */
+  height: string;
+  /** Neck, waist and hip in cm. The hip is ignored for men. */
   neck: string;
   waist: string;
   hip: string;
-  /** Optional weight in kg (metric) or lb (imperial). */
+  /** Optional weight in kg. */
   weight: string;
 }
 
 export interface BodyFatMass {
-  unit: 'kg' | 'lb';
-  /** Exact values in `unit`. */
+  unit: 'kg';
+  /** Exact values in kg. */
   fat: number;
   lean: number;
   /** One decimal, half up. */
@@ -97,11 +93,11 @@ export type BodyFatEvaluation =
  */
 export function evaluateBodyFat(raw: BodyFatInput): BodyFatEvaluation {
   const female = raw.sex === 'female';
-  const height = parseHeightCm(raw.system, raw.heightMain, raw.heightInches);
-  const neck = parseCircumferenceCm(raw.system, raw.neck, 'neck');
-  const waist = parseCircumferenceCm(raw.system, raw.waist, 'waist');
-  const hip = female ? parseCircumferenceCm(raw.system, raw.hip, 'hip') : null;
-  const weight = parseOptionalWeightKg(raw.system, raw.weight);
+  const height = parseHeightCm(raw.height);
+  const neck = parseCircumferenceCm(raw.neck, 'neck');
+  const waist = parseCircumferenceCm(raw.waist, 'waist');
+  const hip = female ? parseCircumferenceCm(raw.hip, 'hip') : null;
+  const weight = parseOptionalWeightKg(raw.weight);
 
   const errors: BodyFatFieldErrors = {};
   if (!height.ok) errors.height = height.message;
@@ -141,10 +137,7 @@ export function evaluateBodyFat(raw: BodyFatInput): BodyFatEvaluation {
   if (weightKg !== null) {
     const fatKg = (weightKg * percent) / 100;
     const leanKg = weightKg - fatKg;
-    const imperial = raw.system === 'imperial';
-    const fat = imperial ? kgToLb(fatKg) : fatKg;
-    const lean = imperial ? kgToLb(leanKg) : leanKg;
-    mass = { unit: imperial ? 'lb' : 'kg', fat, lean, fatDisplay: formatFixed(fat, 1), leanDisplay: formatFixed(lean, 1) };
+    mass = { unit: 'kg', fat: fatKg, lean: leanKg, fatDisplay: formatFixed(fatKg, 1), leanDisplay: formatFixed(leanKg, 1) };
   }
 
   return { status: 'ok', sex: raw.sex, percent, percentDisplay: formatFixed(percent, 1), mass };

@@ -68,14 +68,6 @@ const sources = [
       <noscript><p>This calculator needs JavaScript to run in your browser.</p></noscript>
       <form id="energy-form" class="calc-form" novalidate>
         <SegmentedToggle
-          name="system"
-          legend="Measurement system"
-          options={[
-            { value: 'metric', label: 'Metric (cm, kg)', checked: true },
-            { value: 'imperial', label: 'Imperial (ft/in, lb)' },
-          ]}
-        />
-        <SegmentedToggle
           name="sex"
           legend="Biological sex"
           note="Used as the equations' sex term"
@@ -87,17 +79,8 @@ const sources = [
         />
         <NumberField id="age" label="Age (years)" unit="years" inputmode="numeric" placeholder="e.g. 30" hint="Whole years. Results are shown for ages 19 to 78." />
         <div class="hw-grid">
-          <div id="height-metric">
-            <NumberField id="height-cm" label="Height" unit="cm" placeholder="e.g. 175" />
-          </div>
-          <fieldset id="height-imperial" class="span-all" hidden>
-            <legend class="field-label">Height</legend>
-            <div class="field-pair">
-              <NumberField id="height-ft" label="Feet" unit="ft" inputmode="numeric" placeholder="e.g. 5" />
-              <NumberField id="height-in" label="Inches" unit="in" placeholder="e.g. 9" />
-            </div>
-          </fieldset>
-          <NumberField id="weight" label="Weight" unit="kg" unitId="weight-unit" placeholder="e.g. 70" />
+          <NumberField id="height" label="Height" unit="cm" placeholder="e.g. 175" />
+          <NumberField id="weight" label="Weight" unit="kg" placeholder="e.g. 70" />
         </div>
         <SelectField
           id="activity"

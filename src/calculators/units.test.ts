@@ -1,33 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  CM_PER_IN,
-  KG_PER_LB,
-  feetInchesToInches,
-  formatFixed,
-  inchesToCm,
-  inchesToFeetInches,
-  kgToLb,
-  lbToKg,
-  parseNumber,
-  roundHalfUp,
-} from './units.ts';
+import { CM_PER_IN, cmToInches, formatFixed, parseNumber, roundHalfUp } from './units.ts';
 
 describe('unit definitions (CALCULATION-SPEC.md 1.2)', () => {
-  it('uses the exact international definitions', () => {
+  it('uses the exact international inch, only for the internal Navy-equation conversion', () => {
     assert.equal(CM_PER_IN, 2.54);
-    assert.equal(KG_PER_LB, 0.45359237);
-  });
-  it('converts both ways', () => {
-    assert.equal(inchesToCm(70), 177.8);
-    assert.ok(Math.abs(lbToKg(150) - 68.0388555) < 1e-9);
-    assert.ok(Math.abs(kgToLb(lbToKg(163.14)) - 163.14) < 1e-9);
-    assert.equal(feetInchesToInches(5, 10.5), 70.5);
-  });
-  it('splits inches into feet and inches with carry', () => {
-    assert.deepEqual(inchesToFeetInches(70.0787), { feet: 5, inches: 10.1 });
-    assert.deepEqual(inchesToFeetInches(71.97), { feet: 6, inches: 0 });
-    assert.deepEqual(inchesToFeetInches(60), { feet: 5, inches: 0 });
+    assert.equal(cmToInches(177.8), 70);
+    assert.ok(Math.abs(cmToInches(178) - 70.0787402) < 1e-6);
   });
 });
 

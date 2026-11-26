@@ -21,8 +21,8 @@ const sources = [
 const cdcChildTeen = 'https://www.cdc.gov/bmi/child-teen-calculator/index.html';
 ---
 <BaseLayout
-  title="Adult BMI Calculator (Metric and Imperial)"
-  description="Calculate adult body mass index (BMI) for ages 20 and older in metric or imperial units, with the CDC category and the formula used. Runs in your browser."
+  title="Adult BMI Calculator"
+  description="Calculate adult body mass index (BMI) for ages 20 and older from height in cm and weight in kg, with the CDC category and the formula used. Runs in your browser."
 >
   <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Calculators', href: '/calculators/' }, { label: 'BMI Calculator' }]} />
 
@@ -38,14 +38,6 @@ const cdcChildTeen = 'https://www.cdc.gov/bmi/child-teen-calculator/index.html';
       <noscript><p>This calculator needs JavaScript to run in your browser.</p></noscript>
       <form id="bmi-form" class="calc-form" novalidate>
         <SegmentedToggle
-          name="system"
-          legend="Measurement system"
-          options={[
-            { value: 'metric', label: 'Metric (cm, kg)', checked: true },
-            { value: 'imperial', label: 'Imperial (ft/in, lb)' },
-          ]}
-        />
-        <SegmentedToggle
           name="sex"
           legend="Sex"
           note="Does not change the BMI result"
@@ -56,17 +48,8 @@ const cdcChildTeen = 'https://www.cdc.gov/bmi/child-teen-calculator/index.html';
           ]}
         />
         <NumberField id="age" label="Age (years)" unit="years" inputmode="numeric" placeholder="e.g. 28" hint="Adult result for ages 20 and older." />
-        <div id="height-metric">
-          <NumberField id="height-cm" label="Height" unit="cm" placeholder="e.g. 175" />
-        </div>
-        <fieldset id="height-imperial" class="height-imperial" hidden>
-          <legend class="field-label">Height</legend>
-          <div class="field-pair">
-            <NumberField id="height-ft" label="Feet" unit="ft" inputmode="numeric" placeholder="e.g. 5" />
-            <NumberField id="height-in" label="Inches" unit="in" placeholder="e.g. 9" />
-          </div>
-        </fieldset>
-        <NumberField id="weight" label="Weight" unit="kg" unitId="weight-unit" placeholder="e.g. 70" />
+        <NumberField id="height" label="Height" unit="cm" placeholder="e.g. 175" />
+        <NumberField id="weight" label="Weight" unit="kg" placeholder="e.g. 70" />
         <div class="form-actions">
           <button type="submit" class="button primary"><Icon name="calculator" size={20} /> Calculate BMI</button>
           <button type="reset" class="button secondary"><Icon name="rotate-ccw" size={20} /> Reset</button>
@@ -127,10 +110,6 @@ const cdcChildTeen = 'https://www.cdc.gov/bmi/child-teen-calculator/index.html';
       <FormulaBox title="International standard (SI)" tag="Metric">
         <Fragment slot="formula">BMI = weight (kg) / [height (m)]²</Fragment>
         Weight in kilograms divided by the square of height in metres.
-      </FormulaBox>
-      <FormulaBox title="US customary system" tag="Imperial">
-        <Fragment slot="formula">BMI = 703 × weight (lb) / [height (in)]²</Fragment>
-        Weight in pounds multiplied by 703, divided by the square of height in inches.
       </FormulaBox>
     </div>
     <div class="method-row">
