@@ -104,8 +104,8 @@ describe('reading time and Version 1 site scope', () => {
     assert.deepEqual(calculators.map((c) => c.href), ['/calculators/bmi/', '/calculators/bmr-tdee/', '/calculators/body-fat/']);
     for (const c of calculators) assert.ok(c.href.endsWith('/') && c.href.startsWith('/calculators/'));
   });
-  it('the whole site stays noindex until the owner flips the release switch', () => {
-    assert.equal(INDEXING_ENABLED, false);
+  it('the release switch is on: the production site is indexable (2026-11-26 owner decision)', () => {
+    assert.equal(INDEXING_ENABLED, true);
   });
 });
 

@@ -8,10 +8,11 @@ export const SITE_URL = 'https://bodymetricslab.uk';
 export const CONTACT_EMAIL = 'contact@bodymetricslab.uk';
 
 /**
- * Release switch (owner decision, Version 1): while false, EVERY page carries `noindex`, robots.txt disallows crawling and the
- * sitemap is empty. The owner flips this to true only after the final review, which makes every finished page indexable at once.
+ * Release switch (owner decision): while false, EVERY page carries `noindex`, robots.txt disallows crawling and the sitemap is
+ * empty. It is now true (2026-11-26): every finished public page is indexable, robots.txt allows crawling and names the sitemap.
+ * Only the 404 page keeps an explicit `noindex`.
  */
-export const INDEXING_ENABLED = false;
+export const INDEXING_ENABLED = true;
 
 export interface NavLink {
   label: string;

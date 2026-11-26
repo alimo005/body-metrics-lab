@@ -79,7 +79,7 @@ The site converts and sizes the image automatically.
 
 ## 6. Indexing (release switch)
 
-The whole website is hidden from search engines. One setting controls it: `INDEXING_ENABLED` in `src/config/site.ts` (currently `false`). While it is `false`, every page has `noindex`, `robots.txt` blocks crawlers and the sitemap is empty. When you decide to launch, change it to `true` once; every published page then becomes indexable and published articles are listed in the sitemap. Drafts never are.
+The website is indexable. One setting controls it: `INDEXING_ENABLED` in `src/config/site.ts` (currently `true` since 2026-11-26). While it is `true`, `robots.txt` allows crawling and names the sitemap, and every published page and article is listed in the sitemap. Drafts and future-dated articles never are, and the 404 page is never indexed. Setting it to `false` hides the whole site again (`noindex` everywhere, crawlers blocked, empty sitemap).
 
 ## 7. Error messages
 

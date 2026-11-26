@@ -12,6 +12,11 @@ interface Props {
   description: string;
   noindex?: boolean;
   ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  publishedTime?: string;
+  modifiedTime?: string;
+  extraSchema?: Record<string, unknown>[];
 }
 
 const seo = Astro.props;

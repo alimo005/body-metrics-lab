@@ -11,6 +11,7 @@ import SourceList from '../../components/SourceList.astro';
 import { ACTIVITY_CATEGORIES, ACTIVITY_PLACEHOLDER, ELIGIBILITY_NOTICE, TEE_COEFFICIENTS } from '../../calculators/bmr-tdee.ts';
 import type { TeeCoefficients } from '../../calculators/bmr-tdee.ts';
 import RelatedArticle from '../../components/RelatedArticle.astro';
+import RelatedCalculators from '../../components/RelatedCalculators.astro';
 import '../../styles/calculator.css';
 
 // Page text is generated from the same constants the calculator uses, so the equations shown can never differ from the code.
@@ -233,6 +234,7 @@ const sources = [
     </div>
   </section>
 
+  <RelatedCalculators current="bmr-tdee" />
   <RelatedArticle calculator="bmr-tdee" />
 
   <script>

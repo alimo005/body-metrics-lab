@@ -1,21 +1,38 @@
 ---
+// Head metadata for every page: title, description, canonical URL, robots, icons, Open Graph, Twitter card and JSON-LD.
+// Indexing is controlled by ONE switch (INDEXING_ENABLED in src/config/site.ts). When it is on, a page carries no robots meta tag
+// (search engines may index it); a page can still opt out with `noindex` (only the 404 page does). When it is off, every page is noindex.
+import { INDEXING_ENABLED, SITE_NAME } from '../config/site';
+import { buildGraph, serializeJsonLd } from '../lib/seo';
+import type { JsonLdNode } from '../lib/seo';
+
 interface Props {
   title: string;
   description: string;
   noindex?: boolean;
+  /** Social-sharing image: a path or absolute URL. Defaults to the site image (1200 x 630). */
   ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  /** ISO dates, for articles. */
+  publishedTime?: string;
+  modifiedTime?: string;
+  /** Extra JSON-LD nodes for this page (for example the Article node of an article page). */
+  extraSchema?: JsonLdNode[];
 }
 
-import { INDEXING_ENABLED } from '../config/site';
+const DEFAULT_OG_IMAGE = '/og-default.png';
+const DEFAULT_OG_ALT = 'BodyMetrics Lab: free BMI, TDEE and body fat calculators';
 
-const { title, description, noindex: pageNoindex = false, ogImage } = Astro.props;
-// One release switch for the whole site (src/config/site.ts): everything is noindex until the owner enables indexing.
+const { title, description, noindex: pageNoindex = false, ogImage, ogImageAlt, ogType = 'website', publishedTime, modifiedTime, extraSchema } = Astro.props;
 const noindex = !INDEXING_ENABLED || pageNoindex;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const pageTitle = canonical.pathname === '/'
-  ? 'BodyMetrics Lab — Free health calculators with clear explanations'
-  : `${title} | BodyMetrics Lab`;
-const image = ogImage ? new URL(ogImage, canonical) : undefined;
+const isHome = canonical.pathname === '/';
+const pageTitle = isHome ? `Free BMI, TDEE and Body Fat Calculators | ${SITE_NAME}` : `${title} | ${SITE_NAME}`;
+const usingDefaultImage = !ogImage;
+const image = new URL(ogImage ?? DEFAULT_OG_IMAGE, canonical);
+const imageAlt = ogImageAlt ?? (usingDefaultImage ? DEFAULT_OG_ALT : title);
+const jsonLd = serializeJsonLd(buildGraph({ pathname: canonical.pathname, title: pageTitle, description, extra: extraSchema }));
 ---
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
@@ -26,13 +43,21 @@ const image = ogImage ? new URL(ogImage, canonical) : undefined;
 <meta name="theme-color" content="#dff9f0" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0b1b16" media="(prefers-color-scheme: dark)" />
 {noindex && <meta name="robots" content="noindex" />}
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="BodyMetrics Lab" />
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:locale" content="en_GB" />
 <meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical.href} />
-{image && <meta property="og:image" content={image.href} />}
-<meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+<meta property="og:image" content={image.href} />
+{usingDefaultImage && <meta property="og:image:width" content="1200" />}
+{usingDefaultImage && <meta property="og:image:height" content="630" />}
+<meta property="og:image:alt" content={imageAlt} />
+{ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={pageTitle} />
 <meta name="twitter:description" content={description} />
-{image && <meta name="twitter:image" content={image.href} />}
+<meta name="twitter:image" content={image.href} />
+<meta name="twitter:image:alt" content={imageAlt} />
+<script is:inline type="application/ld+json" set:html={jsonLd} />

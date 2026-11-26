@@ -9,6 +9,7 @@ import FormulaBox from '../../components/FormulaBox.astro';
 import SourceList from '../../components/SourceList.astro';
 import ReferenceBar from '../../components/ReferenceBar.astro';
 import RelatedArticle from '../../components/RelatedArticle.astro';
+import RelatedCalculators from '../../components/RelatedCalculators.astro';
 import '../../styles/calculator.css';
 
 // Sources S1, S3, S4, S5 of CALCULATION-SPEC.md section 0.4. Only these are used on this page.
@@ -152,6 +153,7 @@ const cdcChildTeen = 'https://www.cdc.gov/bmi/child-teen-calculator/index.html';
     </ul>
   </section>
 
+  <RelatedCalculators current="bmi" />
   <RelatedArticle calculator="bmi" />
 
   <script>
