@@ -16,9 +16,9 @@ import '../styles/pages.css';
 // The hero's example numbers are produced by the real calculators from one stated example (DESIGN-SPEC.md 8, D-HERO),
 // so they can never drift from the calculators. The build fails if the example stops being valid.
 const example = { age: '28', height: '178', weight: '74', neck: '38', waist: '84' };
-const bmi = evaluateBmi({ system: 'metric', sex: 'male', age: example.age, heightMain: example.height, heightInches: '', weight: example.weight });
-const energy = evaluateEnergy({ system: 'metric', sex: 'male', age: example.age, heightMain: example.height, heightInches: '', weight: example.weight, activity: 'lowActive' });
-const fat = evaluateBodyFat({ system: 'metric', sex: 'male', heightMain: example.height, heightInches: '', neck: example.neck, waist: example.waist, hip: '', weight: '' });
+const bmi = evaluateBmi({ sex: 'male', age: example.age, height: example.height, weight: example.weight });
+const energy = evaluateEnergy({ sex: 'male', age: example.age, height: example.height, weight: example.weight, activity: 'lowActive' });
+const fat = evaluateBodyFat({ sex: 'male', height: example.height, neck: example.neck, waist: example.waist, hip: '', weight: '' });
 if (bmi.status !== 'ok' || energy.status !== 'ok' || fat.status !== 'ok') throw new Error('The homepage example is no longer valid for the calculators.');
 
 // Sources actually used by the three calculators (CALCULATION-SPEC.md 0.4).

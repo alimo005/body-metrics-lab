@@ -6,7 +6,6 @@
 // Pure functions only: no DOM, no storage, no network.
 
 import { parseHeightCm, parseWeightKg, parseWholeAge } from './inputs.ts';
-import type { MeasurementSystem } from './inputs.ts';
 import { roundHalfUp } from './units.ts';
 
 export type Sex = 'male' | 'female';
@@ -110,14 +109,11 @@ export function formatKcal(value: number): string {
 }
 
 export interface EnergyInput {
-  system: MeasurementSystem;
   sex: Sex;
   age: string;
-  /** Height in cm (metric) or feet (imperial). */
-  heightMain: string;
-  /** Inches (imperial only; empty means 0). */
-  heightInches: string;
-  /** Weight in kg (metric) or lb (imperial). */
+  /** Height in cm (metric-only, CALCULATION-SPEC.md 1.3). */
+  height: string;
+  /** Weight in kg. */
   weight: string;
   /** Activity category id, or an empty string when the placeholder is still selected. */
   activity: string;
@@ -154,8 +150,8 @@ export function findActivity(id: string): ActivityInfo | undefined {
  */
 export function evaluateEnergy(raw: EnergyInput): EnergyEvaluation {
   const age = parseWholeAge(raw.age);
-  const height = parseHeightCm(raw.system, raw.heightMain, raw.heightInches);
-  const weight = parseWeightKg(raw.system, raw.weight);
+  const height = parseHeightCm(raw.height);
+  const weight = parseWeightKg(raw.weight);
   const category = findActivity(raw.activity);
 
   if (!age.ok) {

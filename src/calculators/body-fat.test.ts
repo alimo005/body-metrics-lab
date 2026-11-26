@@ -1,5 +1,7 @@
 // Reference cases F1-F8 and the validation rules of CALCULATION-SPEC.md section 4 (4.3 to 4.8).
 // Expected numbers are typed from the spec tables, separately from the code under test.
+// Version 1 is metric-only (CALCULATION-SPEC.md 1.3). F1 and F2 are specified in inches; they are entered here as the exact centimetre
+// equivalents (inches x 2.54), so the cm -> inch conversion inside the equations is part of what is tested.
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { BODY_FAT_COEFFICIENTS, BODY_FAT_MESSAGES, bodyFatPercent, circumferenceValue, evaluateBodyFat, ringFill } from './body-fat.ts';
@@ -16,22 +18,23 @@ const ok = (r: BodyFatEvaluation): Ok => {
 };
 
 function metric(sex: Sex, height: string | number, neck: string | number, waist: string | number, hip: string | number = '', weight: string | number = ''): BodyFatInput {
-  return { system: 'metric', sex, heightMain: String(height), heightInches: '', neck: String(neck), waist: String(waist), hip: String(hip), weight: String(weight) };
-}
-function imperial(sex: Sex, feet: number, inches: number | string, neck: string | number, waist: string | number, hip: string | number = '', weight: string | number = ''): BodyFatInput {
-  return { system: 'imperial', sex, heightMain: String(feet), heightInches: String(inches), neck: String(neck), waist: String(waist), hip: String(hip), weight: String(weight) };
+  return { sex, height: String(height), neck: String(neck), waist: String(waist), hip: String(hip), weight: String(weight) };
 }
 
 describe('F1-F4: reference cases (CALCULATION-SPEC.md 4.8)', () => {
   it('F1: man, 70.0 in, neck 15.0, waist 35.0 -> CV 20.0, 19.4291, shown 19.4', () => {
     near(circumferenceValue('male', 35, 15), 20, 1e-12);
     near(bodyFatPercent('male', 70, 15, 35), 19.4291, 5e-5);
-    assert.equal(ok(evaluateBodyFat(imperial('male', 5, 10, 15, 35))).percentDisplay, '19.4');
+    const r = ok(evaluateBodyFat(metric('male', 177.8, 38.1, 88.9))); // 70.0, 15.0 and 35.0 in
+    near(r.percent, 19.4291, 5e-5);
+    assert.equal(r.percentDisplay, '19.4');
   });
   it('F2: woman, 58.0 in, neck 13.0, waist 28.0, hip 35.5 -> CV 50.5, 27.3400, shown 27.3', () => {
     near(circumferenceValue('female', 28, 13, 35.5), 50.5, 1e-12);
     near(bodyFatPercent('female', 58, 13, 28, 35.5), 27.34, 5e-5);
-    assert.equal(ok(evaluateBodyFat(imperial('female', 4, 10, 13, 28, 35.5))).percentDisplay, '27.3');
+    const r = ok(evaluateBodyFat(metric('female', 147.32, 33.02, 71.12, 90.17))); // 58.0, 13.0, 28.0 and 35.5 in
+    near(r.percent, 27.34, 5e-5);
+    assert.equal(r.percentDisplay, '27.3');
   });
   it('F3: man, 178 cm, neck 38 cm, waist 84 cm, 76 kg -> 15.6873, shown 15.7; fat 11.9 kg, lean 64.1 kg', () => {
     const r = ok(evaluateBodyFat(metric('male', 178, 38, 84, '', 76)));
@@ -59,10 +62,10 @@ describe('F5-F7: errors and the hip rule', () => {
     assert.equal(c.message, 'The waist measurement must be larger than the neck measurement.');
     assert.deepEqual(c.fields, ['neck', 'waist']);
   });
-  it('F6: woman without a hip value gets exactly "Enter your hip measurement." and no result', () => {
+  it('F6: woman without a hip value gets exactly "Enter your hip measurement in centimetres." and no result', () => {
     const r = evaluateBodyFat(metric('female', 165, 32, 72, ''));
     assert.equal(r.status, 'invalid');
-    assert.deepEqual((r as Invalid).errors, { hip: 'Enter your hip measurement.' });
+    assert.deepEqual((r as Invalid).errors, { hip: 'Enter your hip measurement in centimetres.' });
   });
   it('F7: a man with any hip value gets the same result as without (the hip is hidden, ignored and never validated)', () => {
     const without = ok(evaluateBodyFat(metric('male', 178, 38, 84)));
@@ -80,22 +83,16 @@ describe('F5-F7: errors and the hip rule', () => {
   });
 });
 
-describe('F8: metric and imperial give the same result', () => {
-  it('F3 and F4 in metric equal the same measurements in inches and pounds within 0.01', () => {
-    const m3 = ok(evaluateBodyFat(metric('male', 178, 38, 84, '', 76)));
-    const i3 = ok(evaluateBodyFat(imperial('male', 5, '10.0787', '14.9606', '33.0709', '', '167.55')));
-    near(m3.percent, i3.percent, 0.01);
-    assert.equal(m3.percentDisplay, i3.percentDisplay);
-    const m4 = ok(evaluateBodyFat(metric('female', 165, 32, 72, 98)));
-    const i4 = ok(evaluateBodyFat(imperial('female', 5, '4.9606', '12.5984', '28.3465', '38.5827')));
-    near(m4.percent, i4.percent, 0.01);
+describe('F8 (historical): imperial input was removed (CALCULATION-SPEC.md 1.3)', () => {
+  it('the form input has no system, feet, inches or pounds field', () => {
+    assert.deepEqual(Object.keys(metric('male', 178, 38, 84)).sort(), ['height', 'hip', 'neck', 'sex', 'waist', 'weight']);
   });
-  it('imperial mass is shown in pounds and equals the metric mass converted', () => {
-    const m = ok(evaluateBodyFat(metric('male', 178, 38, 84, '', 76))).mass!;
-    const i = ok(evaluateBodyFat(imperial('male', 5, '10.0787', '14.9606', '33.0709', '', '167.55'))).mass!;
-    assert.equal(i.unit, 'lb');
-    near(i.fat, m.fat * 2.2046226218, 0.05);
-    near(i.lean, m.lean * 2.2046226218, 0.1);
+  it('mass is always in kg', () => {
+    assert.equal(ok(evaluateBodyFat(metric('male', 178, 38, 84, '', 76))).mass!.unit, 'kg');
+  });
+  it('the same body in centimetres gives the same result as the inch-based equation inputs (F3, F4)', () => {
+    near(ok(evaluateBodyFat(metric('male', 178, 38, 84))).percent, bodyFatPercent('male', 178 / 2.54, 38 / 2.54, 84 / 2.54), 1e-9);
+    near(ok(evaluateBodyFat(metric('female', 165, 32, 72, 98))).percent, bodyFatPercent('female', 165 / 2.54, 32 / 2.54, 72 / 2.54, 98 / 2.54), 1e-9);
   });
 });
 
@@ -182,9 +179,30 @@ describe('validation (4.5, decision D8)', () => {
     assert.ok(errors(evaluateBodyFat(metric('male', 250.01, 38, 84))).height);
     assert.equal(evaluateBodyFat(metric('male', 178, 10, 11)).status, 'check'); // accepted by the limits; fails the plausibility check
   });
-  it('imperial limits are applied after conversion', () => {
-    assert.ok(errors(evaluateBodyFat(imperial('male', 5, 10, '3.9', 35))).neck);
-    assert.ok(errors(evaluateBodyFat(imperial('male', 3, '3.37', 15, 35))).height);
+  it('says what to enter, in which unit, for every field (decision 2026-11-26)', () => {
+    const e = errors(evaluateBodyFat(metric('female', '84 cm', '38cm', "5'10", '٩٨', '75kg')));
+    assert.equal(e.height, 'Enter your height in centimetres, using digits and a decimal point only. Do not add units (for example 178).');
+    assert.equal(e.neck, 'Enter your neck measurement in centimetres, using digits and a decimal point only. Do not add units (for example 38).');
+    assert.equal(e.waist, 'Enter your waist measurement in centimetres, using digits and a decimal point only. Do not add units (for example 84).');
+    assert.equal(e.hip, 'Enter your hip measurement in centimetres, using digits and a decimal point only. Do not add units (for example 98).');
+    assert.equal(e.weight, 'Enter your weight in kilograms, using digits and a decimal point only. Do not add units (for example 70).');
+  });
+  it('empty fields name the unit', () => {
+    const e = errors(evaluateBodyFat(metric('female', '', '', '', '')));
+    assert.equal(e.height, 'Enter your height in centimetres.');
+    assert.equal(e.neck, 'Enter your neck measurement in centimetres.');
+    assert.equal(e.waist, 'Enter your waist measurement in centimetres.');
+    assert.equal(e.hip, 'Enter your hip measurement in centimetres.');
+  });
+  it('decimal metric values work for every field', () => {
+    const r = ok(evaluateBodyFat(metric('female', '165.5', '32.5', '72.25', '98.75', '60.5')));
+    assert.ok(r.percent > 0 && r.percent < 100);
+    assert.ok(r.mass);
+  });
+  it('men: the hip is hidden, ignored and never validated; women: the hip is required', () => {
+    const base = ok(evaluateBodyFat(metric('male', 178, 38, 84)));
+    for (const hip of ['', 'abc', '5', '9999', '98 cm']) assert.equal(ok(evaluateBodyFat(metric('male', 178, 38, 84, hip))).percent, base.percent, hip);
+    assert.deepEqual(Object.keys(errors(evaluateBodyFat(metric('female', 165, 32, 72, '')))), ['hip']);
   });
   it('domain, men: waist less than or equal to neck', () => {
     for (const waist of [38, 30]) {
@@ -231,8 +249,14 @@ describe('validation (4.5, decision D8)', () => {
       'These measurements do not give a possible body-fat percentage (0% or below, or above 100%). Check each measurement and the selected units.',
     );
   });
-  it('a comma decimal separator is accepted', () => {
-    assert.equal(ok(evaluateBodyFat(metric('male', '178,0', '38,0', '84,0'))).percentDisplay, '15.7');
+  it('a comma decimal separator is rejected in every field (period only)', () => {
+    const e = (r: BodyFatEvaluation) => (r as Invalid).errors;
+    assert.ok(e(evaluateBodyFat(metric('male', '178,5', 38, 84))).height);
+    assert.ok(e(evaluateBodyFat(metric('male', 178, '38,5', 84))).neck);
+    assert.ok(e(evaluateBodyFat(metric('male', 178, 38, '84,5'))).waist);
+    assert.ok(e(evaluateBodyFat(metric('female', 165, 32, 72, '98,5'))).hip);
+    assert.ok(e(evaluateBodyFat(metric('male', 178, 38, 84, '', '76,5'))).weight);
+    assert.equal(ok(evaluateBodyFat(metric('male', '178.0', '38.0', '84.0'))).percentDisplay, '15.7');
   });
 });
 
@@ -253,8 +277,7 @@ describe('no NaN or Infinity ever reaches a result', () => {
     };
     for (let i = 0; i < 20000; i += 1) {
       const sex: Sex = rnd() < 0.5 ? 'male' : 'female';
-      const system = rnd() < 0.5 ? 'metric' : 'imperial';
-      const input: BodyFatInput = { system, sex, heightMain: pick(), heightInches: rnd() < 0.5 ? '' : pick(), neck: pick(), waist: pick(), hip: pick(), weight: pick() };
+      const input: BodyFatInput = { sex, height: pick(), neck: pick(), waist: pick(), hip: pick(), weight: pick() };
       const r = evaluateBodyFat(input);
       assert.ok(['invalid', 'check', 'ok'].includes(r.status));
       if (r.status === 'ok') {

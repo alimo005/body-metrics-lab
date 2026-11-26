@@ -1,49 +1,34 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  CM_PER_IN,
-  KG_PER_LB,
-  feetInchesToInches,
-  formatFixed,
-  inchesToCm,
-  inchesToFeetInches,
-  kgToLb,
-  lbToKg,
-  parseNumber,
-  roundHalfUp,
-} from './units.ts';
+import { CM_PER_IN, cmToInches, formatFixed, parseNumber, roundHalfUp } from './units.ts';
 
 describe('unit definitions (CALCULATION-SPEC.md 1.2)', () => {
-  it('uses the exact international definitions', () => {
+  it('uses the exact international inch, only for the internal Navy-equation conversion', () => {
     assert.equal(CM_PER_IN, 2.54);
-    assert.equal(KG_PER_LB, 0.45359237);
-  });
-  it('converts both ways', () => {
-    assert.equal(inchesToCm(70), 177.8);
-    assert.ok(Math.abs(lbToKg(150) - 68.0388555) < 1e-9);
-    assert.ok(Math.abs(kgToLb(lbToKg(163.14)) - 163.14) < 1e-9);
-    assert.equal(feetInchesToInches(5, 10.5), 70.5);
-  });
-  it('splits inches into feet and inches with carry', () => {
-    assert.deepEqual(inchesToFeetInches(70.0787), { feet: 5, inches: 10.1 });
-    assert.deepEqual(inchesToFeetInches(71.97), { feet: 6, inches: 0 });
-    assert.deepEqual(inchesToFeetInches(60), { feet: 5, inches: 0 });
+    assert.equal(cmToInches(177.8), 70);
+    assert.ok(Math.abs(cmToInches(178) - 70.0787402) < 1e-6);
   });
 });
 
 describe('parseNumber (CALCULATION-SPEC.md 1.3)', () => {
-  it('accepts decimals and a comma separator', () => {
+  it('accepts English digits with a period as the only decimal separator', () => {
     assert.deepEqual(parseNumber('175'), { state: 'ok', value: 175 });
     assert.deepEqual(parseNumber(' 70.5 '), { state: 'ok', value: 70.5 });
-    assert.deepEqual(parseNumber('70,5'), { state: 'ok', value: 70.5 });
+    assert.deepEqual(parseNumber('5.25'), { state: 'ok', value: 5.25 });
+    assert.deepEqual(parseNumber('84.5'), { state: 'ok', value: 84.5 });
     assert.deepEqual(parseNumber('.5'), { state: 'ok', value: 0.5 });
+  });
+  it('rejects a comma decimal, Arabic-Indic digits, a plus sign and spaces inside the number', () => {
+    for (const bad of ['70,5', '84,5', ',5', '5,', '1,000', '١٧٨', '٣٨٫٥', '84٫5', '+84', '8 4', '84 .5', '84. 5']) {
+      assert.deepEqual(parseNumber(bad), { state: 'invalid' }, bad);
+    }
   });
   it('reports empty input', () => {
     assert.deepEqual(parseNumber(''), { state: 'empty' });
     assert.deepEqual(parseNumber('   '), { state: 'empty' });
   });
   it('rejects text, NaN, exponent form and repeated separators', () => {
-    for (const bad of ['abc', 'NaN', 'Infinity', '1e3', '1,2,3', '1.2.3', '--5', '5kg', '0x10', '1 000']) {
+    for (const bad of ['abc', 'NaN', 'Infinity', '1e3', '1,2,3', '1.2.3', '--5', '5kg', '0x10', '1 000', '84 cm']) {
       assert.deepEqual(parseNumber(bad), { state: 'invalid' }, bad);
     }
   });

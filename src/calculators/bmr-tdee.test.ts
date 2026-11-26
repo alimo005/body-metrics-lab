@@ -22,7 +22,7 @@ type Invalid = Extract<EnergyEvaluation, { status: 'invalid' }>;
 const categories: ActivityCategory[] = ['inactive', 'lowActive', 'active', 'veryActive'];
 
 function metric(sex: Sex, age: number | string, heightCm: number | string, weightKg: number | string, activity: string = 'lowActive'): EnergyInput {
-  return { system: 'metric', sex, age: String(age), heightMain: String(heightCm), heightInches: '', weight: String(weightKg), activity };
+  return { sex, age: String(age), height: String(heightCm), weight: String(weightKg), activity };
 }
 function ok(r: EnergyEvaluation): Ok {
   assert.equal(r.status, 'ok', JSON.stringify(r));
@@ -160,20 +160,23 @@ describe('REE: Mifflin-St Jeor (3.3)', () => {
   });
 });
 
-describe('T7: metric and imperial give the same result (3.9)', () => {
-  it('178 cm / 74 kg equals 5 ft 10.0787 in / 163.14 lb within 0.5 kcal, for REE and every category', () => {
-    for (const c of categories) {
-      const m = ok(evaluateEnergy(metric('male', 28, 178, 74, c)));
-      const i = ok(evaluateEnergy({ system: 'imperial', sex: 'male', age: '28', heightMain: '5', heightInches: '10.0787', weight: '163.14', activity: c }));
-      near(m.ree, i.ree, 0.5, `${c} REE`);
-      near(m.tee, i.tee, 0.5, `${c} TEE`);
-    }
+describe('T7 (historical): imperial input was removed (metric-only policy, CALCULATION-SPEC.md 1.3)', () => {
+  const invalid = (r: EnergyEvaluation) => (r as Extract<EnergyEvaluation, { status: 'invalid' }>).errors;
+  it('the energy input has no system, feet, inches or pounds field', () => {
+    const input = metric('male', 28, 178, 74, 'active');
+    assert.deepEqual(Object.keys(input).sort(), ['activity', 'age', 'height', 'sex', 'weight']);
   });
-  it('total inches entered as feet and inches give the same result as the same height in feet only', () => {
-    const a = ok(evaluateEnergy({ system: 'imperial', sex: 'female', age: '30', heightMain: '5', heightInches: '6', weight: '140', activity: 'active' }));
-    const b = ok(evaluateEnergy({ system: 'imperial', sex: 'female', age: '30', heightMain: '5.5', heightInches: '', weight: '140', activity: 'active' }));
-    near(a.tee, b.tee, 1e-9);
-    near(a.ree, b.ree, 1e-9);
+  it('decimal metric values with a period work; a comma decimal is rejected', () => {
+    const a = ok(evaluateEnergy(metric('female', 30, '165.5', '60.5', 'active')));
+    assert.ok(a.tee > 0 && a.ree > 0);
+    assert.ok(invalid(evaluateEnergy(metric('female', 30, '165,5', '60.5', 'active'))).height);
+    assert.ok(invalid(evaluateEnergy(metric('female', 30, '165.5', '60,5', 'active'))).weight);
+  });
+  it('rejects unit text, feet-and-inches notation and non-ASCII digits in height and weight', () => {
+    for (const bad of ['178 cm', '178cm', "5'10", '١٧٨', '75kg', '74٫5']) {
+      assert.ok(invalid(evaluateEnergy(metric('male', 30, bad, 70))).height, `height ${bad}`);
+      assert.ok(invalid(evaluateEnergy(metric('male', 30, 170, bad))).weight, `weight ${bad}`);
+    }
   });
 });
 
@@ -212,13 +215,13 @@ describe('T11: validation priority (3.3)', () => {
   });
   it('2. a valid but ineligible age gives the notice even when other fields are empty or invalid', () => {
     for (const age of [1, 18, 79, 120]) {
-      assert.deepEqual(evaluateEnergy({ system: 'metric', sex: 'female', age: String(age), heightMain: '', heightInches: '', weight: '', activity: '' }), { status: 'ineligible', age });
+      assert.deepEqual(evaluateEnergy({ sex: 'female', age: String(age), height: '', weight: '', activity: '' }), { status: 'ineligible', age });
       assert.equal(evaluateEnergy(metric('male', age, 'abc', '-3', '')).status, 'ineligible');
       assert.equal(evaluateEnergy(metric('male', age, 9999, 9999, 'nonsense')).status, 'ineligible');
     }
   });
   it('3. age 19-78 validates height, weight and activity, with one message per field and no result', () => {
-    const r = evaluateEnergy({ system: 'metric', sex: 'male', age: '30', heightMain: '', heightInches: '', weight: 'abc', activity: '' });
+    const r = evaluateEnergy({ sex: 'male', age: '30', height: '', weight: 'abc', activity: '' });
     assert.deepEqual(Object.keys(invalid(r)).sort(), ['activity', 'height', 'weight']);
     assert.equal(invalid(r).activity, ACTIVITY_REQUIRED_MESSAGE);
   });
@@ -232,25 +235,19 @@ describe('T11: validation priority (3.3)', () => {
     assert.equal(evaluateEnergy(metric('female', 30, 165, 60, 'moderate')).status, 'invalid');
   });
   it('4. an invalid age is reported together with the other field errors', () => {
-    const r = evaluateEnergy({ system: 'metric', sex: 'male', age: 'x', heightMain: '', heightInches: '', weight: '', activity: 'active' });
+    const r = evaluateEnergy({ sex: 'male', age: 'x', height: '', weight: '', activity: 'active' });
     assert.deepEqual(Object.keys(invalid(r)).sort(), ['age', 'height', 'weight']);
   });
-  it('height and weight limits apply on the converted values (inclusive; just outside rejected)', () => {
+  it('height and weight limits are inclusive and just outside is rejected', () => {
     assert.equal(evaluateEnergy(metric('male', 30, 100, 20)).status, 'ok');
     assert.equal(evaluateEnergy(metric('male', 30, 250, 500)).status, 'ok');
     assert.ok(invalid(evaluateEnergy(metric('male', 30, 99.99, 70))).height);
     assert.ok(invalid(evaluateEnergy(metric('male', 30, 250.01, 70))).height);
     assert.ok(invalid(evaluateEnergy(metric('male', 30, 170, 19.99))).weight);
     assert.ok(invalid(evaluateEnergy(metric('male', 30, 170, 500.01))).weight);
-    const imp = (ft: string, inch: string, lb: string): EnergyInput => ({ system: 'imperial', sex: 'male', age: '30', heightMain: ft, heightInches: inch, weight: lb, activity: 'active' });
-    assert.ok(invalid(evaluateEnergy(imp('3', '3.37', '150'))).height);
-    assert.equal(evaluateEnergy(imp('3', '3.38', '150')).status, 'ok');
-    assert.ok(invalid(evaluateEnergy(imp('5', '9', '44.09'))).weight);
-    assert.equal(evaluateEnergy(imp('5', '9', '44.1')).status, 'ok');
-    assert.ok(invalid(evaluateEnergy(imp('5', '9', '1102.32'))).weight);
   });
-  it('a comma decimal separator is accepted and a decimal age is not', () => {
-    assert.equal(ok(evaluateEnergy(metric('male', 30, '175,5', '70,5'))).teeDisplay, ok(evaluateEnergy(metric('male', 30, '175.5', '70.5'))).teeDisplay);
+  it('a comma decimal separator is rejected and a decimal age is not accepted either', () => {
+    assert.ok(invalid(evaluateEnergy(metric('male', 30, '175,5', '70.5'))).height);
     assert.ok(invalid(evaluateEnergy(metric('male', '30.5', 175, 70))).age);
   });
   it('sex matters: the same inputs give different REE and TEE for men and women', () => {

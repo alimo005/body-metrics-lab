@@ -1,29 +1,16 @@
 // Adult BMI calculator logic: CALCULATION-SPEC.md section 2.
-// Formula (S3 CDC FAQ, S1 CDC, S5 WHO): metric BMI = kg / m^2; imperial BMI = lb / in^2 x 703.
+// Formula (S3 CDC FAQ, S1 CDC, S5 WHO): BMI = kg / m^2. Version 1 is metric-only (CALCULATION-SPEC.md 1.3): height in cm, weight in kg.
 // Categories (S1 CDC) are applied to the EXACT, unrounded BMI. Only the displayed value is rounded.
 // Sex is accepted so the interface can keep its control, but it never affects any result.
 // Pure functions only: no DOM, no storage, no network.
 
-import {
-  cmToInches,
-  feetInchesToInches,
-  formatFixed,
-  inchesToCm,
-  kgToLb,
-  lbToKg,
-  parseNumber,
-  roundHalfUp,
-} from './units.ts';
+import { INPUT_LIMITS, INPUT_MESSAGES } from './inputs.ts';
+import { formatFixed, parseNumber, roundHalfUp } from './units.ts';
 
-export type System = 'metric' | 'imperial';
 export type Sex = 'male' | 'female';
 
 /** Technical input limits (CALCULATION-SPEC.md 1.3): they catch typos and unit mix-ups, they are not medical limits. */
-export const LIMITS = {
-  heightCm: { min: 100, max: 250 },
-  weightKg: { min: 20, max: 500 },
-  ageYears: { min: 1, max: 120 },
-} as const;
+export const LIMITS = INPUT_LIMITS;
 
 /** BMI category thresholds (kg/m^2). The adult result is only given from age 20 (CDC, owner decision). */
 export const ADULT_MIN_AGE = 20;
@@ -49,13 +36,10 @@ export const CATEGORIES: Readonly<Record<CategoryId, Category>> = {
   obesity3: { id: 'obesity3', label: 'Class 3 Obesity', group: 'obesity', range: '40.0 or greater' },
 };
 
-/** Exact BMI from a height and weight in the units of the chosen system (cm and kg, or inches and lb). */
-export function calculateBmi(system: System, height: number, weight: number): number {
-  if (system === 'metric') {
-    // kg / m^2 written as kg x 10,000 / cm^2 so exact thresholds (for example 64 kg at 160 cm = 25) stay exact in floating point.
-    return (weight * 10000) / (height * height);
-  }
-  return (weight / (height * height)) * 703;
+/** Exact BMI from a height in cm and a weight in kg. */
+export function calculateBmi(heightCm: number, weightKg: number): number {
+  // kg / m^2 written as kg x 10,000 / cm^2 so exact thresholds (for example 64 kg at 160 cm = 25) stay exact in floating point.
+  return (weightKg * 10000) / (heightCm * heightCm);
 }
 
 /** Category of an EXACT BMI (thresholds 18.5, 25, 30, 35, 40; lower bound inclusive). */
@@ -71,35 +55,27 @@ export function categorize(exactBmi: number): Category {
 export interface HealthyRange {
   min: number;
   max: number;
-  unit: 'kg' | 'lb';
+  unit: 'kg';
 }
 
 /**
- * Weights whose exact BMI is at least 18.5 and below 25 for the height (CALCULATION-SPEC.md 2.8).
- * Metric: 0.1 kg steps, imperial: whole pounds, both rounded inwards so every shown value is inside the category.
+ * Weights whose exact BMI is at least 18.5 and below 25 for the height in cm (CALCULATION-SPEC.md 2.8):
+ * 0.1 kg steps, rounded inwards so every shown value is inside the category.
  */
-export function healthyWeightRange(system: System, height: number): HealthyRange {
+export function healthyWeightRange(heightCm: number): HealthyRange {
   const eps = 1e-9;
-  if (system === 'metric') {
-    const lower = Math.ceil((18.5 * height * height) / 1000 - eps) / 10;
-    const upper = Math.ceil((25 * height * height) / 1000 - eps) / 10 - 0.1;
-    return { min: roundHalfUp(lower, 1), max: roundHalfUp(upper, 1), unit: 'kg' };
-  }
-  const lower = Math.ceil((18.5 * height * height) / 703 - eps);
-  const upper = Math.ceil((25 * height * height) / 703 - eps) - 1;
-  return { min: lower, max: upper, unit: 'lb' };
+  const lower = Math.ceil((18.5 * heightCm * heightCm) / 1000 - eps) / 10;
+  const upper = Math.ceil((25 * heightCm * heightCm) / 1000 - eps) / 10 - 0.1;
+  return { min: roundHalfUp(lower, 1), max: roundHalfUp(upper, 1), unit: 'kg' };
 }
 
 export interface RawInput {
-  system: System;
   /** Sex is never used in any calculation. */
   sex: Sex;
   age: string;
-  /** Height in cm (metric) or feet (imperial). */
-  heightMain: string;
-  /** Inches (imperial only; empty means 0). */
-  heightInches: string;
-  /** Weight in kg (metric) or lb (imperial). */
+  /** Height in cm. */
+  height: string;
+  /** Weight in kg. */
   weight: string;
 }
 
@@ -108,32 +84,19 @@ export type FieldErrors = Partial<Record<FieldName, string>>;
 
 const THREE_DECIMALS = 3;
 
-/** Messages state the technical limits only; they never present them as health thresholds. */
-export const MESSAGES = {
-  ageEmpty: 'Enter your age in years.',
-  ageInvalid: `Enter a whole number of years between ${LIMITS.ageYears.min} and ${LIMITS.ageYears.max}.`,
-  heightEmpty: 'Enter your height.',
-  heightInvalid: 'Enter your height as a number, for example 175.',
-  weightEmpty: 'Enter your weight.',
-  weightInvalid: 'Enter your weight as a number, for example 70.',
-  heightRangeMetric: `Enter a height between ${LIMITS.heightCm.min} and ${LIMITS.heightCm.max} cm.`,
-  heightRangeImperial: `Enter a height between ${formatFixed(cmToInches(LIMITS.heightCm.min), 1)} and ${formatFixed(cmToInches(LIMITS.heightCm.max), 1)} inches in total.`,
-  weightRangeMetric: `Enter a weight between ${LIMITS.weightKg.min} and ${LIMITS.weightKg.max} kg.`,
-  weightRangeImperial: `Enter a weight between ${formatFixed(kgToLb(LIMITS.weightKg.min), 1)} and ${formatFixed(kgToLb(LIMITS.weightKg.max), 1)} lb.`,
-} as const;
+/** Messages state the expected input and the technical limits only; they never present them as health thresholds. */
+export const MESSAGES = INPUT_MESSAGES;
 
 interface ParsedInputs {
   errors: FieldErrors;
   age?: number;
-  /** Height in cm or total inches, matching the system. */
-  height?: number;
-  /** Weight in kg or lb, matching the system. */
-  weight?: number;
+  /** Height in cm. */
   heightCm?: number;
+  /** Weight in kg. */
   weightKg?: number;
 }
 
-/** Parse, convert to canonical units, then validate (CALCULATION-SPEC.md 1.3 order of operations). */
+/** Parse, then validate against the metric limits (CALCULATION-SPEC.md 1.3 order of operations). */
 export function parseInputs(raw: RawInput): ParsedInputs {
   const errors: FieldErrors = {};
   const out: ParsedInputs = { errors };
@@ -144,36 +107,17 @@ export function parseInputs(raw: RawInput): ParsedInputs {
     errors.age = MESSAGES.ageInvalid;
   } else out.age = age.value;
 
-  const imperial = raw.system === 'imperial';
-  const main = parseNumber(raw.heightMain);
-  const inches = imperial ? parseNumber(raw.heightInches) : ({ state: 'ok', value: 0 } as const);
-  if (main.state === 'empty') errors.height = MESSAGES.heightEmpty;
-  else if (main.state === 'invalid' || inches.state === 'invalid' || (main.state === 'ok' && main.value < 0) || (inches.state === 'ok' && inches.value < 0)) {
-    errors.height = MESSAGES.heightInvalid;
-  } else if (main.state === 'ok') {
-    const extra = inches.state === 'ok' ? inches.value : 0;
-    const height = imperial ? feetInchesToInches(main.value, extra) : main.value;
-    const heightCm = imperial ? inchesToCm(height) : height;
-    if (heightCm < LIMITS.heightCm.min || heightCm > LIMITS.heightCm.max) {
-      errors.height = imperial ? MESSAGES.heightRangeImperial : MESSAGES.heightRangeMetric;
-    } else {
-      out.height = height;
-      out.heightCm = heightCm;
-    }
-  }
+  const height = parseNumber(raw.height);
+  if (height.state === 'empty') errors.height = MESSAGES.heightEmpty;
+  else if (height.state === 'invalid' || height.value < 0) errors.height = MESSAGES.heightInvalid;
+  else if (height.value < LIMITS.heightCm.min || height.value > LIMITS.heightCm.max) errors.height = MESSAGES.heightRange;
+  else out.heightCm = height.value;
 
   const weight = parseNumber(raw.weight);
   if (weight.state === 'empty') errors.weight = MESSAGES.weightEmpty;
   else if (weight.state === 'invalid' || weight.value < 0) errors.weight = MESSAGES.weightInvalid;
-  else {
-    const weightKg = imperial ? lbToKg(weight.value) : weight.value;
-    if (weightKg < LIMITS.weightKg.min || weightKg > LIMITS.weightKg.max) {
-      errors.weight = imperial ? MESSAGES.weightRangeImperial : MESSAGES.weightRangeMetric;
-    } else {
-      out.weight = weight.value;
-      out.weightKg = weightKg;
-    }
-  }
+  else if (weight.value < LIMITS.weightKg.min || weight.value > LIMITS.weightKg.max) errors.weight = MESSAGES.weightRange;
+  else out.weightKg = weight.value;
   return out;
 }
 
@@ -182,7 +126,6 @@ export type BmiEvaluation =
   | { status: 'under20'; age: number }
   | {
       status: 'ok';
-      system: System;
       /** Exact, unrounded BMI: the category is decided from this value. */
       exact: number;
       /** BMI rounded half up to one decimal, for display only. */
@@ -203,9 +146,7 @@ export function evaluateBmi(raw: RawInput): BmiEvaluation {
   if (parsed.age !== undefined && parsed.age < ADULT_MIN_AGE) return { status: 'under20', age: parsed.age };
   if (parsed.errors.age || parsed.errors.height || parsed.errors.weight) return { status: 'invalid', errors: parsed.errors };
 
-  const height = parsed.height as number;
-  const weight = parsed.weight as number;
-  const exact = calculateBmi(raw.system, height, weight);
+  const exact = calculateBmi(parsed.heightCm as number, parsed.weightKg as number);
   const category = categorize(exact);
   const display = formatFixed(exact, 1);
   const displayCategory = categorize(roundHalfUp(exact, 1));
@@ -213,9 +154,9 @@ export function evaluateBmi(raw: RawInput): BmiEvaluation {
     displayCategory.id !== category.id
       ? `BMI is shown rounded to one decimal. Your category is determined from the exact, unrounded BMI (${exact.toFixed(THREE_DECIMALS)}).`
       : null;
-  const range = healthyWeightRange(raw.system, height);
-  const rangeText = range.unit === 'kg' ? `${range.min.toFixed(1)} to ${range.max.toFixed(1)} kg` : `${range.min} to ${range.max} lb`;
-  return { status: 'ok', system: raw.system, exact, display, category, boundaryNote, range, rangeText };
+  const range = healthyWeightRange(parsed.heightCm as number);
+  const rangeText = `${range.min.toFixed(1)} to ${range.max.toFixed(1)} kg`;
+  return { status: 'ok', exact, display, category, boundaryNote, range, rangeText };
 }
 
 /** Marker position (0 to 100) on the 15 to 40 spectrum used by the reference bar. */

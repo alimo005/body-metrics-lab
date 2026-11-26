@@ -1,23 +1,29 @@
-// Shared input parsing and validation: CALCULATION-SPEC.md 1.2 and 1.3.
+// Shared input parsing and validation: CALCULATION-SPEC.md 1.3 (metric-only, owner decision 2026-11-26).
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { INPUT_LIMITS, INPUT_MESSAGES, parseCircumferenceCm, parseHeightCm, parseOptionalWeightKg, parseWeightKg, parseWholeAge } from './inputs.ts';
 import { LIMITS } from './bmi.ts';
+
+const message = (r: unknown): string => (r as { message: string }).message;
+
+/** Typed values that are not plain English digits with a decimal point: each must be rejected by every numeric field. */
+const NOT_PLAIN_NUMBERS = ['abc', 'NaN', '1e2', '84 cm', '84cm', '75kg', "5'10", '5ft 10', '١٧٨', '٣٨٫٥', '84٫5', '1,7,5', '84..5', '--5', '84.5.1', '84-', 'Infinity'];
 
 describe('limits are the owner-approved ones (CALCULATION-SPEC.md 1.3) and agree with BMI', () => {
   it('has the canonical limits', () => {
     assert.deepEqual(INPUT_LIMITS.heightCm, { min: 100, max: 250 });
     assert.deepEqual(INPUT_LIMITS.weightKg, { min: 20, max: 500 });
     assert.deepEqual(INPUT_LIMITS.ageYears, { min: 1, max: 120 });
+    assert.deepEqual(INPUT_LIMITS.circumferenceCm, { min: 10, max: 250 });
   });
   it('matches the limits used by the BMI calculator', () => {
     assert.deepEqual(INPUT_LIMITS.heightCm, LIMITS.heightCm);
     assert.deepEqual(INPUT_LIMITS.weightKg, LIMITS.weightKg);
     assert.deepEqual(INPUT_LIMITS.ageYears, LIMITS.ageYears);
   });
-  it('shows imperial limits as the converted, rounded values', () => {
-    assert.match(INPUT_MESSAGES.heightRangeImperial, /39\.4 and 98\.4 inches/);
-    assert.match(INPUT_MESSAGES.weightRangeImperial, /44\.1 and 1102\.3 lb/);
+  it('has no imperial messages or limits any more', () => {
+    for (const key of Object.keys(INPUT_MESSAGES)) assert.doesNotMatch(key, /imperial/i);
+    for (const text of Object.values(INPUT_MESSAGES)) assert.doesNotMatch(text, /\b(inches|feet|pounds|lb)\b/i);
   });
 });
 
@@ -31,60 +37,57 @@ describe('parseWholeAge', () => {
       const r = parseWholeAge(a);
       assert.equal(r.ok, false, a);
     }
-    assert.equal((parseWholeAge('') as { message: string }).message, INPUT_MESSAGES.ageEmpty);
-    assert.equal((parseWholeAge('20.5') as { message: string }).message, INPUT_MESSAGES.ageInvalid);
+    assert.equal(message(parseWholeAge('')), INPUT_MESSAGES.ageEmpty);
+    assert.equal(message(parseWholeAge('20.5')), INPUT_MESSAGES.ageInvalid);
   });
 });
 
 describe('parseHeightCm', () => {
-  it('metric: inclusive 100 to 250 cm, rejects just outside', () => {
-    assert.deepEqual(parseHeightCm('metric', '100', ''), { ok: true, value: 100 });
-    assert.deepEqual(parseHeightCm('metric', '250', ''), { ok: true, value: 250 });
-    assert.equal(parseHeightCm('metric', '99.99', '').ok, false);
-    assert.equal(parseHeightCm('metric', '250.01', '').ok, false);
+  it('accepts 100 to 250 cm inclusive and rejects just outside', () => {
+    assert.deepEqual(parseHeightCm('100'), { ok: true, value: 100 });
+    assert.deepEqual(parseHeightCm('250'), { ok: true, value: 250 });
+    assert.equal(parseHeightCm('99.99').ok, false);
+    assert.equal(parseHeightCm('250.01').ok, false);
+    assert.equal(message(parseHeightCm('99')), 'Enter a height between 100 and 250 cm.');
   });
-  it('imperial: feet and inches are combined first, then converted with 2.54', () => {
-    const r = parseHeightCm('imperial', '5', '10');
-    assert.equal(r.ok, true);
-    assert.ok(Math.abs((r as { value: number }).value - 177.8) < 1e-9);
-    assert.equal(parseHeightCm('imperial', '5', '').ok, true); // empty inches mean 0
+  it('accepts decimal values', () => {
+    assert.deepEqual(parseHeightCm('178.5'), { ok: true, value: 178.5 });
+    assert.equal(parseHeightCm('175,5').ok, false); // a comma decimal is rejected (period only)
   });
-  it('imperial: validation uses the converted value (39.37 in is 99.9998 cm)', () => {
-    assert.equal(parseHeightCm('imperial', '3', '3.37').ok, false);
-    assert.equal(parseHeightCm('imperial', '3', '3.38').ok, true);
-    assert.equal(parseHeightCm('imperial', '8', '2.42').ok, true);
-    assert.equal(parseHeightCm('imperial', '8', '2.43').ok, false);
+  it('says what is expected when empty, and rejects negatives and zero', () => {
+    assert.equal(message(parseHeightCm('')), 'Enter your height in centimetres.');
+    for (const bad of ['-175', '0']) assert.equal(parseHeightCm(bad).ok, false, bad);
   });
-  it('rejects empty, text, negative, NaN and a missing foot value', () => {
-    assert.equal((parseHeightCm('metric', '', '') as { message: string }).message, INPUT_MESSAGES.heightEmpty);
-    for (const bad of ['abc', 'NaN', '-175', '0', '1e2']) assert.equal(parseHeightCm('metric', bad, '').ok, false, bad);
-    assert.equal(parseHeightCm('imperial', '', '10').ok, false);
-    assert.equal(parseHeightCm('imperial', '5', 'x').ok, false);
-    assert.equal(parseHeightCm('imperial', '5', '-1').ok, false);
-  });
-  it('accepts a comma decimal separator', () => {
-    assert.deepEqual(parseHeightCm('metric', '175,5', ''), { ok: true, value: 175.5 });
+  it('rejects unit text, feet-and-inches notation and non-ASCII digits with a message that says what to type', () => {
+    for (const bad of NOT_PLAIN_NUMBERS) {
+      const r = parseHeightCm(bad);
+      assert.equal(r.ok, false, bad);
+      assert.match(message(r), /Enter your height in centimetres, using digits and a decimal point only\. Do not add units \(for example 178\)\./, bad);
+    }
   });
 });
 
 describe('parseWeightKg', () => {
-  it('metric: inclusive 20 to 500 kg, rejects just outside', () => {
-    assert.deepEqual(parseWeightKg('metric', '20'), { ok: true, value: 20 });
-    assert.deepEqual(parseWeightKg('metric', '500'), { ok: true, value: 500 });
-    assert.equal(parseWeightKg('metric', '19.99').ok, false);
-    assert.equal(parseWeightKg('metric', '500.01').ok, false);
+  it('accepts 20 to 500 kg inclusive and rejects just outside', () => {
+    assert.deepEqual(parseWeightKg('20'), { ok: true, value: 20 });
+    assert.deepEqual(parseWeightKg('500'), { ok: true, value: 500 });
+    assert.equal(parseWeightKg('19.99').ok, false);
+    assert.equal(parseWeightKg('500.01').ok, false);
+    assert.equal(message(parseWeightKg('10')), 'Enter a weight between 20 and 500 kg.');
   });
-  it('imperial: converts pounds to kg with 0.45359237 before validating', () => {
-    const r = parseWeightKg('imperial', '150');
-    assert.ok(Math.abs((r as { value: number }).value - 68.0388555) < 1e-9);
-    assert.equal(parseWeightKg('imperial', '44.09').ok, false); // 19.998 kg
-    assert.equal(parseWeightKg('imperial', '44.1').ok, true);
-    assert.equal(parseWeightKg('imperial', '1102.3').ok, true);
-    assert.equal(parseWeightKg('imperial', '1102.32').ok, false);
+  it('accepts decimal values', () => {
+    assert.deepEqual(parseWeightKg('70.25'), { ok: true, value: 70.25 });
   });
-  it('rejects empty, text, negative, zero and NaN', () => {
-    assert.equal((parseWeightKg('metric', '') as { message: string }).message, INPUT_MESSAGES.weightEmpty);
-    for (const bad of ['abc', 'NaN', '-70', '0', '1e2']) assert.equal(parseWeightKg('metric', bad).ok, false, bad);
+  it('says what is expected when empty; rejects negative and zero', () => {
+    assert.equal(message(parseWeightKg('')), 'Enter your weight in kilograms.');
+    for (const bad of ['-70', '0']) assert.equal(parseWeightKg(bad).ok, false, bad);
+  });
+  it('rejects unit text and non-ASCII digits with a message that says what to type', () => {
+    for (const bad of NOT_PLAIN_NUMBERS) {
+      const r = parseWeightKg(bad);
+      assert.equal(r.ok, false, bad);
+      assert.match(message(r), /Enter your weight in kilograms, using digits and a decimal point only\. Do not add units \(for example 70\)\./, bad);
+    }
   });
   it('messages state technical limits only, without health wording', () => {
     for (const msg of Object.values(INPUT_MESSAGES)) assert.doesNotMatch(msg, /healthy|safe|recommend|medical/i);
@@ -92,46 +95,46 @@ describe('parseWeightKg', () => {
 });
 
 describe('parseCircumferenceCm: neck, waist and hip (CALCULATION-SPEC.md 1.3)', () => {
-  it('has the approved 10 to 250 cm limit', () => {
-    assert.deepEqual(INPUT_LIMITS.circumferenceCm, { min: 10, max: 250 });
+  it('accepts 10 to 250 cm inclusive and rejects just outside', () => {
+    assert.deepEqual(parseCircumferenceCm('10', 'neck'), { ok: true, value: 10 });
+    assert.deepEqual(parseCircumferenceCm('250', 'waist'), { ok: true, value: 250 });
+    assert.equal(parseCircumferenceCm('9.99', 'neck').ok, false);
+    assert.equal(parseCircumferenceCm('250.01', 'waist').ok, false);
   });
-  it('metric: inclusive 10 to 250 cm, rejects just outside', () => {
-    assert.deepEqual(parseCircumferenceCm('metric', '10', 'neck'), { ok: true, value: 10 });
-    assert.deepEqual(parseCircumferenceCm('metric', '250', 'waist'), { ok: true, value: 250 });
-    assert.equal(parseCircumferenceCm('metric', '9.99', 'neck').ok, false);
-    assert.equal(parseCircumferenceCm('metric', '250.01', 'waist').ok, false);
+  it('keeps the typed centimetre value (no conversion)', () => {
+    assert.deepEqual(parseCircumferenceCm('35.56', 'neck'), { ok: true, value: 35.56 });
   });
-  it('imperial: validated after conversion (3.9 in is 9.906 cm, 3.94 in is 10.008 cm, 98.43 in is 250.02 cm)', () => {
-    assert.equal(parseCircumferenceCm('imperial', '3.9', 'neck').ok, false);
-    assert.equal(parseCircumferenceCm('imperial', '3.94', 'neck').ok, true);
-    assert.equal(parseCircumferenceCm('imperial', '98.42', 'hip').ok, true);
-    assert.equal(parseCircumferenceCm('imperial', '98.43', 'hip').ok, false);
-    const r = parseCircumferenceCm('imperial', '14', 'neck');
-    assert.ok(Math.abs((r as { value: number }).value - 35.56) < 1e-9);
+  it('names the field in each message and says the unit when empty', () => {
+    assert.equal(message(parseCircumferenceCm('', 'hip')), 'Enter your hip measurement in centimetres.');
+    assert.equal(message(parseCircumferenceCm('  ', 'neck')), 'Enter your neck measurement in centimetres.');
+    assert.equal(message(parseCircumferenceCm('5', 'waist')), 'Enter a waist measurement between 10 and 250 cm.');
   });
-  it('names the field in each message and uses the approved hip wording when empty', () => {
-    assert.equal((parseCircumferenceCm('metric', '', 'hip') as { message: string }).message, 'Enter your hip measurement.');
-    assert.equal((parseCircumferenceCm('metric', '  ', 'neck') as { message: string }).message, 'Enter your neck measurement.');
-    assert.match((parseCircumferenceCm('metric', 'abc', 'waist') as { message: string }).message, /waist measurement as a number/);
-    assert.match((parseCircumferenceCm('metric', '5', 'waist') as { message: string }).message, /between 10 and 250 cm/);
-    assert.match((parseCircumferenceCm('imperial', '2', 'waist') as { message: string }).message, /between 3\.9 and 98\.4 inches/);
+  it('rejects unit text and non-ASCII digits, with an example suited to the field', () => {
+    const example = { neck: '38', waist: '84', hip: '98' } as const;
+    for (const label of ['neck', 'waist', 'hip'] as const) {
+      for (const bad of NOT_PLAIN_NUMBERS) {
+        const r = parseCircumferenceCm(bad, label);
+        assert.equal(r.ok, false, `${label} ${bad}`);
+        assert.equal(message(r), `Enter your ${label} measurement in centimetres, using digits and a decimal point only. Do not add units (for example ${example[label]}).`);
+      }
+    }
   });
-  it('rejects text, NaN, negative, zero and exponent input, and accepts a comma decimal', () => {
-    for (const bad of ['abc', 'NaN', '-30', '0', '1e2']) assert.equal(parseCircumferenceCm('metric', bad, 'neck').ok, false, bad);
-    assert.deepEqual(parseCircumferenceCm('metric', '38,5', 'neck'), { ok: true, value: 38.5 });
+  it('rejects negative and zero; accepts decimals with a period; rejects a comma decimal', () => {
+    for (const bad of ['-30', '0']) assert.equal(parseCircumferenceCm(bad, 'neck').ok, false, bad);
+    assert.deepEqual(parseCircumferenceCm('38.5', 'neck'), { ok: true, value: 38.5 });
+    assert.equal(parseCircumferenceCm('38,5', 'neck').ok, false);
   });
 });
 
 describe('parseOptionalWeightKg', () => {
   it('accepts an empty weight as null', () => {
-    assert.deepEqual(parseOptionalWeightKg('metric', ''), { ok: true, value: null });
-    assert.deepEqual(parseOptionalWeightKg('imperial', '   '), { ok: true, value: null });
+    assert.deepEqual(parseOptionalWeightKg(''), { ok: true, value: null });
+    assert.deepEqual(parseOptionalWeightKg('   '), { ok: true, value: null });
   });
   it('validates a provided weight exactly like a required one', () => {
-    assert.deepEqual(parseOptionalWeightKg('metric', '76'), { ok: true, value: 76 });
-    assert.equal(parseOptionalWeightKg('metric', 'abc').ok, false);
-    assert.equal(parseOptionalWeightKg('metric', '19.99').ok, false);
-    assert.equal(parseOptionalWeightKg('imperial', '44.09').ok, false);
-    assert.equal(parseOptionalWeightKg('imperial', '44.1').ok, true);
+    assert.deepEqual(parseOptionalWeightKg('76'), { ok: true, value: 76 });
+    assert.equal(parseOptionalWeightKg('abc').ok, false);
+    assert.equal(parseOptionalWeightKg('75kg').ok, false);
+    assert.equal(parseOptionalWeightKg('19.99').ok, false);
   });
 });

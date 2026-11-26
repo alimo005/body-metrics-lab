@@ -1,11 +1,9 @@
-// Shared unit definitions, number parsing and rounding for the calculators.
+// Shared number parsing, rounding and the one internal conversion (cm to inches, for the Navy equations).
 // Rules: CALCULATION-SPEC.md sections 1.2 (conversions), 1.3 (input handling) and 1.4 (rounding).
 // Pure functions only: no DOM, no storage, no network.
 
 /** 1 inch = 2.54 cm exactly (international definition). */
 export const CM_PER_IN = 2.54;
-/** 1 pound = 0.45359237 kg exactly (international definition). */
-export const KG_PER_LB = 0.45359237;
 
 export type ParsedNumber =
   | { state: 'empty' }
@@ -13,15 +11,16 @@ export type ParsedNumber =
   | { state: 'ok'; value: number };
 
 /**
- * Parse a number typed by a person. A comma is accepted as the decimal separator.
- * Anything that is not a plain decimal number (text, "NaN", "1e3", several separators) is invalid.
+ * Parse a number typed by a person (CALCULATION-SPEC.md 1.3): English digits 0-9 with the period as the only decimal separator.
+ * Anything else is invalid: a comma decimal ("84,5"), Arabic-Indic digits, a plus sign, "NaN", "1e3", several separators,
+ * spaces inside the number and unit text ("84 cm"). Surrounding spaces are ignored; a leading minus is read so a negative value
+ * can be rejected by the field's own validation.
  */
 export function parseNumber(text: string): ParsedNumber {
   const trimmed = text.trim();
   if (trimmed === '') return { state: 'empty' };
-  const normalised = trimmed.replace(',', '.');
-  if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(normalised)) return { state: 'invalid' };
-  const value = Number(normalised);
+  if (!/^-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)$/.test(trimmed)) return { state: 'invalid' };
+  const value = Number(trimmed);
   return Number.isFinite(value) ? { state: 'ok', value } : { state: 'invalid' };
 }
 
@@ -39,19 +38,5 @@ export function formatFixed(value: number, decimals: number): string {
   return roundHalfUp(value, decimals).toFixed(decimals);
 }
 
-export const inchesToCm = (inches: number): number => inches * CM_PER_IN;
+/** Used internally only: the Navy body-fat equations take inches (CALCULATION-SPEC.md 4.3). Not a user-facing unit. */
 export const cmToInches = (cm: number): number => cm / CM_PER_IN;
-export const lbToKg = (pounds: number): number => pounds * KG_PER_LB;
-export const kgToLb = (kg: number): number => kg / KG_PER_LB;
-export const feetInchesToInches = (feet: number, inches: number): number => feet * 12 + inches;
-
-/** Split total inches into whole feet and inches (one decimal), carrying 12 inches into a foot. */
-export function inchesToFeetInches(totalInches: number): { feet: number; inches: number } {
-  let feet = Math.floor(totalInches / 12);
-  let inches = roundHalfUp(totalInches - feet * 12, 1);
-  if (inches >= 12) {
-    feet += 1;
-    inches = 0;
-  }
-  return { feet, inches };
-}

@@ -49,14 +49,6 @@ const sources = [
       <noscript><p>This calculator needs JavaScript to run in your browser.</p></noscript>
       <form id="bodyfat-form" class="calc-form" novalidate>
         <SegmentedToggle
-          name="system"
-          legend="Measurement system"
-          options={[
-            { value: 'metric', label: 'Metric (cm, kg)', checked: true },
-            { value: 'imperial', label: 'Imperial (ft/in, lb)' },
-          ]}
-        />
-        <SegmentedToggle
           name="sex"
           legend="Biological sex"
           note="Used by the equations"
@@ -67,25 +59,15 @@ const sources = [
           ]}
         />
         <div class="hw-grid">
-          <div id="height-metric">
-            <NumberField id="height-cm" label="Height" unit="cm" placeholder="e.g. 178" hint="Standing, without shoes." />
-          </div>
-          <fieldset id="height-imperial" class="span-all" hidden>
-            <legend class="field-label">Height</legend>
-            <div class="field-pair">
-              <NumberField id="height-ft" label="Feet" unit="ft" inputmode="numeric" placeholder="e.g. 5" />
-              <NumberField id="height-in" label="Inches" unit="in" placeholder="e.g. 10" />
-            </div>
-            <p class="eligibility">Standing, without shoes.</p>
-          </fieldset>
-          <NumberField id="weight" label="Weight (optional)" unit="kg" unitId="weight-unit" placeholder="e.g. 76" hint="Only used to estimate fat mass and lean mass." />
+          <NumberField id="height" label="Height" unit="cm" placeholder="e.g. 178" hint="Standing, without shoes." />
+          <NumberField id="weight" label="Weight (optional)" unit="kg" placeholder="e.g. 76" hint="Only used to estimate fat mass and lean mass." />
         </div>
         <div class="field-pair">
-          <NumberField id="neck" label="Neck" unit="cm" unitId="neck-unit" placeholder="e.g. 38" hint="Just below the larynx (Adam's apple), on bare skin." />
-          <NumberField id="waist" label="Waist (abdomen at the navel)" unit="cm" unitId="waist-unit" placeholder="e.g. 84" hint="Across the navel, arms down at your sides, at the end of a normal relaxed breath out." />
+          <NumberField id="neck" label="Neck" unit="cm" placeholder="e.g. 38" hint="Just below the larynx (Adam's apple), on bare skin." />
+          <NumberField id="waist" label="Waist (abdomen at the navel)" unit="cm" placeholder="e.g. 84" hint="Across the navel, arms down at your sides, at the end of a normal relaxed breath out." />
         </div>
         <div id="hip-field" hidden>
-          <NumberField id="hip" label="Hip" unit="cm" unitId="hip-unit" placeholder="e.g. 98" hint="Around the fullest part of the buttocks as seen from the side, over thin fitted clothing." />
+          <NumberField id="hip" label="Hip" unit="cm" placeholder="e.g. 98" hint="Around the fullest part of the buttocks as seen from the side, over thin fitted clothing." />
         </div>
         <p id="bf-group-error" class="group-error" role="alert" hidden></p>
         <div class="form-actions">
@@ -115,12 +97,12 @@ const sources = [
           <div id="mass-tiles" class="mass-grid" hidden>
             <div class="mass-tile">
               <span class="metric-label">Estimated fat mass</span>
-              <p class="mass-value"><span id="fat-value"></span> <small id="fat-unit"></small></p>
+              <p class="mass-value"><span id="fat-value"></span> <small>kg</small></p>
               <p class="card-note">Weight × body fat percentage</p>
             </div>
             <div class="mass-tile">
               <span class="metric-label">Estimated lean mass (not fat)</span>
-              <p class="mass-value"><span id="lean-value"></span> <small id="lean-unit"></small></p>
+              <p class="mass-value"><span id="lean-value"></span> <small>kg</small></p>
               <p class="card-note">All body mass that is not fat. This is not the same as muscle mass.</p>
             </div>
           </div>
