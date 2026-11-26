@@ -196,8 +196,9 @@ describe('input validation on canonical units (CALCULATION-SPEC.md 1.3)', () => 
       assert.equal(evaluateBmi(metric(30, 175, bad)).status, 'invalid', `weight ${bad}`);
     }
   });
-  it('accepts a comma decimal separator', () => {
-    assert.equal(ok(evaluateBmi(metric(30, '175,5', '70,5'))).display, ok(evaluateBmi(metric(30, '175.5', '70.5'))).display);
+  it('rejects a comma decimal in height and weight (period only)', () => {
+    assert.ok(errors(evaluateBmi(metric(30, '175,5', 70))).height);
+    assert.ok(errors(evaluateBmi(metric(30, 175, '70,5'))).weight);
   });
   it('rejects what a metric-only field cannot hold, with a message that says what to type', () => {
     const bad = ['84 cm', '175cm', "5'10", '١٧٨', '175٫5', '1,7,5', '175..5', '--5'];

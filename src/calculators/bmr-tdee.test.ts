@@ -166,11 +166,11 @@ describe('T7 (historical): imperial input was removed (metric-only policy, CALCU
     const input = metric('male', 28, 178, 74, 'active');
     assert.deepEqual(Object.keys(input).sort(), ['activity', 'age', 'height', 'sex', 'weight']);
   });
-  it('decimal metric values work and equal the same value typed with a decimal comma', () => {
+  it('decimal metric values with a period work; a comma decimal is rejected', () => {
     const a = ok(evaluateEnergy(metric('female', 30, '165.5', '60.5', 'active')));
-    const b = ok(evaluateEnergy(metric('female', 30, '165,5', '60,5', 'active')));
-    near(a.tee, b.tee, 1e-9);
-    near(a.ree, b.ree, 1e-9);
+    assert.ok(a.tee > 0 && a.ree > 0);
+    assert.ok(invalid(evaluateEnergy(metric('female', 30, '165,5', '60.5', 'active'))).height);
+    assert.ok(invalid(evaluateEnergy(metric('female', 30, '165.5', '60,5', 'active'))).weight);
   });
   it('rejects unit text, feet-and-inches notation and non-ASCII digits in height and weight', () => {
     for (const bad of ['178 cm', '178cm', "5'10", '١٧٨', '75kg', '74٫5']) {
@@ -246,8 +246,8 @@ describe('T11: validation priority (3.3)', () => {
     assert.ok(invalid(evaluateEnergy(metric('male', 30, 170, 19.99))).weight);
     assert.ok(invalid(evaluateEnergy(metric('male', 30, 170, 500.01))).weight);
   });
-  it('a comma decimal separator is accepted and a decimal age is not', () => {
-    assert.equal(ok(evaluateEnergy(metric('male', 30, '175,5', '70,5'))).teeDisplay, ok(evaluateEnergy(metric('male', 30, '175.5', '70.5'))).teeDisplay);
+  it('a comma decimal separator is rejected and a decimal age is not accepted either', () => {
+    assert.ok(invalid(evaluateEnergy(metric('male', 30, '175,5', '70.5'))).height);
     assert.ok(invalid(evaluateEnergy(metric('male', '30.5', 175, 70))).age);
   });
   it('sex matters: the same inputs give different REE and TEE for men and women', () => {

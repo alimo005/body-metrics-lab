@@ -11,15 +11,16 @@ export type ParsedNumber =
   | { state: 'ok'; value: number };
 
 /**
- * Parse a number typed by a person. A comma is accepted as the decimal separator.
- * Anything that is not a plain decimal number (text, "NaN", "1e3", several separators) is invalid.
+ * Parse a number typed by a person (CALCULATION-SPEC.md 1.3): English digits 0-9 with the period as the only decimal separator.
+ * Anything else is invalid: a comma decimal ("84,5"), Arabic-Indic digits, a plus sign, "NaN", "1e3", several separators,
+ * spaces inside the number and unit text ("84 cm"). Surrounding spaces are ignored; a leading minus is read so a negative value
+ * can be rejected by the field's own validation.
  */
 export function parseNumber(text: string): ParsedNumber {
   const trimmed = text.trim();
   if (trimmed === '') return { state: 'empty' };
-  const normalised = trimmed.replace(',', '.');
-  if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(normalised)) return { state: 'invalid' };
-  const value = Number(normalised);
+  if (!/^-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)$/.test(trimmed)) return { state: 'invalid' };
+  const value = Number(trimmed);
   return Number.isFinite(value) ? { state: 'ok', value } : { state: 'invalid' };
 }
 

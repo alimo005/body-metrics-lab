@@ -11,18 +11,24 @@ describe('unit definitions (CALCULATION-SPEC.md 1.2)', () => {
 });
 
 describe('parseNumber (CALCULATION-SPEC.md 1.3)', () => {
-  it('accepts decimals and a comma separator', () => {
+  it('accepts English digits with a period as the only decimal separator', () => {
     assert.deepEqual(parseNumber('175'), { state: 'ok', value: 175 });
     assert.deepEqual(parseNumber(' 70.5 '), { state: 'ok', value: 70.5 });
-    assert.deepEqual(parseNumber('70,5'), { state: 'ok', value: 70.5 });
+    assert.deepEqual(parseNumber('5.25'), { state: 'ok', value: 5.25 });
+    assert.deepEqual(parseNumber('84.5'), { state: 'ok', value: 84.5 });
     assert.deepEqual(parseNumber('.5'), { state: 'ok', value: 0.5 });
+  });
+  it('rejects a comma decimal, Arabic-Indic digits, a plus sign and spaces inside the number', () => {
+    for (const bad of ['70,5', '84,5', ',5', '5,', '1,000', '١٧٨', '٣٨٫٥', '84٫5', '+84', '8 4', '84 .5', '84. 5']) {
+      assert.deepEqual(parseNumber(bad), { state: 'invalid' }, bad);
+    }
   });
   it('reports empty input', () => {
     assert.deepEqual(parseNumber(''), { state: 'empty' });
     assert.deepEqual(parseNumber('   '), { state: 'empty' });
   });
   it('rejects text, NaN, exponent form and repeated separators', () => {
-    for (const bad of ['abc', 'NaN', 'Infinity', '1e3', '1,2,3', '1.2.3', '--5', '5kg', '0x10', '1 000']) {
+    for (const bad of ['abc', 'NaN', 'Infinity', '1e3', '1,2,3', '1.2.3', '--5', '5kg', '0x10', '1 000', '84 cm']) {
       assert.deepEqual(parseNumber(bad), { state: 'invalid' }, bad);
     }
   });

@@ -52,7 +52,7 @@ describe('parseHeightCm', () => {
   });
   it('accepts decimal values', () => {
     assert.deepEqual(parseHeightCm('178.5'), { ok: true, value: 178.5 });
-    assert.deepEqual(parseHeightCm('175,5'), { ok: true, value: 175.5 }); // existing comma tolerance, unchanged
+    assert.equal(parseHeightCm('175,5').ok, false); // a comma decimal is rejected (period only)
   });
   it('says what is expected when empty, and rejects negatives and zero', () => {
     assert.equal(message(parseHeightCm('')), 'Enter your height in centimetres.');
@@ -119,10 +119,10 @@ describe('parseCircumferenceCm: neck, waist and hip (CALCULATION-SPEC.md 1.3)', 
       }
     }
   });
-  it('rejects negative and zero; accepts decimals (and the existing comma tolerance)', () => {
+  it('rejects negative and zero; accepts decimals with a period; rejects a comma decimal', () => {
     for (const bad of ['-30', '0']) assert.equal(parseCircumferenceCm(bad, 'neck').ok, false, bad);
     assert.deepEqual(parseCircumferenceCm('38.5', 'neck'), { ok: true, value: 38.5 });
-    assert.deepEqual(parseCircumferenceCm('38,5', 'neck'), { ok: true, value: 38.5 });
+    assert.equal(parseCircumferenceCm('38,5', 'neck').ok, false);
   });
 });
 

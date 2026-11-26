@@ -249,8 +249,14 @@ describe('validation (4.5, decision D8)', () => {
       'These measurements do not give a possible body-fat percentage (0% or below, or above 100%). Check each measurement and the selected units.',
     );
   });
-  it('a comma decimal separator is accepted', () => {
-    assert.equal(ok(evaluateBodyFat(metric('male', '178,0', '38,0', '84,0'))).percentDisplay, '15.7');
+  it('a comma decimal separator is rejected in every field (period only)', () => {
+    const e = (r: BodyFatEvaluation) => (r as Invalid).errors;
+    assert.ok(e(evaluateBodyFat(metric('male', '178,5', 38, 84))).height);
+    assert.ok(e(evaluateBodyFat(metric('male', 178, '38,5', 84))).neck);
+    assert.ok(e(evaluateBodyFat(metric('male', 178, 38, '84,5'))).waist);
+    assert.ok(e(evaluateBodyFat(metric('female', 165, 32, 72, '98,5'))).hip);
+    assert.ok(e(evaluateBodyFat(metric('male', 178, 38, 84, '', '76,5'))).weight);
+    assert.equal(ok(evaluateBodyFat(metric('male', '178.0', '38.0', '84.0'))).percentDisplay, '15.7');
   });
 });
 
