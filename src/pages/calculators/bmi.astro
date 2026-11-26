@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import Notice from '../../components/Notice.astro';
+import SegmentedToggle from '../../components/SegmentedToggle.astro';
+import NumberField from '../../components/NumberField.astro';
+import FormulaBox from '../../components/FormulaBox.astro';
+import SourceList from '../../components/SourceList.astro';
+import ReferenceBar from '../../components/ReferenceBar.astro';
+import RelatedArticle from '../../components/RelatedArticle.astro';
+import '../../styles/calculator.css';
+
+// Sources S1, S3, S4, S5 of CALCULATION-SPEC.md section 0.4. Only these are used on this page.
+const sources = [
+  { name: 'CDC', title: 'Adult BMI Categories', href: 'https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html' },
+  { name: 'CDC', title: 'BMI Frequently Asked Questions', href: 'https://www.cdc.gov/bmi/faq/index.html' },
+  { name: 'WHO', title: 'Obesity and overweight (fact sheet)', href: 'https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight' },
+];
+const cdcChildTeen = 'https://www.cdc.gov/bmi/child-teen-calculator/index.html';
+---
+<BaseLayout
+  title="Adult BMI Calculator (Metric and Imperial)"
+  description="Calculate adult body mass index (BMI) for ages 20 and older in metric or imperial units, with the CDC category and the formula used. Runs in your browser."
+>
+  <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Calculators', href: '/calculators/' }, { label: 'BMI Calculator' }]} />
+
+  <header class="calc-hero">
+    <span class="kicker">Anthropometric metrics</span>
+    <h1>Adult BMI Calculator</h1>
+    <p>Calculate your body mass index (BMI) from your height and weight. It is designed for adults aged 20 and older, and all calculations run in your browser.</p>
+  </header>
+
+  <div class="calc-grid">
+    <section class="card calc-panel" aria-labelledby="inputs-heading">
+      <h2 id="inputs-heading" class="visually-hidden">Your details</h2>
+      <noscript><p>This calculator needs JavaScript to run in your browser.</p></noscript>
+      <form id="bmi-form" class="calc-form" novalidate>
+        <SegmentedToggle
+          name="system"
+          legend="Measurement system"
+          options={[
+            { value: 'metric', label: 'Metric (cm, kg)', checked: true },
+            { value: 'imperial', label: 'Imperial (ft/in, lb)' },
+          ]}
+        />
+        <SegmentedToggle
+          name="sex"
+          legend="Sex"
+          note="Does not change the BMI result"
+          noteId="sex-note"
+          options={[
+            { value: 'male', label: 'Male', checked: true },
+            { value: 'female', label: 'Female' },
+          ]}
+        />
+        <NumberField id="age" label="Age (years)" unit="years" inputmode="numeric" placeholder="e.g. 28" hint="Adult result for ages 20 and older." />
+        <div id="height-metric">
+          <NumberField id="height-cm" label="Height" unit="cm" placeholder="e.g. 175" />
+        </div>
+        <fieldset id="height-imperial" class="height-imperial" hidden>
+          <legend class="field-label">Height</legend>
+          <div class="field-pair">
+            <NumberField id="height-ft" label="Feet" unit="ft" inputmode="numeric" placeholder="e.g. 5" />
+            <NumberField id="height-in" label="Inches" unit="in" placeholder="e.g. 9" />
+          </div>
+        </fieldset>
+        <NumberField id="weight" label="Weight" unit="kg" unitId="weight-unit" placeholder="e.g. 70" />
+        <div class="form-actions">
+          <button type="submit" class="button primary"><Icon name="calculator" size={20} /> Calculate BMI</button>
+          <button type="reset" class="button secondary"><Icon name="rotate-ccw" size={20} /> Reset</button>
+        </div>
+        <Notice icon="lock"><p>100% client-side: your data never leaves your device.</p></Notice>
+      </form>
+    </section>
+
+    <section class="card calc-panel" aria-labelledby="result-heading">
+      <h2 id="result-heading" class="visually-hidden">Result</h2>
+      <!-- One short announcement for assistive technology; the visible result below is not a live region itself. -->
+      <p id="bmi-announce" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+      <div>
+        <p id="result-empty" class="result-empty">Enter your details and press Calculate.</p>
+
+        <div id="result-ok" hidden>
+          <div class="result-head">
+            <div>
+              <span class="metric-label">BMI</span>
+              <p class="metric"><span id="bmi-value"></span> <small>kg/m²</small></p>
+            </div>
+            <div class="badge-column">
+              <span class="metric-label">Category (CDC)</span>
+              <span class="badge">
+                <span id="icon-healthy" hidden><Icon name="check" size={20} /></span>
+                <span id="icon-other" hidden><Icon name="info" size={20} /></span>
+                <span id="bmi-category"></span>
+              </span>
+              <span class="field-note">Category range: <span id="bmi-threshold"></span></span>
+            </div>
+          </div>
+          <div class="result-block">
+            <h3>Reference spectrum</h3>
+            <ReferenceBar />
+          </div>
+          <div class="result-range">
+            <h3>Healthy Weight range for your height</h3>
+            <p>About <span id="bmi-range"></span>.</p>
+          </div>
+          <div class="result-notice" id="bmi-boundary" hidden>
+            <Notice><p id="bmi-boundary-text"></p></Notice>
+          </div>
+        </div>
+
+        <div id="result-under20" hidden>
+          <Notice>
+            <p><strong>Adult BMI is not shown for ages under 20.</strong></p>
+            <p>Children and teens are assessed with BMI-for-age percentiles that depend on age and sex, so the adult categories do not apply. You can use the <a href={cdcChildTeen} rel="noopener noreferrer">CDC child and teen BMI calculator</a>.</p>
+          </Notice>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card calc-panel calc-section" aria-labelledby="formula-heading">
+    <h2 id="formula-heading"><Icon name="sigma" size={26} /> Formula and method</h2>
+    <div class="formula-grid">
+      <FormulaBox title="International standard (SI)" tag="Metric">
+        <Fragment slot="formula">BMI = weight (kg) / [height (m)]²</Fragment>
+        Weight in kilograms divided by the square of height in metres.
+      </FormulaBox>
+      <FormulaBox title="US customary system" tag="Imperial">
+        <Fragment slot="formula">BMI = 703 × weight (lb) / [height (in)]²</Fragment>
+        Weight in pounds multiplied by 703, divided by the square of height in inches.
+      </FormulaBox>
+    </div>
+    <div class="method-row">
+      <p>
+        The category is decided from the exact, unrounded BMI using the CDC adult thresholds (18.5, 25, 30, 35 and 40) and the result is shown to one decimal. At a boundary this can differ from the category printed in CDC's rounded weight table. The Healthy Weight range is the span of weights whose exact BMI is from 18.5 up to, but not including, 25 for your height.
+      </p>
+      <div class="source-box">
+        <SourceList heading="Sources" sources={sources} />
+      </div>
+    </div>
+  </section>
+
+  <section class="card calc-panel calc-section" aria-labelledby="limits-heading">
+    <h2 id="limits-heading">Limitations</h2>
+    <ul class="limit-list">
+      <li>BMI is a screening measure, not a diagnostic tool.</li>
+      <li>BMI cannot tell fat mass from muscle or bone and does not show where fat is carried, so people with a lot of muscle can fall in the Overweight or Obesity categories.</li>
+      <li>The adult categories are the same regardless of age, sex or race, and apply from age 20.</li>
+      <li>This calculator is educational and is not a substitute for professional medical advice.</li>
+    </ul>
+  </section>
+
+  <RelatedArticle calculator="bmi" />
+
+  <script>
+    import '../../scripts/bmi-page.ts';
+  </script>
+</BaseLayout>

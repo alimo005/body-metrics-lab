@@ -1,0 +1,23 @@
+{
+  "name": "body-metrics-lab",
+  "private": true,
+  "type": "module",
+  "engines": {"node": "24.22.1"},
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node --test \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "astro": "7.4.12",
+    "@astrojs/sitemap": "3.7.5",
+    "@fontsource-variable/dm-sans": "5.3.0",
+    "@fontsource-variable/manrope": "5.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "typescript": "6.0.3"
+  }
+}

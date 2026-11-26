@@ -1,0 +1,25 @@
+---
+// Custom 404 (DESIGN-SPEC.md 11): same design system, a short message and links to Home and the calculators.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import '../styles/pages.css';
+---
+<BaseLayout title="Page not found" description="The page you are looking for could not be found. Go back to the BodyMetrics Lab home page, the calculators or the Health Journal.">
+  <section class="not-found">
+    <span class="code" aria-hidden="true">404</span>
+    <h1>Page not found</h1>
+    <p>We couldn't find the page you were looking for. It may have moved, or the address may be mistyped.</p>
+    <div class="actions">
+      <a class="button primary" href="/"><Icon name="home" size={20} /> Home</a>
+      <a class="button secondary" href="/calculators/"><Icon name="calculator" size={20} /> Calculators</a>
+      <a class="button secondary" href="/journal/"><Icon name="book" size={20} /> Health Journal</a>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .not-found { display: grid; justify-items: start; gap: var(--space-md); max-width: 36rem; padding-block: var(--space-lg); }
+  .code { font-family: var(--font-heading); font-size: var(--fs-display); font-weight: 800; color: var(--color-secondary); line-height: 1; }
+  .not-found h1 { margin: 0; }
+  .not-found p { margin: 0; color: var(--color-on-surface-variant); font-size: var(--fs-body-lg); }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+</style>

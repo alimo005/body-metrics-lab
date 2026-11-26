@@ -1,0 +1,48 @@
+---
+// Breadcrumb trail (DESIGN-SPEC.md 7). The last item is the current page and is not a link.
+interface Item {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+---
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    {items.map((item, index) => (
+      <li>
+        {index < items.length - 1 && item.href ? (
+          <a href={item.href}>{item.label}</a>
+        ) : (
+          <span aria-current="page">{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+<style>
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs-small);
+  }
+  .breadcrumb li + li::before {
+    content: '›';
+    margin-inline-end: var(--space-xs);
+    color: var(--color-on-surface-variant);
+  }
+  .breadcrumb a,
+  .breadcrumb span {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch);
+    min-width: var(--touch);
+  }
+  .breadcrumb span { color: var(--color-on-surface-variant); }
+</style>

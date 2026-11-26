@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import Icon from '../../components/Icon.astro';
+import { getPublishedArticles, pageItems, totalPages } from '../../lib/journal';
+import '../../styles/pages.css';
+
+// Page 1 of the Journal listing (DESIGN-SPEC.md 9.1): newest first, nine per page, pagination only when there is more than one page.
+// With no published article the page shows a proper empty state instead of an empty grid.
+const articles = await getPublishedArticles();
+const pages = totalPages(articles.length);
+const items = pageItems(articles, 1);
+---
+<BaseLayout title="Health Journal" description="Clear, evidence-informed articles that explain the numbers behind the BodyMetrics Lab calculators, with their sources.">
+  <PageHero
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Health Journal' }]}
+    kicker="Evidence-informed insights"
+    title="Health Journal"
+    intro="Clear articles that explain the numbers behind our calculators, with the sources listed at the end of each one."
+  />
+  {items.length > 0 ? (
+    <div class="card-grid">
+      {items.map((article) => <ArticleCard article={article} />)}
+    </div>
+  ) : (
+    <section class="card empty-journal" aria-labelledby="empty-heading">
+      <span class="empty-icon"><Icon name="book" size={32} /></span>
+      <h2 id="empty-heading">Articles are coming soon</h2>
+      <p>We are preparing the first articles of the Health Journal. Each one will explain how a calculator works, with its sources listed at the end. In the meantime, you can use the calculators.</p>
+      <div class="empty-actions">
+        <a class="button primary" href="/calculators/"><Icon name="calculator" size={20} /> Explore the calculators</a>
+        <a class="button secondary" href="/">Back to home</a>
+      </div>
+    </section>
+  )}
+  <Pagination current={1} total={pages} />
+</BaseLayout>
+<style>
+  .empty-journal { display: grid; justify-items: center; gap: var(--space-sm); max-width: 40rem; margin-inline: auto; padding: var(--space-xl) var(--space-md); text-align: center; }
+  .empty-icon { display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: var(--radius-lg); background: var(--color-secondary-container); color: var(--color-on-secondary-container); }
+  .empty-journal h2 { margin: var(--space-xs) 0 0; }
+  .empty-journal p { max-width: 32rem; margin: 0 0 var(--space-xs); color: var(--color-on-surface-variant); }
+  .empty-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-sm); }
+</style>

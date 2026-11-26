@@ -1,0 +1,38 @@
+---
+// Page hero (DESIGN-SPEC.md 7, 11): breadcrumb, kicker, H1 and a short introduction. Used by the static pages and the Journal.
+import Breadcrumb from './Breadcrumb.astro';
+
+interface Item {
+  label: string;
+  href?: string;
+}
+interface Props {
+  breadcrumb: Item[];
+  kicker: string;
+  title: string;
+  intro?: string;
+}
+const { breadcrumb, kicker, title, intro } = Astro.props;
+---
+<Breadcrumb items={breadcrumb} />
+<header class="page-hero">
+  <span class="kicker">{kicker}</span>
+  <h1>{title}</h1>
+  {intro && <p>{intro}</p>}
+</header>
+<style>
+  .kicker {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    background: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+    font-size: var(--fs-label-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .page-hero { padding-block: var(--space-sm) var(--space-lg); }
+  .page-hero h1 { margin-block: var(--space-sm); }
+  .page-hero p { max-width: 42rem; margin: 0; font-size: var(--fs-body-lg); color: var(--color-on-surface-variant); }
+</style>

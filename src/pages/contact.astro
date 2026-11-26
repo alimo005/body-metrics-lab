@@ -1,0 +1,37 @@
+---
+// Contact Us (DESIGN-SPEC.md 11 and 20.2, approved copy): one email card with the exact address as a mailto link, and the approved
+// medical and privacy notice. No form, no response-time promise, no other contact details. The address is defined once in site.ts.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { CONTACT_EMAIL } from '../config/site';
+import '../styles/pages.css';
+---
+<BaseLayout title="Contact Us" description="Contact the BodyMetrics Lab team by email with questions, suggestions or feedback about the calculators and articles.">
+  <PageHero
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Contact Us' }]}
+    kicker="Contact"
+    title="Contact Us"
+    intro="Have a question, suggestion or feedback about BodyMetrics Lab? We would love to hear from you. Send an email to the BodyMetrics Lab team at the address below."
+  />
+  <div class="contact">
+    <section class="card contact-card" aria-labelledby="email-label">
+      <span class="contact-icon"><Icon name="mail" size={28} /></span>
+      <div>
+        <h2 id="email-label" class="contact-label">Email</h2>
+        <a class="contact-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+      </div>
+    </section>
+    <p class="contact-notice">We can't provide personal medical advice. For medical questions, please consult a qualified healthcare professional, and please don't include personal health information in your email.</p>
+  </div>
+</BaseLayout>
+<style>
+  .contact { display: grid; gap: var(--space-md); max-width: 44rem; }
+  @media (min-width: 64rem) { .contact { margin-inline: auto; } }
+  .contact-card { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); }
+  @media (min-width: 48rem) { .contact-card { padding: var(--space-lg); } }
+  .contact-icon { display: grid; place-items: center; flex: none; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-lg); background: var(--color-secondary-container); color: var(--color-on-secondary-container); }
+  .contact-label { margin: 0 0 var(--space-xs); font-family: var(--font-body); font-size: var(--fs-label-sm); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-on-surface-variant); }
+  .contact-link { display: inline-flex; align-items: center; min-height: var(--touch); font-family: var(--font-heading); font-size: var(--fs-h3); font-weight: 700; overflow-wrap: anywhere; }
+  .contact-notice { margin: 0; font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+</style>

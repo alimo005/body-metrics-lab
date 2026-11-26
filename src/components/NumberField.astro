@@ -1,0 +1,82 @@
+---
+// Labelled numeric text field with a unit suffix and an inline error slot (DESIGN-SPEC.md 7).
+// Text input with inputmode="decimal" so a comma decimal separator can be typed; validation is done in TypeScript.
+interface Props {
+  id: string;
+  label: string;
+  unit?: string;
+  placeholder?: string;
+  hint?: string;
+  inputmode?: 'decimal' | 'numeric';
+  /** Id of the element showing the unit, so the unit text can be changed by script. */
+  unitId?: string;
+}
+const { id, label, unit, placeholder, hint, inputmode = 'decimal', unitId } = Astro.props;
+const errorId = `${id}-error`;
+const hintId = `${id}-hint`;
+---
+<div class="field" data-field={id}>
+  <label class="field-label" for={id}>{label}</label>
+  <div class="field-control">
+    <input
+      id={id}
+      name={id}
+      type="text"
+      inputmode={inputmode}
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      placeholder={placeholder}
+      aria-describedby={hint ? `${hintId} ${errorId}` : errorId}
+    />
+    {unit && <span class="field-unit" id={unitId}>{unit}</span>}
+  </div>
+  {hint && <p class="field-hint" id={hintId}>{hint}</p>}
+  <p class="field-error" id={errorId} role="alert" hidden></p>
+</div>
+<style>
+  .field { min-width: 0; }
+  .field-control {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    border: 1.5px solid var(--color-outline);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-low);
+    transition: border-color var(--ease), background-color var(--ease);
+  }
+  .field-control:focus-within {
+    border-color: var(--color-focus);
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  .field-control input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    min-height: calc(3rem - 3px);
+    padding: 0 0 0 var(--space-md);
+    border: 0;
+    background: transparent;
+    font-size: var(--fs-body-lg);
+    outline: none;
+  }
+  .field-control input::placeholder { color: var(--color-on-surface-variant); opacity: 1; }
+  .field-unit {
+    padding-inline: var(--space-sm) var(--space-md);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--color-on-surface-variant);
+  }
+  .field:has(input[aria-invalid='true']) .field-control {
+    border-color: var(--color-error);
+    background: var(--color-error-container);
+  }
+  .field-hint { margin: var(--space-xs) 0 0; font-size: var(--fs-label-sm); color: var(--color-on-surface-variant); }
+  .field-error {
+    margin: var(--space-xs) 0 0;
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--color-error);
+  }
+</style>

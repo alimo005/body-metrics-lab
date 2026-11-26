@@ -1,0 +1,25 @@
+---
+import Icon from './Icon.astro';
+---
+<!-- Hidden until the theme script runs, so the button never appears without working. -->
+<button type="button" class="icon-button theme-toggle" data-theme-toggle aria-label="Switch to dark mode" hidden>
+  <Icon name="moon" class="theme-icon theme-icon-moon" />
+  <Icon name="sun" class="theme-icon theme-icon-sun" />
+</button>
+
+<script>
+  import { initTheme } from '../scripts/theme';
+  initTheme();
+</script>
+
+<style is:global>
+  .theme-toggle { background: var(--color-surface-mid); }
+  .theme-toggle:hover { background: var(--color-surface-high); }
+  .theme-toggle .theme-icon-sun { display: none; }
+  :root[data-theme='dark'] .theme-toggle .theme-icon-moon { display: none; }
+  :root[data-theme='dark'] .theme-toggle .theme-icon-sun { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .theme-toggle .theme-icon-moon { display: none; }
+    :root:not([data-theme]) .theme-toggle .theme-icon-sun { display: block; }
+  }
+</style>

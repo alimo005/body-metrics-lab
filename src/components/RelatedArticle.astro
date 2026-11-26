@@ -1,0 +1,26 @@
+---
+// "Related article" banner on a calculator page (DESIGN-SPEC.md 10.1 item 5). Rendered only when a published article exists
+// for this calculator (never links to a missing page); with none, it renders nothing.
+import Icon from './Icon.astro';
+import { articleHref, getRelatedArticle, readMinutes } from '../lib/journal';
+import type { CalculatorSlug } from '../config/site';
+import '../styles/pages.css';
+
+interface Props {
+  calculator: CalculatorSlug;
+}
+const article = await getRelatedArticle(Astro.props.calculator);
+---
+{article && (
+  <section class="card guide-banner calc-section" style="max-width: none" aria-labelledby="related-article-heading">
+    <div>
+      <p class="section-kicker">Related article · {readMinutes(article)} min read</p>
+      <h2 id="related-article-heading">{article.data.title}</h2>
+      <p>{article.data.description}</p>
+    </div>
+    <a class="button primary" href={articleHref(article)}>
+      <span>Read the article</span>
+      <Icon name="arrow-right" size={18} />
+    </a>
+  </section>
+)}

@@ -1,0 +1,41 @@
+---
+// Medical Disclaimer: DRAFT for the owner's review (DESIGN-SPEC.md 11, D-LEGAL). Only statements the specs support are made;
+// no pregnancy, ethnicity or condition-specific claims (CALCULATION-SPEC.md marks those UNVERIFIED).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LegalPage from '../components/LegalPage.astro';
+
+const toc = [
+  { id: 'not-advice', label: 'Not medical advice' },
+  { id: 'estimates', label: 'Calculators give estimates' },
+  { id: 'limits', label: 'What each calculator cannot tell you' },
+  { id: 'professional', label: 'Talk to a professional' },
+  { id: 'emergency', label: 'Emergencies' },
+  { id: 'affiliation', label: 'No affiliation' },
+];
+---
+<BaseLayout title="Medical Disclaimer" description="BodyMetrics Lab provides educational estimates and articles, not medical advice. Read what the calculators can and cannot tell you.">
+  <LegalPage title="Medical Disclaimer" kicker="Legal" intro="BodyMetrics Lab is an educational resource. It is not a medical service." toc={toc} updated="25 November 2026">
+    <h2 id="not-advice">Not medical advice</h2>
+    <p>The calculators and content on BodyMetrics Lab are for informational and educational purposes only. They do not constitute medical advice, diagnosis or treatment. Do not use them to decide whether to start, stop or change any medical treatment, medication, diet or exercise programme.</p>
+
+    <h2 id="estimates">Calculators give estimates</h2>
+    <p>Every result is an estimate calculated from published equations and the numbers you enter. Individual results can differ, sometimes a lot, from what is true for your body. None of the calculators gives a calorie target, a diet plan or advice on what to eat.</p>
+
+    <h2 id="limits">What each calculator cannot tell you</h2>
+    <ul>
+      <li><strong>BMI</strong> is a screening measure, not a diagnostic tool. It cannot tell fat from muscle or bone and does not show where fat is carried. The adult categories apply from age 20.</li>
+      <li><strong>BMR &amp; TDEE</strong> estimates are for groups of people and carry a large individual uncertainty. The resting energy estimate is not a measured basal metabolic rate. Results are shown for ages 19 to 78 only.</li>
+      <li><strong>Body Fat</strong> is a circumference-based estimate and not a body-composition scan. It was developed for military screening, depends on how carefully you measure, and gives no healthy range or category. Results are intended for adults aged 18 and older.</li>
+    </ul>
+    <p>The age ranges are website eligibility rules, not statements about who may be safe or unsafe.</p>
+
+    <h2 id="professional">Talk to a professional</h2>
+    <p>For questions about your weight, body composition, nutrition, energy needs or health, please speak with a qualified healthcare professional who knows your situation. Never ignore professional advice or delay seeking it because of something you read or calculated here.</p>
+
+    <h2 id="emergency">Emergencies</h2>
+    <p>If you think you may have a medical emergency, contact your local emergency services immediately. Do not use this website for urgent medical needs.</p>
+
+    <h2 id="affiliation">No affiliation</h2>
+    <p>BodyMetrics Lab is not affiliated with or endorsed by CDC, WHO, NIH, the National Academies, the US Navy or any other organisation whose publications we cite. We cite them as sources and do not speak for them.</p>
+  </LegalPage>
+</BaseLayout>

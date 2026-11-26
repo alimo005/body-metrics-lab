@@ -1,0 +1,61 @@
+---
+// A formula in a tinted well (DESIGN-SPEC.md 7). The formula text is real text, so screen readers read it;
+// it scrolls inside its box on narrow screens instead of widening the page.
+interface Props {
+  title: string;
+  tag: string;
+  /** Heading level of the title so the page outline stays logical (default 3, unchanged for existing pages). */
+  headingLevel?: 3 | 4;
+  /** Let a long formula wrap onto several lines instead of scrolling inside the box (default false, unchanged for existing pages). */
+  wrap?: boolean;
+}
+const { title, tag, headingLevel = 3, wrap = false } = Astro.props;
+const Heading = `h${headingLevel}` as 'h3' | 'h4';
+---
+<div class="formula-box">
+  <div class="formula-head">
+    <Heading>{title}</Heading>
+    <span class="formula-tag">{tag}</span>
+  </div>
+  <p class:list={['formula', { wrap }]} tabindex={wrap ? undefined : 0}><slot name="formula" /></p>
+  <p class="formula-note"><slot /></p>
+</div>
+<style>
+  .formula-box {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-low);
+    min-width: 0;
+  }
+  .formula-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-block-end: var(--space-sm); }
+  .formula-head :is(h3, h4) {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--fs-label-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .formula-tag {
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-high);
+    font-size: var(--fs-label-sm);
+    color: var(--color-on-surface-variant);
+  }
+  .formula {
+    margin: 0 0 var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-family: var(--font-heading);
+    font-size: var(--fs-body-lg);
+    font-weight: 500;
+    text-align: center;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .formula.wrap { white-space: normal; text-align: start; overflow-x: visible; }
+  .formula :global(sub) { line-height: 0; }
+  .formula-note { margin: 0; font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+</style>

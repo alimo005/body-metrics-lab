@@ -1,0 +1,39 @@
+---
+// The approved BodyMetrics Lab logo (DESIGN-SPEC.md section 2). The master asset is never edited;
+// these are the transparent light-theme and adapted dark-theme variants derived from it.
+import { Image } from 'astro:assets';
+import lightLogo from '../assets/brand/logo-lockup-light.png';
+import darkLogo from '../assets/brand/logo-lockup-dark.png';
+
+interface Props {
+  /** Display height in px (default 44). The lockup keeps its original proportions. */
+  height?: number;
+}
+
+const { height = 44 } = Astro.props;
+const width = Math.round((height * lightLogo.width) / lightLogo.height);
+const home = Astro.url.pathname === '/';
+---
+<a class="brand" href="/" aria-current={home ? 'page' : undefined} style={`--logo-h: ${height}px`}>
+  <Image class="logo logo-light" src={lightLogo} alt="BodyMetrics Lab" width={width} height={height} densities={[1, 2, 3]} decoding="async" />
+  <Image class="logo logo-dark" src={darkLogo} alt="BodyMetrics Lab" width={width} height={height} densities={[1, 2, 3]} decoding="async" />
+</a>
+
+<style is:global>
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch);
+    border-radius: var(--radius-lg);
+  }
+  .brand { max-width: 100%; }
+  /* Fixed height; on very narrow screens the artwork scales down inside its box instead of stretching. */
+  .brand .logo { display: block; height: var(--logo-h); width: auto; max-width: 100%; object-fit: contain; object-position: left center; }
+  .brand .logo-dark { display: none; }
+  :root[data-theme='dark'] .brand .logo-light { display: none; }
+  :root[data-theme='dark'] .brand .logo-dark { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .brand .logo-light { display: none; }
+    :root:not([data-theme]) .brand .logo-dark { display: block; }
+  }
+</style>

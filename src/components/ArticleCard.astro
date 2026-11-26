@@ -1,0 +1,56 @@
+---
+// Journal card (DESIGN-SPEC.md 7, 9.1): image, date, read time, title, excerpt, "Read article". No category tags, no bookmarks.
+import ArticleMedia from './ArticleMedia.astro';
+import Icon from './Icon.astro';
+import { articleHref, formatDate, readMinutes } from '../lib/journal';
+import type { Article } from '../lib/journal';
+
+interface Props {
+  article: Article;
+  /** Heading level of the title (2 on the Journal listing, 3 where a section heading comes first). */
+  level?: 2 | 3;
+}
+const { article, level = 2 } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3';
+const minutes = readMinutes(article);
+---
+<article class="article-card">
+  <ArticleMedia article={article} width={640} />
+  <div class="article-card-body">
+    <p class="article-meta">
+      <span><Icon name="calendar" size={16} /> <time datetime={article.data.pubDate.toISOString().slice(0, 10)}>{formatDate(article.data.pubDate)}</time></span>
+      <span><Icon name="clock" size={16} /> {minutes} min read</span>
+    </p>
+    <Heading>{article.data.title}</Heading>
+    <p class="article-excerpt">{article.data.description}</p>
+    <a class="article-link" href={articleHref(article)}>
+      <span>Read article</span>
+      <Icon name="arrow-right" size={18} />
+      <span class="visually-hidden">: {article.data.title}</span>
+    </a>
+  </div>
+</article>
+<style>
+  .article-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-panel);
+    transition: border-color var(--ease), box-shadow var(--ease);
+  }
+  .article-card:hover { border-color: var(--color-secondary); box-shadow: var(--shadow-overlay); }
+  .article-card-body { display: flex; flex: 1; flex-direction: column; gap: var(--space-xs); padding: var(--space-xs) var(--space-sm) var(--space-sm); }
+  .article-meta { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-md); margin: 0; font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+  .article-meta span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  h2, h3 { margin: 0; font-size: var(--fs-h3); }
+  .article-excerpt { flex: 1; margin: 0; font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+  .article-link { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: var(--touch); font-weight: 600; text-decoration: none; }
+  .article-link::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-lg); }
+  .article-link:focus-visible { outline: none; }
+  .article-link:focus-visible::after { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+</style>

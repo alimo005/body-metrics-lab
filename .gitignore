@@ -1,2 +1,14 @@
 /work/
 /outputs/
+/node_modules/
+/dist/
+/.astro/
+/.wrangler/
+.env*
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo

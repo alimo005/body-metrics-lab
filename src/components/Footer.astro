@@ -1,0 +1,108 @@
+---
+// Unified footer (DESIGN-SPEC.md section 6): same on every page, includes the official contact address.
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { calculators, footerNavigation, footerLegal, CONTACT_EMAIL, SITE_NAME } from '../config/site';
+
+const current = (href: string) => (Astro.url.pathname === href ? 'page' : undefined);
+const year = new Date().getFullYear();
+const columns = [
+  { title: 'Calculators', links: calculators.map(({ short, href }) => ({ label: short, href })) },
+  { title: 'Navigation', links: footerNavigation },
+  { title: 'Legal & Medical', links: footerLegal },
+];
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <Logo height={40} />
+      <p>Evidence-informed health calculators and clear health insights designed for real life.</p>
+      <a class="footer-email" href={`mailto:${CONTACT_EMAIL}`}>
+        <Icon name="mail" size={20} />
+        <span>{CONTACT_EMAIL}</span>
+      </a>
+    </div>
+    {columns.map((column) => (
+      <nav aria-label={column.title}>
+        <h2 class="footer-heading">{column.title}</h2>
+        <ul>
+          {column.links.map((link) => (
+            <li><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    ))}
+  </div>
+  <div class="container footer-base">
+    <p class="footer-disclaimer">
+      The calculators and content provided on {SITE_NAME} are for informational and educational purposes only and do not
+      constitute medical advice, diagnosis, or treatment. Always consult a qualified physician or healthcare provider
+      regarding personal health questions.
+    </p>
+    <p class="footer-copy">© {year} {SITE_NAME}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-xl);
+    background: var(--color-surface-low);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-on-surface-variant);
+  }
+  .footer-grid {
+    display: grid;
+    gap: var(--space-lg);
+    padding-block: var(--space-xl) var(--space-lg);
+  }
+  .footer-brand p { margin: var(--space-sm) 0 var(--space-xs); max-width: 24rem; font-size: var(--fs-small); }
+  .footer-email {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: var(--touch);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+  .footer-heading {
+    margin: 0 0 var(--space-xs);
+    font-size: var(--fs-small);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--color-on-surface);
+  }
+  ul { list-style: none; margin: 0; padding: 0; }
+  nav a {
+    display: flex;
+    align-items: center;
+    min-height: var(--touch);
+    min-width: var(--touch);
+    width: fit-content;
+    font-size: var(--fs-small);
+    color: var(--color-on-surface-variant);
+    text-decoration: none;
+  }
+  nav a:hover, nav a[aria-current='page'] { color: var(--color-primary); text-decoration: underline; }
+  .footer-base {
+    display: grid;
+    gap: var(--space-sm);
+    padding-block: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--fs-small);
+  }
+  .footer-base p { margin: 0; }
+  .footer-disclaimer { max-width: 52rem; }
+
+  @media (min-width: 36rem) {
+    .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+  @media (min-width: 64rem) {
+    .footer-grid { grid-template-columns: 1.5fr repeat(3, minmax(0, 1fr)); }
+    .footer-brand { grid-column: auto; }
+    .footer-base { grid-template-columns: 1fr auto; align-items: end; }
+  }
+</style>

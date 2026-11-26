@@ -1,0 +1,73 @@
+---
+// Calculator card (DESIGN-SPEC.md 7, 8): icon, category tag, title, one-line description, arrow link. The whole card is clickable.
+import Icon from './Icon.astro';
+import type { Calculator } from '../config/site';
+
+interface Props {
+  calculator: Calculator;
+  /** Heading level of the title: 2 on the calculators index, 3 under a section heading (default). */
+  level?: 2 | 3;
+}
+const { calculator, level = 3 } = Astro.props;
+const Heading = `h${level}` as "h2" | "h3";
+---
+<article class="calc-card">
+  <div class="calc-card-top">
+    <span class="calc-card-icon"><Icon name={calculator.icon} size={26} /></span>
+    <span class="calc-card-tag">{calculator.tag}</span>
+  </div>
+  <Heading>{calculator.label}</Heading>
+  <p>{calculator.description}</p>
+  <a class="calc-card-link" href={calculator.href}>
+    <span>{calculator.cta}</span>
+    <Icon name="arrow-right" size={18} />
+    <span class="visually-hidden">: {calculator.label}</span>
+  </a>
+</article>
+<style>
+  .calc-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-panel);
+    transition: border-color var(--ease), box-shadow var(--ease);
+  }
+  .calc-card:hover { border-color: var(--color-secondary); box-shadow: var(--shadow-overlay); }
+  .calc-card-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-block-end: var(--space-xs); }
+  .calc-card-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-md);
+    background: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+  }
+  .calc-card-tag {
+    padding: 0.125rem 0.625rem;
+    border-radius: var(--radius-full);
+    background: var(--color-surface-low);
+    color: var(--color-secondary);
+    font-size: var(--fs-label-sm);
+    font-weight: 600;
+  }
+  h2, h3 { margin: 0; font-size: var(--fs-h3); }
+  p { flex: 1; margin: 0; font-size: var(--fs-small); color: var(--color-on-surface-variant); }
+  .calc-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: var(--touch);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  /* The link's box covers the whole card, so the card is one big target. */
+  .calc-card-link::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-lg); }
+  .calc-card-link:focus-visible { outline: none; }
+  .calc-card-link:focus-visible::after { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+</style>

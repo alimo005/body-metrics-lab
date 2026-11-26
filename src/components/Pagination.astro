@@ -1,0 +1,63 @@
+---
+// Journal pagination (DESIGN-SPEC.md 7, 9.1): rendered only when there is more than one page. No JavaScript.
+import Icon from './Icon.astro';
+import { listingHref } from '../lib/journal';
+
+interface Props {
+  current: number;
+  total: number;
+}
+const { current, total } = Astro.props;
+const pages = Array.from({ length: total }, (_, i) => i + 1);
+---
+{total > 1 && (
+  <nav class="pagination" aria-label="Journal pages">
+    <ul>
+      <li>
+        {current > 1 ? (
+          <a class="page-step" href={listingHref(current - 1)} rel="prev"><Icon name="arrow-right" size={18} class="flip" /> <span>Previous</span></a>
+        ) : (
+          <span class="page-step disabled" aria-disabled="true"><Icon name="arrow-right" size={18} class="flip" /> <span>Previous</span></span>
+        )}
+      </li>
+      {pages.map((page) => (
+        <li>
+          {page === current ? (
+            <span class="page-number current" aria-current="page"><span class="visually-hidden">Page </span>{page}</span>
+          ) : (
+            <a class="page-number" href={listingHref(page)}><span class="visually-hidden">Page </span>{page}</a>
+          )}
+        </li>
+      ))}
+      <li>
+        {current < total ? (
+          <a class="page-step" href={listingHref(current + 1)} rel="next"><span>Next</span> <Icon name="arrow-right" size={18} /></a>
+        ) : (
+          <span class="page-step disabled" aria-disabled="true"><span>Next</span> <Icon name="arrow-right" size={18} /></span>
+        )}
+      </li>
+    </ul>
+  </nav>
+)}
+<style>
+  .pagination { margin-block-start: var(--space-lg); }
+  ul { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-xs); margin: 0; padding: 0; list-style: none; }
+  .page-step, .page-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    min-width: var(--touch);
+    min-height: var(--touch);
+    padding-inline: var(--space-sm);
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  a.page-step:hover, a.page-number:hover { background: var(--color-surface-low); }
+  .page-number.current { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-on-primary); }
+  .disabled { color: var(--color-on-surface-variant); border-style: dashed; }
+  .flip { transform: scaleX(-1); }
+</style>

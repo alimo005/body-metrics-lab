@@ -1,0 +1,32 @@
+---
+// Tinted information box with an icon (DESIGN-SPEC.md 7): privacy note, boundary note, under-20 notice.
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  icon?: IconName;
+  class?: string;
+}
+const { icon = 'info', class: className } = Astro.props;
+---
+<div class:list={['notice', className]}>
+  <Icon name={icon} size={20} />
+  <div class="notice-body"><slot /></div>
+</div>
+<style>
+  .notice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-low);
+    color: var(--color-on-surface-variant);
+    font-size: var(--fs-small);
+    line-height: 1.5;
+  }
+  .notice :global(svg) { margin-block-start: 0.15rem; color: var(--color-secondary); }
+  .notice-body { min-width: 0; }
+  .notice-body :global(p) { margin: 0; }
+  .notice-body :global(p + p) { margin-block-start: var(--space-xs); }
+</style>
