@@ -2,6 +2,8 @@
 // Reusable article template (DESIGN-SPEC.md 9.2): every published Markdown file in src/content/journal/ gets /journal/<slug>/
 // with the same layout. Nothing here is specific to one article.
 import { render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import { articleNode } from '../../lib/seo';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ArticleMedia from '../../components/ArticleMedia.astro';
@@ -24,8 +26,28 @@ const { Content } = await render(article);
 const { title, description, pubDate, updatedDate, relatedCalculator } = article.data;
 const calculator = calculators.find((c) => c.slug === relatedCalculator);
 const iso = (d: Date) => d.toISOString().slice(0, 10);
+const { image, imageAlt } = article.data;
+const socialImage = image ? await getImage({ src: image, width: 1200, height: 630, format: 'jpg' }) : undefined;
+const modified = hasUpdate(article) && updatedDate ? iso(updatedDate) : undefined;
+const articleSchema = articleNode({
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  headline: title,
+  description,
+  datePublished: iso(pubDate),
+  dateModified: modified,
+  imageUrl: socialImage ? new URL(socialImage.src, Astro.site).href : undefined,
+});
 ---
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title={title}
+  description={description}
+  ogType="article"
+  publishedTime={iso(pubDate)}
+  modifiedTime={modified}
+  ogImage={socialImage?.src}
+  ogImageAlt={imageAlt}
+  extraSchema={[articleSchema]}
+>
   {preview && (
     <div class="preview-banner" role="note">
       <p><strong>Draft preview.</strong> This article is not published: it is visible only on your local development server, and it is not in the Journal list, on the home page, in the sitemap or in the built website. Set <code>draft: false</code> to publish it.</p>

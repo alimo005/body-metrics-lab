@@ -7,8 +7,12 @@ interface Item {
 interface Props {
   items: Item[];
 }
+import { breadcrumbNode, serializeJsonLd } from '../lib/seo';
 const { items } = Astro.props;
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const breadcrumbJson = serializeJsonLd({ '@context': 'https://schema.org', ...breadcrumbNode(items, currentUrl) });
 ---
+<script is:inline type="application/ld+json" set:html={breadcrumbJson} />
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     {items.map((item, index) => (

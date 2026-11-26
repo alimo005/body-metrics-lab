@@ -33,7 +33,7 @@ Three calculators: **BMI**, **BMR & TDEE** and **Body Fat**. Ideal Weight, Macro
 | `DESIGN-SPEC.md`, `CALCULATION-SPEC.md`, `AGENTS.md` | The design and scientific specifications and the project rules |
 
 ## Release control
-`INDEXING_ENABLED` in `src/config/site.ts` (default `false`) keeps the whole site `noindex`, makes `robots.txt` block crawlers and keeps the sitemap empty. Changing it to `true` is the owner's launch decision.
+`INDEXING_ENABLED` in `src/config/site.ts` is `true` since 2026-11-26: pages are indexable, `robots.txt` allows crawling and names the sitemap, and the sitemap lists every indexable canonical page. Setting it to `false` is the emergency off switch (every page `noindex`, `robots.txt` blocks crawlers, empty sitemap). The 404 page always keeps its own `noindex`. Structured data (JSON-LD) is built by `src/lib/seo.ts` and emitted by `Seo.astro` and `Breadcrumb.astro`.
 
 ## Adding articles
 See `docs/PUBLISHING-ARTICLES.md`.

@@ -1,0 +1,24 @@
+---
+// Internal links from a calculator page to the other calculators, with descriptive anchor text (SEO: crawlable, meaningful links).
+// The descriptions come from the single calculator list in src/config/site.ts, so no wording is repeated here.
+import { calculators } from '../config/site';
+
+interface Props {
+  /** Slug of the current calculator, which is left out of the list. */
+  current: string;
+}
+const { current } = Astro.props;
+const others = calculators.filter((c) => c.slug !== current);
+---
+<section class="card calc-panel calc-section" aria-labelledby="more-calculators-heading">
+  <h2 id="more-calculators-heading">More calculators</h2>
+  <ul class="more-calculators">
+    {others.map((c) => (
+      <li><a href={c.href}>{c.label}</a>: {c.description}</li>
+    ))}
+  </ul>
+</section>
+<style>
+  .more-calculators { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: var(--space-sm); }
+  .more-calculators a { font-weight: 600; }
+</style>

@@ -9,6 +9,7 @@ import FormulaBox from '../../components/FormulaBox.astro';
 import SourceList from '../../components/SourceList.astro';
 import ResultRing from '../../components/ResultRing.astro';
 import RelatedArticle from '../../components/RelatedArticle.astro';
+import RelatedCalculators from '../../components/RelatedCalculators.astro';
 import '../../styles/calculator.css';
 
 // Sources S8 and S9 of CALCULATION-SPEC.md section 0.4. The 1984 reports are cited but were not directly accessible.
@@ -191,6 +192,7 @@ const sources = [
     </div>
   </section>
 
+  <RelatedCalculators current="body-fat" />
   <RelatedArticle calculator="body-fat" />
 
   <script>
