@@ -1,10 +1,21 @@
 ---
 // About Us (DESIGN-SPEC.md 11 and 20.1): exactly five sections, the owner-approved statement verbatim, three role cards and the
-// editorial process as a policy going forward. No names, qualifications, licences or credentials; no "independent".
+// editorial process as a policy going forward; and the named Medical Reviewer (DESIGN-SPEC.md 11.1, owner-approved 2026-11-27). No other
+// names, qualifications, licences or credentials are ever shown; no "independent".
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
+import { Image, getImage } from 'astro:assets';
+import portrait from '../assets/team/dr-atta-al-jbour.webp';
+import { getReviewer, reviewerBiography } from '../config/reviewers';
+import { personNode } from '../lib/seo';
 import '../styles/pages.css';
+
+// The one Medical Reviewer. Every fact comes from the registry (src/config/reviewers.ts), verified against the official profile.
+const REVIEWER_ID = 'atta-al-jbour';
+const reviewer = getReviewer(REVIEWER_ID);
+const portraitFile = await getImage({ src: portrait, width: 368, height: 258, format: 'webp', quality: 95 });
+const personSchema = personNode(REVIEWER_ID, new URL(portraitFile.src, Astro.site).href);
 
 const roles = [
   { icon: 'code', title: 'Software Development Team', text: 'Builds, maintains and improves the website, its calculators and their technical functionality.' },
@@ -19,7 +30,7 @@ const steps = [
   { title: 'Publish', text: 'The article is published with its sources and its publication date.' },
 ] as const;
 ---
-<BaseLayout title="About Us" description="BodyMetrics Lab is a free educational health website with three calculators and a Health Journal that explains the science behind them.">
+<BaseLayout title="About Us" description="BodyMetrics Lab is a free educational health website with three calculators and a Health Journal that explains the science behind them." extraSchema={[personSchema]}>
   <PageHero
     breadcrumb={[{ label: 'Home', href: '/' }, { label: 'About Us' }]}
     kicker="About us"
@@ -53,6 +64,39 @@ const steps = [
           </li>
         ))}
       </ul>
+    </section>
+
+    <section class="card about-card" aria-labelledby="reviewer-heading">
+      <h2 id="reviewer-heading">Our Medical Reviewer</h2>
+      <article class="reviewer">
+        <figure class="reviewer-photo">
+          <Image src={portrait} alt={reviewer.photoAlt} width={368} height={258} format="webp" quality={95} loading="lazy" decoding="async" widths={[368]} sizes="(min-width: 48rem) 20rem, 100vw" />
+        </figure>
+        <div class="reviewer-body">
+          <p class="reviewer-role">{reviewer.role}</p>
+          <h3>{reviewer.name}</h3>
+          <p class="reviewer-title">{reviewer.title}</p>
+          <p class="reviewer-place">{reviewer.workplace.organisation}, {reviewer.workplace.department}, {reviewer.workplace.place}</p>
+          <p class="reviewer-bio">{reviewerBiography(reviewer)}</p>
+          <dl class="reviewer-facts">
+            <div><dt>Education</dt><dd>{reviewer.education.degree}, {reviewer.education.institution}, {reviewer.education.country} ({reviewer.education.year})</dd></div>
+            <div>
+              <dt>Experience</dt>
+              <dd>
+                {reviewer.experience.summary}
+                <span class="reviewer-previous">Previous experience:{' '}
+                  {reviewer.experience.previous.map((p, i) => (<><span>{p.place}, {p.location}{p.period ? ` (${p.period})` : ''}</span>{i < reviewer.experience.previous.length - 1 ? '; ' : '.'}</>))}
+                </span>
+              </dd>
+            </div>
+            <div><dt>Medical licences</dt><dd>{reviewer.licences.join(', ')}</dd></div>
+            <div><dt>Certifications</dt><dd>{reviewer.certifications.join(', ')}</dd></div>
+            <div><dt>Clinical experience</dt><dd>{reviewer.clinicalExperience.join('; ')}</dd></div>
+          </dl>
+          <p class="reviewer-link"><a href={reviewer.profileUrl} target="_blank" rel="noopener noreferrer">View Professional Profile<Icon name="external-link" size={16} /><span class="visually-hidden"> (opens in a new tab)</span></a></p>
+        </div>
+      </article>
+      <p class="reviewer-note">Dr. Al-Jbour's position at {reviewer.workplace.organisation} is a professional fact taken from his published profile. {reviewer.workplace.organisation} is not affiliated with, and does not sponsor or endorse, BodyMetrics Lab. Medical review is shown on an individual article only when that article records a completed review, and on a calculator only after he has reviewed and approved it. The information on this website is educational and is not personal medical advice.</p>
     </section>
 
     <section class="card about-card" aria-labelledby="process-heading">
@@ -111,4 +155,23 @@ const steps = [
 
   .points { display: grid; gap: var(--space-sm); max-width: 46rem; margin: 0 0 var(--space-md); padding-inline-start: 1.25rem; color: var(--color-on-surface-variant); }
   .contact-line { color: var(--color-on-surface); }
+  .reviewer { display: grid; gap: var(--space-md); }
+  .reviewer-photo { margin: 0; max-width: 23rem; aspect-ratio: 368 / 258; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-surface-mid); }
+  .reviewer-photo :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+  .reviewer-role { display: inline-block; margin: 0 0 var(--space-xs); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); background: var(--color-secondary-container); color: var(--color-on-secondary-container); font-size: var(--fs-label-sm); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .reviewer h3 { margin: 0 0 var(--space-xs); }
+  .about-card .reviewer-title { margin: 0; color: var(--color-on-surface); font-weight: 600; }
+  .about-card .reviewer-place { margin: 0 0 var(--space-md); }
+  .reviewer-facts { display: grid; gap: var(--space-sm); margin: var(--space-md) 0; }
+  .reviewer-facts > div { padding-block-start: var(--space-sm); border-top: 1px solid var(--color-border); }
+  .reviewer-facts dt { margin: 0 0 2px; color: var(--color-on-surface); font-size: var(--fs-label-sm); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .reviewer-facts dd { margin: 0; color: var(--color-on-surface-variant); }
+  .reviewer-previous { display: block; margin-block-start: var(--space-xs); }
+  .about-card .reviewer-link { margin: 0; }
+  .reviewer-link a { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; color: var(--color-primary); font-size: var(--fs-small); text-decoration: underline; text-underline-offset: 0.2em; }
+  .about-card .reviewer-note { margin-block-start: var(--space-md); padding-block-start: var(--space-md); border-top: 1px solid var(--color-border); font-size: var(--fs-small); }
+  @media (min-width: 48rem) {
+    .reviewer { grid-template-columns: 20rem minmax(0, 1fr); gap: var(--space-lg); align-items: start; }
+    .reviewer-photo { max-width: none; }
+  }
 </style>

@@ -81,6 +81,18 @@ The site converts and sizes the image automatically.
 
 The website is indexable. One setting controls it: `INDEXING_ENABLED` in `src/config/site.ts` (currently `true` since 2026-11-26). While it is `true`, `robots.txt` allows crawling and names the sitemap, and every published page and article is listed in the sitemap. Drafts and future-dated articles never are, and the 404 page is never indexed. Setting it to `false` hides the whole site again (`noindex` everywhere, crawlers blocked, empty sitemap).
 
+## 6b. Medical review attribution (optional)
+
+An article shows "Medically reviewed by ..." **only** when its front matter contains a `medicalReview` block. Add it only after the review has really taken place, with the real date:
+
+```yaml
+medicalReview:
+  reviewer: atta-al-jbour      # an id from src/config/reviewers.ts
+  reviewDate: 2026-12-05       # the real date of the review (not in the future)
+```
+
+Then the article page shows the reviewer's name, "Medical Reviewer · General Practitioner – Emergency", "Last reviewed: <date>" and a link to the reviewer's professional profile, separate from the "BodyMetrics Lab Editorial Team" byline, and the page's structured data gains `reviewedBy` and `lastReviewed`. Without the block, nothing is shown: no article or draft is ever marked as reviewed automatically. Never type "medically reviewed" in the article body (the build rejects it). To add another reviewer, add one entry to `src/config/reviewers.ts` using facts from an official profile.
+
 ## 7. Error messages
 
 | Message (shortened) | What to do |

@@ -4,6 +4,8 @@
 import { render } from 'astro:content';
 import { getImage } from 'astro:assets';
 import { articleNode } from '../../lib/seo';
+import { reviewAttribution } from '../../lib/review';
+import MedicalReview from '../../components/MedicalReview.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ArticleMedia from '../../components/ArticleMedia.astro';
@@ -26,7 +28,9 @@ const { Content } = await render(article);
 const { title, description, pubDate, updatedDate, relatedCalculator } = article.data;
 const calculator = calculators.find((c) => c.slug === relatedCalculator);
 const iso = (d: Date) => d.toISOString().slice(0, 10);
-const { image, imageAlt } = article.data;
+const { image, imageAlt, medicalReview } = article.data;
+// null unless the article's own metadata confirms a review: nothing is ever inferred.
+const review = reviewAttribution(medicalReview);
 const socialImage = image ? await getImage({ src: image, width: 1200, height: 630, format: 'jpg' }) : undefined;
 const modified = hasUpdate(article) && updatedDate ? iso(updatedDate) : undefined;
 const articleSchema = articleNode({
@@ -47,6 +51,7 @@ const articleSchema = articleNode({
   ogImage={socialImage?.src}
   ogImageAlt={imageAlt}
   extraSchema={[articleSchema]}
+  review={review ? { reviewer: review.reviewerId, date: review.dateIso } : undefined}
 >
   {preview && (
     <div class="preview-banner" role="note">
@@ -67,6 +72,7 @@ const articleSchema = articleNode({
       {hasUpdate(article) && updatedDate && <span>Updated <time datetime={iso(updatedDate)}>{formatDate(updatedDate)}</time></span>}
       <span><Icon name="clock" size={16} /> {readMinutes(article)} min read</span>
     </p>
+    <MedicalReview attribution={review} />
   </header>
   <div class="article-hero">
     <ArticleMedia article={article} width={1000} eager />

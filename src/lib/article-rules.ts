@@ -22,6 +22,10 @@ export interface ArticleFacts {
   updatedDate?: Date;
   hasImage: boolean;
   hasImageAlt: boolean;
+  /** Review date from `medicalReview`, when the article has one. */
+  reviewDate?: Date;
+  /** Clock for the future-date check (tests pass a fixed value). */
+  now?: Date;
 }
 
 /** Returns a list of problems (empty when the article is valid). Drafts are not checked. */
@@ -31,6 +35,7 @@ export function articleProblems(a: ArticleFacts): string[] {
   if (!SLUG_PATTERN.test(a.slug)) problems.push('the file name (the slug) must be lowercase kebab-case.');
   if (a.updatedDate && a.updatedDate < a.pubDate) problems.push('updatedDate is earlier than pubDate.');
   if (a.hasImage && !a.hasImageAlt) problems.push('imageAlt is required when image is set.');
+  if (a.reviewDate && a.reviewDate.getTime() > (a.now ?? new Date()).getTime()) problems.push('medicalReview.reviewDate is in the future: use the real date the review took place.');
 
   if (/^# /m.test(a.body)) problems.push('the body must not contain an H1; the template renders the title as the only H1.');
   const h2s = [...a.body.matchAll(/^## (.+?)\s*$/gm)].map((m) => ({ text: m[1].trim(), index: m.index ?? 0 }));

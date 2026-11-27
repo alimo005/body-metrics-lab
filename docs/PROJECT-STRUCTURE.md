@@ -24,6 +24,7 @@ Three calculators: **BMI**, **BMR & TDEE** and **Body Fat**. Ideal Weight, Macro
 | `src/scripts/` | The small browser scripts that connect each calculator page to its logic |
 | `src/content/journal/` | One Markdown file per article, plus `_TEMPLATE.md` |
 | `src/lib/` | Journal rules (`article-rules.ts`, tested) and the helpers that apply them (`journal.ts`) |
+| `src/config/reviewers.ts` | The one registry of medical reviewers (verified facts, profile link); used by the About page, article attribution and structured data |
 | `src/config/site.ts` | The single source of site facts: site name, contact email, the list of calculators, navigation, nine-per-page setting and the `INDEXING_ENABLED` release switch |
 | `src/styles/` | `tokens.css` (all colours, fonts, spacing), `base.css`, `calculator.css`, `pages.css` |
 | `src/assets/` | Brand logos and (later) article images |

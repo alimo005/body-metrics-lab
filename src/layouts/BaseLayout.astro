@@ -4,6 +4,7 @@ import '@fontsource-variable/manrope';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import Seo from '../components/Seo.astro';
+import type { ReviewerId } from '../config/reviewers';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
@@ -17,6 +18,7 @@ interface Props {
   publishedTime?: string;
   modifiedTime?: string;
   extraSchema?: Record<string, unknown>[];
+  review?: { reviewer: ReviewerId; date: string };
 }
 
 const seo = Astro.props;
