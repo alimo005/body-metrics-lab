@@ -5,6 +5,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { calculatorSlugs } from './config/site';
+import { reviewerIds } from './config/reviewers';
 
 const journal = defineCollection({
   // Files whose name starts with "_" (the template and the readme) are ignored, so they never become articles.
@@ -22,6 +23,11 @@ const journal = defineCollection({
         /** One of the active (Version 1) calculators only. */
         relatedCalculator: z.enum(calculatorSlugs),
         draft: z.boolean().default(false),
+        /**
+         * OPTIONAL medical-review attribution. Leave it out unless the article has really been reviewed: it is the ONLY thing that makes
+         * an article show "Medically reviewed by ...". `reviewer` is an id from src/config/reviewers.ts; `reviewDate` is the real review date.
+         */
+        medicalReview: z.object({ reviewer: z.enum(reviewerIds), reviewDate: z.coerce.date() }).optional(),
       })
       .refine((data) => !data.image || Boolean(data.imageAlt), { message: 'imageAlt is required when image is set', path: ['imageAlt'] }),
 });

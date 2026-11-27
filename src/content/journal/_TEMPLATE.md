@@ -24,6 +24,12 @@ pubDate: 2026-01-01
 # and the "related article" banner on that calculator's page.
 relatedCalculator: bmi
 
+# OPTIONAL. Add ONLY after a medical reviewer has really reviewed this article, with the real review date. Without it the article shows no
+# medical-review attribution. reviewer = an id from src/config/reviewers.ts. See docs/PUBLISHING-ARTICLES.md section 6b.
+# medicalReview:
+#   reviewer: atta-al-jbour
+#   reviewDate: 2026-01-15
+
 # REQUIRED. true = DRAFT: hidden everywhere (list, home page, banners, sitemap, built site). false = PUBLISHED.
 draft: true
 ---

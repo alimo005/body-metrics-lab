@@ -25,6 +25,7 @@ export function problemsOf(article: Article): string[] {
     updatedDate: article.data.updatedDate,
     hasImage: Boolean(article.data.image),
     hasImageAlt: Boolean(article.data.imageAlt),
+    reviewDate: article.data.medicalReview?.reviewDate,
   });
 }
 

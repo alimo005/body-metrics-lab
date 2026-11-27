@@ -4,6 +4,8 @@
 // description, and for articles the headline, dates and the fixed author label "BodyMetrics Lab Editorial Team". Nothing here
 // invents a company address, phone number, social profile, person, credential, review, rating or endorsement.
 import { CONTACT_EMAIL, SITE_NAME, SITE_URL, calculators } from '../config/site.ts';
+import { getReviewer } from '../config/reviewers.ts';
+import type { ReviewerId } from '../config/reviewers.ts';
 
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
@@ -68,6 +70,28 @@ export function breadcrumbNode(items: BreadcrumbItem[], currentUrl: string): Jso
   };
 }
 
+/** Stable @id of a reviewer's Person node (the same node is referenced from the About page and from reviewed articles). */
+export const personId = (id: ReviewerId): string => `${SITE_URL}/about/#${id}`;
+
+/**
+ * Person node for a medical reviewer. Only facts the About page itself displays: name, published job title, employer name,
+ * medical school, photograph and the official profile as sameAs. No credential, award, specialty, rating or contact property.
+ */
+export function personNode(id: ReviewerId, imageUrl?: string): JsonLdNode {
+  const r = getReviewer(id);
+  const node: JsonLdNode = {
+    '@type': 'Person',
+    '@id': personId(id),
+    name: r.name,
+    jobTitle: r.title,
+    worksFor: { '@type': 'Organization', name: r.workplace.organisation },
+    alumniOf: { '@type': 'EducationalOrganization', name: r.education.institution },
+    sameAs: r.profileUrl,
+  };
+  if (imageUrl) node.image = imageUrl;
+  return node;
+}
+
 /** A free browser-based calculator (WebApplication). No rating, review or price other than "free". */
 export function calculatorNode(input: { url: string; name: string; description: string }): JsonLdNode {
   return {
@@ -110,6 +134,8 @@ export interface GraphInput {
   description: string;
   /** Extra nodes (for example an Article on an article page). */
   extra?: JsonLdNode[];
+  /** Present only when the page's own metadata confirms a medical review (ISO date): adds reviewedBy and lastReviewed. */
+  review?: { reviewer: ReviewerId; date: string };
 }
 
 /**
@@ -121,15 +147,20 @@ export function buildGraph(input: GraphInput): { '@context': string; '@graph': J
   const calculator = calculators.find((c) => c.href === input.pathname);
   const graph: JsonLdNode[] = [];
   if (input.pathname === '/') graph.push(organizationNode(), websiteNode());
-  graph.push(
-    webPageNode({
-      url,
-      name: input.title,
-      description: input.description,
-      kind: pageKindFor(input.pathname),
-      mainEntityId: calculator ? `${url}#calculator` : undefined,
-    }),
-  );
+  const page = webPageNode({
+    url,
+    name: input.title,
+    description: input.description,
+    kind: pageKindFor(input.pathname),
+    mainEntityId: calculator ? `${url}#calculator` : undefined,
+  });
+  if (input.review) {
+    page.reviewedBy = { '@id': personId(input.review.reviewer) };
+    page.lastReviewed = input.review.date;
+    graph.push(page, personNode(input.review.reviewer));
+  } else {
+    graph.push(page);
+  }
   if (calculator) graph.push(calculatorNode({ url, name: calculator.label, description: calculator.description }));
   if (input.extra) graph.push(...input.extra);
   return { '@context': 'https://schema.org', '@graph': graph };

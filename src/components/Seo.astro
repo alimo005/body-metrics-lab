@@ -5,6 +5,7 @@
 import { INDEXING_ENABLED, SITE_NAME } from '../config/site';
 import { buildGraph, serializeJsonLd } from '../lib/seo';
 import type { JsonLdNode } from '../lib/seo';
+import type { ReviewerId } from '../config/reviewers';
 
 interface Props {
   title: string;
@@ -19,12 +20,14 @@ interface Props {
   modifiedTime?: string;
   /** Extra JSON-LD nodes for this page (for example the Article node of an article page). */
   extraSchema?: JsonLdNode[];
+  /** Only for a page whose metadata confirms a medical review. */
+  review?: { reviewer: ReviewerId; date: string };
 }
 
 const DEFAULT_OG_IMAGE = '/og-default.png';
 const DEFAULT_OG_ALT = 'BodyMetrics Lab: free BMI, TDEE and body fat calculators';
 
-const { title, description, noindex: pageNoindex = false, ogImage, ogImageAlt, ogType = 'website', publishedTime, modifiedTime, extraSchema } = Astro.props;
+const { title, description, noindex: pageNoindex = false, ogImage, ogImageAlt, ogType = 'website', publishedTime, modifiedTime, extraSchema, review } = Astro.props;
 const noindex = !INDEXING_ENABLED || pageNoindex;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const isHome = canonical.pathname === '/';
@@ -32,7 +35,7 @@ const pageTitle = isHome ? `Free BMI, TDEE and Body Fat Calculators | ${SITE_NAM
 const usingDefaultImage = !ogImage;
 const image = new URL(ogImage ?? DEFAULT_OG_IMAGE, canonical);
 const imageAlt = ogImageAlt ?? (usingDefaultImage ? DEFAULT_OG_ALT : title);
-const jsonLd = serializeJsonLd(buildGraph({ pathname: canonical.pathname, title: pageTitle, description, extra: extraSchema }));
+const jsonLd = serializeJsonLd(buildGraph({ pathname: canonical.pathname, title: pageTitle, description, extra: extraSchema, review }));
 ---
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
