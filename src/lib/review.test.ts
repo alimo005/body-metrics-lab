@@ -83,13 +83,21 @@ describe('article attribution: only when the metadata explicitly confirms a revi
   });
 });
 
-describe('nothing in the repository is marked as medically reviewed yet', () => {
-  it('no article file carries medicalReview metadata', () => {
+describe('only owner-confirmed reviews are recorded (no calculator, no other article)', () => {
+  // The only article with a confirmed review, and the owner-confirmed values (2026-11-27: reviewed on 26 November 2026).
+  // Adding any other file here is a deliberate decision that needs the owner's confirmation of that article's review.
+  const CONFIRMED: Record<string, string> = { 'how-to-calculate-bmi-correctly.md': '2026-11-26' };
+  it('only articles with an owner-confirmed review carry medicalReview metadata, with the confirmed reviewer and date', () => {
     const dir = new URL('src/content/journal/', root);
     for (const file of readdirSync(dir).filter((f) => f.endsWith('.md'))) {
       const text = readFileSync(new URL(file, dir), 'utf8');
       const active = text.split('\n').filter((line) => !line.trimStart().startsWith('#')).join('\n');
-      assert.doesNotMatch(active, /medicalReview/, file);
+      if (file in CONFIRMED) {
+        assert.match(active, /medicalReview:\s*\n\s+reviewer: atta-al-jbour\s*\n\s+reviewDate: 2026-11-26\s*\n/, file);
+        assert.match(active, /pubDate: 2026-11-27/, file); // the publication date stays separate from the review date
+      } else {
+        assert.doesNotMatch(active, /medicalReview/, file);
+      }
     }
   });
   it('no calculator page shows a medical reviewer or says it was medically reviewed', () => {

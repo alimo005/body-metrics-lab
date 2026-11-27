@@ -13,7 +13,7 @@ const { attribution } = Astro.props;
 ---
 {attribution && (
   <aside class="review" aria-label="Medical review">
-    <p class="review-by"><Icon name="check" size={18} /> Medically reviewed by <strong>{attribution.name}</strong></p>
+    <p class="review-by"><Icon name="check" size={18} /><span>Medically reviewed by <strong>{attribution.name}</strong></span></p>
     <p class="review-role">{attribution.role} · {attribution.title}</p>
     <p class="review-meta">
       <span>Last reviewed: <time datetime={attribution.dateIso}>{formatDate(new Date(attribution.dateIso))}</time></span>
